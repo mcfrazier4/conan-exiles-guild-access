@@ -130,10 +130,67 @@ gate.
 | # | Surface | Status |
 |---|---|---|
 | 1 | Opening a container's inventory | **`CanAccessContainer`** on `BP_Master_Placeables` — overridable, confirmed |
-| 2 | Opening / closing a door | primary target, `UNKNOWN` hook |
+| 2 | Opening / closing a door | **`InteractableActivate`** (Interactable Interface) - overridable. Three override points, see section 3b. |
 | 3 | Crafting stations pulling materials from nearby containers | **confirmed separate path**: `CanCraftFromNearbyStorages`, `IsAggregatableWith`, `RegisterAggregatableInventories` |
 | 4 | "Loot all" / quick-transfer paths | needs audit |
 | 5 | Followers (thralls/pets) accessing containers | out of scope for v1 |
+
+### 3b. Doors are three unrelated families
+
+Confirmed 2026-09-23 by reading parent classes out of the uassets:
+
+    BP_BuildingBase_C
+      +- BP_BuildDoor_C          -> BP_BuildDoor_T2, _T3
+      +- BP_BuildTrapdoor_C      -> BP_BuildTrapdoor_T2, _T3
+
+    BP_Master_Placeables_C
+      +- BP_PL_Door_C
+           +- BP_BuildDoor_Sliding_C  -> BP_BuildDoor_Sliding_T3
+
+**Sliding doors are placeables, not building parts.** They share a root with
+containers rather than with other doors.
+
+So gating "doors" needs **three** override points, not one:
+
+| Override on | Covers |
+|---|---|
+| `BP_BuildDoor` | hinged doors, all tiers |
+| `BP_BuildTrapdoor` | trapdoors, all tiers |
+| `BP_PL_Door` | sliding doors, all tiers |
+
+Tiers inherit, so variants come free. Combined with the container override that
+is **four base assets** total - the conflict surface that section 5 is about.
+
+### The door gate
+
+`BP_BuildDoor`'s EventGraph shows the vanilla check in plain Blueprint:
+
+    Event InteractableActivate (from Interactable Interface)
+      -> Get Controlled Pawn
+      -> IsOwner (Target is Buildable Base, Pawn, SendGuiNotification)
+      -> Branch -> Branch (IsOpen) -> OpenDoor timeline -> Set Actor Rotation
+
+Vanilla doors gate on **ownership only**; there is no rank concept. That is the
+gap this mod fills.
+
+`IsOwner` is **not** overridable - searching the Override dropdown for "owner"
+returns nothing. So we gate at `InteractableActivate` instead, which is
+overridable and runs *before* the ownership branch.
+
+Note `IsOwner`'s `SendGuiNotification` pin: the game already has a
+check-and-notify pattern. Prefer driving that over inventing our own messaging.
+
+### Interaction surface available to us
+
+All overridable, all declared on `Interactable Interface`:
+
+    InteractableActivate              <- the gate
+    InteractableMenu                  <- section 6: adding "Set Access Rank"
+    InteractableGetSimpleDisplayText  <- hover text could show required rank
+    InteractableCanBeLooted
+    InteractableActivateDisabled / InteractableMenuDisabled
+    ClientInteractableActivate / Hovered / Unhovered
+    GetInteractableBonusRange / InteractableDefaultAction / InteractableShouldCommand
 
 ### The crafting-station hole
 
