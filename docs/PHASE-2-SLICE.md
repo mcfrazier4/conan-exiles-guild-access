@@ -97,8 +97,22 @@ macro means "valid AND condition", every call routes to `False Or Invalid`
 before the rank lookup runs. That single cause is consistent with all four rows
 above and predicts `Rank == 251` would open.
 
-To be settled by reading the pin default out of the graph with the Python
-`BlueprintEditorLibrary` API (see below) rather than by another cook cycle.
+**Settled by a headless graph dump, not a cook cycle.** The dump showed every
+wire in all three graphs was correct and exactly one thing wrong:
+
+    NODE [K2Node_MacroInstance] 'Is Valid+ Branch'
+       pin Condition   INPUT   val=''   -> []
+
+`Condition` empty (= false) and unconnected. The macro's outputs are named
+`True` and `False or Invalid`, i.e. it is `IsValid(Object) AND Condition`, so
+every call took the failure exit before the rank lookup ran. Consistent with all
+four rows above.
+
+**Fixed headlessly** (`set_pin_value(Condition, 'true')`), sentinels restored
+to 255, threshold restored to `Rank == 3`, both assets compiled with zero node
+errors and verified on disk by a second dump. Lesson: the macro was my
+recommendation; a plain `IsValid` + `Branch` would have had no hidden second
+input. Replace it during cleanup.
 
 ## Automation route: editor Python
 

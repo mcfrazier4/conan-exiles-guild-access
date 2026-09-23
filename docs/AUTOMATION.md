@@ -82,6 +82,28 @@ Three classes. The first two are new in 5.8 and are where the authoring lives.
 Run it before and after any edit. It is the source of truth for what is in a
 graph; a screenshot is not.
 
+## Gotchas found the hard way
+
+- **`-ModDevKit` breaks saving mod-owned assets.** With the mod platform layer
+  installed, saving `/Game/Mods/GuildAccess/Local/*` fails at the
+  delete-and-replace step ("DeleteFile was unable to delete ... Error saving").
+  Overrides are unaffected because they go through its remap path. So:
+  - editing an **override** (`/Game/Systems/...`): run **with** `-ModDevKit`
+  - editing a **new mod asset** (`/Game/Mods/GuildAccess/Local/...`): run
+    **without** it
+  - a script that touches both needs two runs.
+- **The save API lies.** `save_dirty_packages` returned `True` ("All files are
+  already saved") right after a save had failed. `save_packages` returned
+  `False` correctly. Never trust either: record the file's mtime and size
+  before, and assert they changed after.
+- The vanilla asset is never written even when the log prints
+  `FILE="../../../UE4/Content/Systems/..."`: that is the logical path, and the
+  platform layer redirects the physical write into
+  `GuildAccess/Content/...`. Verified by byte-comparing the vanilla file
+  against a backup taken before the write. Keep taking that backup anyway.
+- Exit code 3 from `UnrealEditor-Cmd.exe` on teardown is normal. The success
+  signal is `Python script executed successfully` plus your own on-disk checks.
+
 ## Rules
 
 - Probe scripts are read-only unless the file name says otherwise.
