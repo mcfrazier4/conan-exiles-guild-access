@@ -147,6 +147,65 @@ set through this Python API - it is a GUI checkbox.
 Interaction(Instigator, HitIndex, IsOwner)`, raised natively after the
 ownership check; `Instigator` is a controller (`Get Controlled Pawn` follows).
 
+## Lessons from A2 (2026-09-23) - what the API can and cannot do
+
+The authoring scripts live in `tools/authoring/` (`ga_helpers.py`,
+`author_a2_bpl.py`, `author_a2_new.py`, `author_a2_master.py`, `run_py.ps1`).
+Every one is idempotent and has a `GA_MODE=dry` mode that saves nothing.
+
+**Works**
+
+- `BlueprintEditorLibrary.create_blueprint_asset_with_parent(path, cls)` - but
+  only after `AssetRegistry.wait_for_completion()`; before the scan finishes it
+  refuses with a misleading "an asset with this name already exists".
+- Saving a **brand-new** Local asset works even with `-ModDevKit` (the
+  "DeleteFile/move from temp" failure only hits files that already exist, which
+  the mod layer holds open). So: create new Local assets with `-ModDevKit`,
+  edit existing ones without it.
+- `add_event_dispatcher` + `add_event_dispatcher_parameter`, then
+  `BlueprintGraphEditor.add_dispatcher_event_node(name)` - this creates a real
+  `K2Node_CustomEvent` **with the dispatcher's parameters**. It is the only
+  headless way to get a custom event with inputs (and therefore an RPC event).
+  The node is named `<Dispatcher>_0`.
+- `create_node_from_name('<Category>|<Name>', Vector2D, [context_pins])` with
+  names taken from `list_available_nodes(context_pins)`; spaces are stripped:
+  `Utilities|Casting|CastToController`, `Menu|Event|AssignSignalClicked`,
+  `Variables|Getareferencetoself`, `Utilities|FlowControl|Sequence`,
+  `Dreamworld|Persistence|Setdirtyflag`. "Assign X" creates the bind node plus
+  a matching custom event; compile between two Assigns or both events get the
+  same name and the Blueprint fails to compile.
+- `add_node_pin(sequence_node)` adds `then_N` to a Sequence.
+- `add_set_member_variable_node(name, class_path)` /
+  `add_get_member_variable_node(name, class_path)` reach variables on another
+  Blueprint class.
+- `GetComponentByClass` with `set_pin_value(ComponentClass, '<path>_C')` retypes
+  its ReturnValue to that class, so no cast node is needed.
+- SCS components: `unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem)`,
+  `k2_gather_subobject_data_for_blueprint`, `add_new_subobject(
+  AddNewSubobjectParams(parent_handle, new_class, blueprint_context))`,
+  `rename_subobject`; then `add_component_bound_event_node(template, 'OnX')`
+  for a native delegate on it (`OnComponentActivated`).
+- CDO edits: `unreal.get_default_object(lib.generated_class(bp))
+  .set_editor_property(...)`; structs must be built with keyword arguments
+  (`unreal.AdditionalClassComponent(target_actor_class=..., ...)`), their
+  fields are read-only afterwards.
+
+**Does not work**
+
+- Blueprint-defined dispatchers never appear in `list_available_nodes`, on any
+  pin: no Call / Bind / Assign nodes for them. Use a native delegate as the
+  signal instead (A2 uses `ActorComponent.Activate(bReset) ->
+  OnComponentActivated` with payload variables).
+- Casts to a Blueprint class created in the same session are not offered.
+- `set_pin_value` on a by-reference `FText&` parameter compiles to "Cannot pass
+  a literal to Text" - feed it from `Conv_StringToText` instead.
+- `K2Node_CustomEvent.function_flags` (Run on Server) and the variable
+  `SaveGame` flag are not exposed: GUI checkboxes.
+- `set_is_pure_function(True)` works (call nodes have no exec pins) even though
+  the graph's entry node keeps a `then` pin.
+- The runner passes `-NoAssetRegistryCache`; without it a stale cache can hide
+  new assets from the registry queries the scripts rely on.
+
 ## Rules
 
 - Probe scripts are read-only unless the file name says otherwise.
