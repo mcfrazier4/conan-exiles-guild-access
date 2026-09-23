@@ -183,6 +183,8 @@ it and option A in `DESIGN.md` §4 is viable.
 
 | # | Question | Answer | Confidence |
 |---|---|---|---|
+| 1.1b | `BuildingFunctionLibrary` | **Dead end.** Only 3 functions, all placement-overlap: `CheckOverlappingWithBedSpawnpoint`, `CheckForOverlappingStructure`, `GetBuildableObjectName`. No ownership/permission helpers. | Confirmed |
+| 1.1b | `ItemFunctionLibrary` | **Thin.** 5 functions: `GetCannotDropReasonText`, `GetCannotModifyReasonText`, `GetMarkAddedText`, `GetComboType`, `GetTreasureExchangeIncrement`. No access check, but the two reason-text getters imply a native restriction system that only exposes its *message* to Blueprint. | Confirmed |
 | 1.1 | Container parent chain | | |
 | 1.1 | Door parent chain | | |
 | 1.1 | Lowest shared ancestor | | |
