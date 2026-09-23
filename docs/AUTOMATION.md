@@ -107,6 +107,46 @@ graph; a screenshot is not.
 - Exit code 3 from `UnrealEditor-Cmd.exe` on teardown is normal. The success
   signal is `Python script executed successfully` plus your own on-disk checks.
 
+## Vanilla patterns to copy (from headless dumps, 2026-09-23)
+
+**Interface functions with exec pins are events in the EventGraph**, not
+function graphs: `Event InteractableActivate`, `Event InteractableMenu`,
+`Event SetShareAccess`. Use `add_event_override`, not `add_function_override`.
+
+**Radial menu entries** (`BP_PL_Door :: Event InteractableMenu`):
+
+    Event InteractableMenu(RadialMenu, HitIndex)
+      -> Parent: InteractableMenu
+      -> RadialMenu.AddItem(label: Text, subtitle: Text, icon, keyShortcutName='None', index=0) -> RadialMenuEntry
+      -> Bind Event to Signal Clicked(entry, <custom event delegate>)
+
+`RadialMenuEntry` (Python `unreal.RadialMenuEntry`) has `add_sub_item`,
+`get_sub_item`, `goto_parent`, `set_label`, `set_icon_from_texture`,
+`set_is_enabled`, `signal_clicked`, `user_tag/user_value/user_object`.
+Submenus are native.
+
+**Click-to-server**: click handlers run on the client and call an interface
+message on the player controller (`Controller_SetDoorAutoCloseEnabled(Door,
+Enabled)`, `K2Node_Message`), which owns the server RPC. UE only delivers
+Run-on-Server RPCs from actors the client owns, and a placeable is not owned by
+the player - so a mod cannot put a server RPC on the chest without first
+making the player its net owner (`PlaceableBase.set_owner` is exposed) or
+overriding the player controller.
+
+**Server to client feedback**: `ConanPlayerController.client_hud_show_notification`,
+`client_show_message_box`, `client_show_rich_message_box`.
+
+**Persistence**: `game_0.db` table `properties(object_id, name, value BLOB)`
+stores per-object variables keyed `<ConcreteClass_C>.<VarName>`
+(`BP_PL_Chest_Medium_C.DecayDisabled`), only for `SaveGame`-flagged properties
+with non-default values. `ConanBuildingPersistenceComponent.set_dirty` is
+callable from Blueprint. The `SaveGame` flag on a Blueprint variable cannot be
+set through this Python API - it is a GUI checkbox.
+
+**Placeable door open logic** lives in `BP_PL_Door :: Event Custom
+Interaction(Instigator, HitIndex, IsOwner)`, raised natively after the
+ownership check; `Instigator` is a controller (`Get Controlled Pawn` follows).
+
 ## Rules
 
 - Probe scripts are read-only unless the file name says otherwise.
