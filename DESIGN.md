@@ -11,18 +11,30 @@ asset graph yet.
 
 ## 1. Rank model
 
-The game's clan ranks are fixed and ordinal. We treat them as integers:
+The enum is **`ERank`**, confirmed 2026-09-23 as the return type of
+`GetPlayerRank`. Its members:
 
-| Rank | Value |
-|---|---|
-| Recruit | 0 |
-| Member | 1 |
-| Officer | 2 |
-| Leader | 3 |
+    ERank::InvalidRank
+    ERank::Recruit
+    ERank::Member
+    ERank::Officer
+    ERank::GuildMaster
+    ERank::ERank_MAX
 
-> `UNKNOWN`: the actual enum name and member names in the dev kit. Conan
-> internally calls clans "guilds" in many places, so search both. Confirm the
-> ordering is ascending — do not assume.
+Two corrections to the original design:
+
+- The top rank is **`GuildMaster`**, not "Leader".
+- There is an **`InvalidRank`** value, almost certainly what a player with no
+  guild returns. Every comparison must handle it explicitly rather than let it
+  fall through a `>=` test. A guildless player must never satisfy a rank
+  requirement.
+
+> `UNKNOWN`: the **numeric ordering**. The DLL string table is alphabetically
+> deduplicated, so declaration order cannot be read from it. Verify with a
+> `Switch on ERank` node in the editor, which lists cases in declaration order.
+> Do not assume ascending order, and especially do not assume `InvalidRank`
+> is 0 - if it sorts above `Recruit`, a naive `>=` grants access to players
+> with no guild at all.
 
 Every protected placeable stores a single `RequiredRank` integer. Access is
 granted when `PlayerRank >= RequiredRank`.
