@@ -77,6 +77,49 @@ that only runs client-side is worthless against a modified client.
 Settle it with a `Print String` in the override and confirm the line appears in
 the **dedicated server's** log, not just the client's.
 
+## Live test log (2026-09-23)
+
+Sentinel bisect of the 255 failure. Each row is one cook/deploy/test cycle.
+
+| Check compiled in | Result | Conclusion |
+|---|---|---|
+| `Rank == 3`, lookup by UniqueID | locked | not returning 3 |
+| `Rank == 255` | **opened** | `GetPawnRank` falls through to 255 |
+| `Rank == 3`, lookup by StableId | locked | ID type was not the cause |
+| `Rank == 250` (cast-failed sentinel) | locked | **the cast succeeds** |
+
+Remaining candidates: the guild-validity path (sentinel 251) or `GetPlayerRank`
+returning `InvalidRank` (255).
+
+**Leading hypothesis:** the `Is Valid+ Branch` macro used in `GetPawnRank` has
+two inputs, `Object` and a `Condition` bool that was left unchecked. If the
+macro means "valid AND condition", every call routes to `False Or Invalid`
+before the rank lookup runs. That single cause is consistent with all four rows
+above and predicts `Rank == 251` would open.
+
+To be settled by reading the pin default out of the graph with the Python
+`BlueprintEditorLibrary` API (see below) rather than by another cook cycle.
+
+## Automation route: editor Python
+
+Epic's MCP plugin is present in this dev kit as descriptors only - no compiled
+binaries anywhere - so the Claude marketplace Unreal MCP plugin cannot work
+here. Not fixable without engine source.
+
+What does work: `PythonScriptPlugin` ships **with** binaries and is already
+enabled (`LogPython: Using Python 3.11.8` in the editor log), and this 5.8
+build's `BlueprintEditorLibrary` exposes a complete authoring surface:
+
+    CreateOverrideFunctionGraph  AddCallFunctionNode  AddBranchNode  AddReturnNode
+    CreateNodeFromName           FindInputPin/OutputPin/ExecutePin/ThenPin/ResultPin
+    TryCreateConnection          BreakPinLinks        GetPinValue    SetPinValue
+    CompileBlueprint             SetLocalVariableDefaultValue  ...  (93 functions)
+
+Headless entry point: `Engine\Binaries\Win64\UnrealEditor-Cmd.exe <uproject>
+-run=pythonscript -script=<file> -ModDevKit`. `EditorScriptingUtilities`
+(`EditorAssetLibrary`) is **not** enabled, so use `unreal.load_asset` and
+`unreal.EditorLoadingAndSavingUtils` instead.
+
 ## The three checks, as originally written
 
 Each is a ten-minute check, and each can change the approach.
