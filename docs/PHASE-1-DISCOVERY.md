@@ -210,6 +210,30 @@ unknown** - that is what the Override dropdown and the node palette decide.
     CanAccessPlaceableInventory        <- placeable inventories
     EverybodyCanLootCorpse / GetEverybodyCanLootCorpse
 
+### CanAccessContainer - full signature
+
+Confirmed by placing the node, 2026-09-23. It is a **pure** function (green
+header, no exec pins), i.e. a const query:
+
+    Can Access Container            Target is Placeable Base
+      IN   Target              : Placeable Base (self)
+      IN   Interacting Pawn    : Pawn
+      OUT  Can Access          : bool
+      OUT  Container Is Locked : bool
+      OUT  Instigator Is Owner : bool
+
+This is the right question with the right inputs - the interacting player is
+passed in, so a rank check has everything it needs.
+
+Two observations:
+
+- **`Container Is Locked` already exists.** The game has a container lock
+  concept. Worth investigating whether the mod should drive that existing state
+  rather than inventing a parallel one.
+- **Pure functions are less often `BlueprintNativeEvent`.** This may *report*
+  access rather than *decide* it. If it is not overridable, it is still useful
+  for driving our UI, and the enforcement has to move to whatever calls it.
+
 ### Rank accessors - answers task 1.3
 
     GetPlayerRank
