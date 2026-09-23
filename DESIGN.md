@@ -283,36 +283,38 @@ least `max(CurrentRequiredRank, Officer)`. Everyone else must not see the entry
 at all, rather than see it greyed out. A greyed entry advertises that the
 container is rank-locked and roughly by whom.
 
-**Step 3 - follow the vanilla toggle pattern.** Settled 2026-09-23 by looking at
-the real door radial menu. Vanilla's "Lock Door for Thralls" entry reads:
+**Step 3 - a lock icon opening a radial submenu.** Specified by the project
+owner 2026-09-23:
 
-    LOCK DOOR FOR THRALLS
+- The entry on the door/container wheel uses a **lock icon**.
+- Activating it opens a **submenu**, not a cycle and not a separate window.
+- Each rank appears as its own **circle** in that submenu.
+- The submenu includes a **back / cancel** button.
 
-    Toggle whether or not thralls are able to pass freely
-    through this door as part of Living Settlements.
+Every asset this needs already exists in the dev kit:
 
-    Currently Unlocked
+| Need | Asset |
+|---|---|
+| Lock icon | `UI/Textures/GUIs/MainRadialMenu/MainRadialMenuIconLocked` |
+| Unlocked state | `.../MainRadialMenuIconUnlocked` |
+| Back / cancel | `.../T_MainRadialMenuIconCancel` |
+| Option-as-circle | `UI/Framework/W_RadialMenuSegment` |
+| The wheel | `UI/Framework/W_RadialMenu` |
 
-One radial option, with **current state shown in its own description**. No
-separate window. Our entry should mirror it exactly:
+Using Funcom's own icons and segment widget keeps the mod visually native,
+which matters for a public release.
 
-    SET ACCESS RANK
+> `UNKNOWN`: whether `W_RadialMenu` supports **nested** submenus, and if so how
+> a mod pushes a new page onto it. `UI/Framework/W_SorceryRadial` is a second
+> radial implementation and the first place to look for a working nesting
+> precedent. If nesting is not supported, the fallback is a UMG widget styled to
+> match - not a cycling toggle, which the owner has ruled out.
 
-    Choose the lowest clan rank that may open this door.
-
-    Currently: Officer
-
-Activating it cycles to the next rank, or opens a submenu if cycling through
-four values proves confusing. Prefer cycling - it matches vanilla and needs no
-new UI. A UMG widget is now the fallback, not the default, because matching the
-native pattern matters more for a public mod than having room for prose.
-
-This also confirms the description field supports multiple lines plus a trailing
-state line, which is what step 5's hover text needs.
-
-Note: vanilla has **no player-facing door lock**. "Lock Door for Thralls" is
-about NPC pathing for Living Settlements, not access control. The feature this
-mod adds does not exist in the base game in any form.
+**Naming caution.** The vanilla door wheel already has "Lock Door for Thralls",
+which governs NPC pathing for Living Settlements and has nothing to do with
+player access. Our entry must not read as a second thrall lock. Prefer
+"Set Access Rank" over anything containing "Lock", even though the icon is a
+padlock.
 
 **Step 4 - confirmation timing.** Fire only after the **server** accepts the
 change, never optimistically on the client. A confirmation for a change the
