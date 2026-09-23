@@ -167,6 +167,50 @@ Output lands at:
 We build from the command line rather than the editor's package button because
 I can run and debug this with you, and the editor GUI I cannot.
 
+## 7b. Stamp the dev kit revision in modinfo.json
+
+Headless `BuildMod` does **not** stamp the dev kit revision. A freshly created
+mod has `"devkitRevisionNumber": 0` in `modinfo.json`, and the game rejects it:
+
+    Incompatible Mods Detected
+    (Mod is too old and needs to be updated for this game version)
+
+The game log gives the accepted value:
+
+    LogModManager: SetCompatibleDevkitVersions: set 1 version(s) from 1 input string(s): [1002]
+
+1002 is this dev kit's revision - it is also in the editor title bar,
+"Conan Exiles Devkit 1002 (2.2.0)". Set it by hand in `GuildAccess/modinfo.json`:
+
+    "devkitRevisionNumber": 1002,
+
+`BuildMod` honours a hand-set value rather than overwriting it (verified
+2026-09-23 by extracting `modinfo.json` back out of the built pak).
+
+`devkitSnapshotId` is still 0 and does not appear in the game's check. If it
+ever turns out to matter, build once through the editor's **Build mod for
+usage** button and diff `modinfo.json` to learn the correct value.
+
+**Revisit this on every dev kit update.** The dev kit already warns that all
+mods must be recooked per version, and the revision number will change.
+
+### Inspecting a built pak
+
+The mod `.pak` is a container holding per-platform paks plus `manifest.json`
+(integrity checksums) and `modinfo.json`. To read what actually shipped:
+
+    & "<DevKit>\Engine\Binaries\Win64\UnrealPak.exe" <pak> -List
+    & "<DevKit>\Engine\Binaries\Win64\UnrealPak.exe" <pak> -Extract <outdir>
+
+Never hand-edit files inside a pak - `manifest.json` stores an MD5 of
+`modinfo.json`, so changes must go into the source and be rebuilt.
+
+### The game rewrites modlist.txt on failure
+
+When a mod fails to mount, the game comments out **every** line in
+`modlist.txt` by prefixing `#` and logs "Succesfully reset modlist". Re-enable
+our entry after each failed attempt.
+
 ## 8. Install and verify in-game
 
 1. Copy the `.pak` somewhere stable, e.g. `C:\ConanMods\GuildAccess.pak`.
