@@ -323,6 +323,19 @@ lock visual may be reusable. Check before drawing our own.
 5. Are placeable unique IDs stable across restarts and across the Enhanced
    unique-ID migration?
 6. Can interaction menu entries be appended without an override?
-7. Does `bRequiresLoadOnStartup` in `modinfo.json` need to be `true` for a mod
+7. **Do client and server mount the mod at different paths, and does that break
+   base-asset overrides?** Observed 2026-09-23 with a mod containing only new
+   assets:
+
+       client:  mount point '../../../ConanSandbox/Content/'
+       server:  mount point '../../../ConanSandbox/Content/Mods/GuildAccess/'
+
+   If that difference persists once the mod contains an override, a base asset
+   shadowed on the client might not be shadowed on the server - which for a
+   server-authoritative permission check would be fatal. Check this the moment
+   the first override exists. It may equally be an artifact of there being no
+   overrides yet.
+
+8. Does `bRequiresLoadOnStartup` in `modinfo.json` need to be `true` for a mod
    that overrides base-game blueprints? Currently `false` (the dev kit default).
    Prime suspect if the mod loads but its overrides never take effect.

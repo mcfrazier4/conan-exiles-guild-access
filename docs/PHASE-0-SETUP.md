@@ -243,9 +243,11 @@ almost nothing.
 - [x] `CookInfo.ini` generated via 'Choose Assets For Cook'
 - [x] Headless build produces a `.pak` (48s, 44 KB)
 - [x] `.pak` mounts in-game (verified in game log, 2026-09-23)
-- [ ] Local dedicated server running (Steam -> Tools). See docs/TESTING.md -
-      testing is solo, so the strategy is threshold-shifting plus a clan-leave
-      test rather than two accounts.
+- [x] Local dedicated server running (App 443030), mod mounts server-side
+      cleanly, verified in the server log 2026-09-23
+
+**Phase 0 is complete.** See docs/TESTING.md for the solo testing strategy -
+threshold-shifting plus a clan-leave test rather than two accounts.
 
 Phase 0 complete apart from the test server, which is only needed once there is
 behaviour to test. Phase 1 discovery does not require it.
