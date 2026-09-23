@@ -112,6 +112,12 @@ Use `-SkipBuild` to reinstall an existing `.pak` without recooking.
 Close the dev kit editor and stop the server before running it: the editor
 conflicts with cooking, and the server holds locks on the extracted files.
 
+**Only one build at a time.** AutomationTool takes a global mutex; a second
+concurrent run dies instantly with "A conflicting instance of AutomationTool is
+already running" and no log file. If that appears, check for leftover `dotnet`
+or `UnrealPak` processes before assuming anything is broken - a build already in
+flight is the usual cause, and killing it would waste the work.
+
 ### G-Portal - use this for pre-release validation only
 
 Available, but each iteration costs an FTP upload and a remote restart. Reserve

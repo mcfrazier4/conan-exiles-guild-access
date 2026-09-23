@@ -14,7 +14,7 @@ containers, gated on the player's clan rank.
 
 ## Environment
 
-- Game: Conan Exiles **Enhanced** (UE 5.6.1), Steam, `C:\Program Files (x86)\Steam\steamapps\common\Conan Exiles`
+- Game: Conan Exiles **Enhanced** (UE 5.8.0.0 per UAT; Inflexion's docs say 5.6.1), Steam, `C:\Program Files (x86)\Steam\steamapps\common\Conan Exiles`
 - Dev kit: **installed** at `C:\Program Files\Epic Games\CEUE5Devkit` (verified 2026-09-23)
   - Launch with `RunDevKit.bat` in that folder — it passes `-ModDevKit`, without which there is no mod menu
   - Project lives under `UE4\` despite being the UE5 kit; the folder name is a leftover

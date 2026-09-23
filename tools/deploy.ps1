@@ -50,7 +50,11 @@ function Set-ModList {
     } else {
         $kept = @()
     }
-    Set-Content -Path $list -Value (@($kept) + $staged) -Encoding utf8
+    # PowerShell 5.1's -Encoding utf8 writes a BOM. A BOM at the start of
+    # modlist.txt can make the game fail to find the first pak, and the symptom
+    # looks like a missing file rather than an encoding problem.
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllLines($list, [string[]](@($kept) + $staged), $utf8NoBom)
     Write-Host "  $Label modlist -> $list" -ForegroundColor Green
 }
 
