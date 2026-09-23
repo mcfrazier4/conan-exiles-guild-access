@@ -95,6 +95,20 @@ private networks are enough - there is no reason to expose it publicly.
 
 Connect from the game client with **Direct Connect** to `127.0.0.1`.
 
+### Stopping the server
+
+The headless server does not respond to a window-close message, so `taskkill`
+without `/F` times out. **Force-killing it is safe.** Conan stores its world in
+SQLite with a write-ahead log (`game_0.db` plus `game_0.db-wal`), which is
+designed to survive the process dying; the WAL is replayed on next open.
+
+Verified 2026-09-23: after a forced kill, the database still held 90 buildings,
+6 building instances, 109 actor positions and 1 character.
+
+    Get-Process ConanSandboxServer* | Stop-Process -Force
+
+Do not wait for graceful shutdowns during the iteration loop. They do not come.
+
 ### The iteration loop
 
     tools\deploy.ps1
