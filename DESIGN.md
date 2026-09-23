@@ -54,9 +54,20 @@ If it is 255, then for a player with no guild:
 A naive comparison would grant guildless players access to **every locked
 container in the game** - the exact opposite of this mod's purpose.
 
-**Rule: test `Rank == InvalidRank` first and deny. Never let it reach an
-ordering comparison.** That is correct regardless of the numeric value, so the
-value never needs determining.
+**Rule: a rank outside 0-3 is never granted access.** That is correct
+regardless of `InvalidRank`'s numeric value, so the value never needs
+determining.
+
+`InvalidRank` cannot be named directly - confirmed 2026-09-23 that it is hidden
+from enum literal dropdowns as well as from `Switch on ERank`. So the guard is
+written as a **bounds check** rather than an equality test:
+
+    Result = (Rank <= GuildMaster) AND (Rank >= Required)
+
+`Rank <= GuildMaster` excludes `InvalidRank` because being hidden from the
+switch means it lies outside 0-4. The lower bound needs no separate test:
+`Rank >= Required` covers it, since `Recruit` is 0 and the enum is byte-backed
+and unsigned.
 
 `BPL_GuildAccess` must expose a single `MeetsRankRequirement(Rank, Required)`
 function implementing exactly this, and no call site may compare ranks
