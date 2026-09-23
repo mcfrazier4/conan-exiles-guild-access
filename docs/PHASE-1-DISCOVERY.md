@@ -185,9 +185,9 @@ it and option A in `DESIGN.md` §4 is viable.
 |---|---|---|---|
 | 1.1b | `BuildingFunctionLibrary` | **Dead end.** Only 3 functions, all placement-overlap: `CheckOverlappingWithBedSpawnpoint`, `CheckForOverlappingStructure`, `GetBuildableObjectName`. No ownership/permission helpers. | Confirmed |
 | 1.1b | `ItemFunctionLibrary` | **Thin.** 5 functions: `GetCannotDropReasonText`, `GetCannotModifyReasonText`, `GetMarkAddedText`, `GetComboType`, `GetTreasureExchangeIncrement`. No access check, but the two reason-text getters imply a native restriction system that only exposes its *message* to Blueprint. | Confirmed |
-| 1.1 | Container parent chain | | |
-| 1.1 | Door parent chain | | |
-| 1.1 | Lowest shared ancestor | | |
+| 1.1 | Container parent chain | `BP_PlaceableItemContainer` -> `BP_Master_Placeables_C` | Confirmed (read from uasset) |
+| 1.1 | Door parent chain | `BP_BuildDoor` -> `BP_BuildingBase_C` | Confirmed (read from uasset) |
+| 1.1 | Lowest shared ancestor | **None in Blueprint.** Containers and doors descend from different parents, so they need separate overrides. | Confirmed |
 | 1.2 | Access check function | | |
 | 1.2 | **In Override dropdown?** | | |
 | 1.3 | Rank enum + ordering | | |
@@ -196,6 +196,24 @@ it and option A in `DESIGN.md` §4 is viable.
 | 1.5 | Bench shares access check? | | |
 | 1.6 | Interaction menu appendable? | | |
 | 1.7 | SaveGame used by vanilla? | | |
+
+## Native interfaces worth chasing
+
+Extracted from the uasset import tables, 2026-09-23. All resolve to
+`/Script/ConanSandbox`, so they are native C++ interfaces - which is promising,
+because UE commonly exposes interface functions as `BlueprintNativeEvent`, and
+those *are* overridable.
+
+| Name | Referenced by | Why it matters |
+|---|---|---|
+| `InteractableInterface` | `BP_BuildDoor`, `BP_BAC_Storage` | Door and storage component both implement it. Best candidate for a "can interact" gate covering both. |
+| `AggregatableInventoryContainerInterface` | `BP_PlaceableItemContainer` | Almost certainly the crafting-bench-pulls-from-nearby-containers path. Task 1.5's hole, now named. |
+| `ConanBuildingPersistenceComponent` | `BP_BAC_Storage` | Where saved placeable state lives. Relevant to open question 3. |
+| `BP_HasBinaryStatesInterface_C` | `BP_BAC_Storage` | Binary states - possibly open/closed or locked/unlocked. |
+| `BuildingMasterActorComponent` | `BP_BAC_Storage` | Native base for the `BP_BAC_*` components. |
+
+Check the Override dropdown for functions belonging to these interfaces before
+concluding nothing is hookable.
 
 ## If 1.2 comes back negative
 
