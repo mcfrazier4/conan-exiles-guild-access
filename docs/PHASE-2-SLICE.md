@@ -88,6 +88,9 @@ Sentinel bisect of the 255 failure. Each row is one cook/deploy/test cycle.
 | `Rank == 3`, lookup by StableId | locked | ID type was not the cause |
 | `Rank == 250` (cast-failed sentinel) | locked | **the cast succeeds** |
 | `Rank == 3` after the Condition fix | **opened** | **the whole chain works.** Vertical slice proven live. |
+| members-only build: GM opens clan chest | **opened** | member path intact after rewiring |
+| members-only build: clanless player opens own fresh chest | **opened** | **regression fixed** - non-members defer to vanilla |
+| members-only build: clanless player vs old clan chest | opened | **void**: leaving as sole GM disbanded the clan; DB shows `guilds` empty and the buildings now owned by character 140. Equivalent to the row above. |
 
 Remaining candidates: the guild-validity path (sentinel 251) or `GetPlayerRank`
 returning `InvalidRank` (255).
@@ -274,6 +277,19 @@ rebuild - a server INI value or an admin command.
 the first place to look.
 
 ---
+
+## Status: slice complete (2026-09-23)
+
+- A container refuses or allows by the interacting player's real guild rank,
+  decided on the dedicated server. Proven.
+- Non-members defer to vanilla; a solo player keeps access to their own
+  property. Proven.
+- Deliberately **not** done: the "raise the threshold to 4 and watch a GM get
+  refused" cycle. `Rank == 3` already proved the value is exactly 3 and both
+  bounds evaluate; that `3 >= 4` is false is not worth two cook cycles. It
+  falls out for free once the threshold is a variable rather than a literal.
+- Still untestable solo: a non-member against **someone else's** locked clan
+  container. See TESTING.md for a possible DB-level route.
 
 ## Done when
 

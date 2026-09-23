@@ -51,6 +51,27 @@ Caveat: leaving as the sole GuildMaster disbands the clan, and ownership of
 its buildings may transfer or orphan. If the old chest changes owner, test 2
 is void; rebuild the clan and re-test rather than reasoning about it.
 
+### Confirmed: disbanding transfers ownership
+
+Verified 2026-09-23 in `game_0.db` after leaving as sole GuildMaster: the
+`guilds` table was empty and every building that had been clan-owned was
+owned by the character's id. So test 2 above is void after a disband, as
+warned. Rebuild the clan before any member-path test.
+
+### A possible solo route to Recruit / Member / Officer
+
+The world database (`ConanSandbox/Saved/game_0.db`, SQLite) stores membership
+directly: `characters.guild`, `characters.rank`, and a `guilds` table
+(`guildId, name, owner, ...`). With the server stopped, a hand-written guild
+row plus `rank = 0` on the character *might* produce a genuine Recruit without
+a second account, which would unlock the ordering tests this document lists as
+uncovered.
+
+Untested, and the schema semantics (`owner`, `emblemInfo`) are unknown. Only
+attempt it on a throwaway world with the DB backed up, and treat any oddity as
+the spoof's fault first. Worth one careful experiment before release; not
+worth risking the test world over mid-development.
+
 ## Forcing a denial without a second account
 
 The trick is to move the *threshold*, not the rank.
