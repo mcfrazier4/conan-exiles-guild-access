@@ -12,3 +12,8 @@ Saved/
 *.sdf
 *.suo
 .vs/
+
+# headless authoring run output (written next to the scripts by run_py.ps1)
+tools/authoring/*.log
+tools/authoring/*.txt
+tools/authoring/__pycache__/

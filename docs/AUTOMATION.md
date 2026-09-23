@@ -147,6 +147,26 @@ set through this Python API - it is a GUI checkbox.
 Interaction(Instigator, HitIndex, IsOwner)`, raised natively after the
 ownership check; `Instigator` is a controller (`Get Controlled Pawn` follows).
 
+## THE namespace rule (cost a full day, 2026-09-23)
+
+The mod layer mounts `GuildAccess/Local/` **flattened**: in the dev kit GUI,
+in the cook and in the game, `Local/BPL_GuildAccess.uasset` is the package
+`/Game/Mods/GuildAccess/BPL_GuildAccess`. The path
+`/Game/Mods/GuildAccess/Local/BPL_GuildAccess` also loads in the editor (it is
+the plain filesystem view) but it is a *different package name*, it does not
+exist at runtime, and any import that uses it fails silently in game: the
+Blueprint that holds it falls back to vanilla behaviour with only a
+`LoadErrors: ... dependent package None was not available` line in the server
+log. Loading the same file under both names is also what makes the editor hold
+`Local` files open and refuse to save them (sharing violation, error 32).
+
+So: **always run with `-ModDevKit` and always spell Local assets as
+`/Game/Mods/GuildAccess/<Asset>`.** Never use the `/Local/` form in a script.
+After any authoring run, scan the saved `.uasset` files for
+`/Game/Mods/GuildAccess/Local/` (the check at the end of the regeneration
+driver does this); a hit in a file other than the asset's own is a bug.
+`tools/authoring/retarget_local_refs.py` repairs library call nodes in place.
+
 ## Lessons from A2 (2026-09-23) - what the API can and cannot do
 
 The authoring scripts live in `tools/authoring/` (`ga_helpers.py`,
