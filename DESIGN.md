@@ -258,15 +258,55 @@ _(none yet — populate during Phase 2)_
 
 ## 6. UI
 
-v1: an entry in the placeable's interaction menu ("Set Access Rank") visible
-only to players who pass the change-permission check in §2, opening a small
-widget with the four ranks.
+### The user journey
 
-> `UNKNOWN`: how interaction menu options are assembled for a placeable, and
-> whether a mod can append one without overriding the menu itself.
+The target experience, as specified by the project owner:
 
-The denial message on a failed access attempt should name the required rank, not
-just refuse.
+| # | Step | Hook | Status |
+|---|---|---|---|
+| 1 | Build hammer, place door frame, place door | none - vanilla | n/a |
+| 2 | Hold E on the door, radial menu shows a permission option | `InteractableMenu` | hook confirmed overridable |
+| 3 | Select it, choose a rank (e.g. GuildMaster) | our own widget or a radial submenu | **UNKNOWN** which |
+| 4 | Confirmation appears, auto-dismisses | notification system | **UNKNOWN**, but `IsOwner` has a `SendGuiNotification` pin, so a pattern exists |
+| 5 | Hovering the door shows its name **and** permission level | `InteractableGetSimpleDisplayText` | hook confirmed overridable |
+| 6 | Players below the rank see the requirement and a lock icon, and cannot open it | `InteractableActivate` (doors) / `CanAccessContainer` (containers) | hooks confirmed overridable |
+
+This applies to **both** doors and storage containers. `BP_BAC_Storage`
+implements `InteractableInterface`, so steps 2, 4, 5 and 6 share one
+implementation across both. Only step 6's enforcement differs: containers gate
+at `CanAccessContainer`, doors at `InteractableActivate` (see section 3b).
+
+### What each step still needs
+
+**Step 2 - who sees the option.** Per section 2, only players whose rank is at
+least `max(CurrentRequiredRank, Officer)`. Everyone else must not see the entry
+at all, rather than see it greyed out. A greyed entry advertises that the
+container is rank-locked and roughly by whom.
+
+**Step 3 - submenu or widget.** A radial submenu is less work and matches the
+interaction flow; a UMG widget gives room for an explanation and a lockout
+warning, since section 2 permits setting a rank above your own. Decide in
+Phase 4. Prefer the submenu unless it cannot show four options plus a title.
+
+**Step 4 - confirmation timing.** Fire only after the **server** accepts the
+change, never optimistically on the client. A confirmation for a change the
+server rejected is worse than no confirmation at all.
+
+**Step 5 - hover text carries the feature.** It is the only always-visible
+surface, so it is the whole feature's discoverability. It is unknown whether
+`InteractableGetSimpleDisplayText` supports multiple lines or icons. Verify
+before designing around it.
+
+**Step 6 - the lock icon.** `CanAccessContainer` already returns
+`ContainerIsLocked` and vanilla has a container lock concept, so an existing
+lock visual may be reusable. Check before drawing our own.
+
+### Non-negotiables
+
+- The denial must **name the required rank**. "You cannot access this" teaches
+  the player nothing; "Requires Officer" tells them who to ask.
+- Steps 5 and 6 are client-side presentation and must never be the gate. A
+  client running modified UI must still be refused by the server.
 
 ## 7. Open questions
 
