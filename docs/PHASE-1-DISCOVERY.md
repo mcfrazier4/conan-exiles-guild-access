@@ -188,7 +188,7 @@ it and option A in `DESIGN.md` §4 is viable.
 | 1.1 | Container parent chain | `BP_PlaceableItemContainer` -> `BP_Master_Placeables_C` | Confirmed (read from uasset) |
 | 1.1 | Door parent chain | `BP_BuildDoor` -> `BP_BuildingBase_C` | Confirmed (read from uasset) |
 | 1.1 | Lowest shared ancestor | **None in Blueprint.** Containers and doors descend from different parents, so they need separate overrides. | Confirmed |
-| 1.2 | Access check function | `CanAccessContainer` / `CanAccessPlaceableInventory` exist in C++. | Confirmed |
+| 1.2 | Access check function | `CanAccessContainer` (category "Placeable Base") and `CanAccessPlaceableInventory` (category "Inventory"). **Both are BlueprintCallable** - they appear as nodes in the palette. | Confirmed |
 | 1.2 | **In Override dropdown?** | | |
 | 1.3 | Rank enum + ordering | Names are localized, not in the DLL. Read off the `GetPlayerRank` node's return type in the editor. | Open |
 | 1.3 | Get-player-rank function | `GetPlayerRank`, `GetPlayerRankByStableId` exist in C++. Blueprint exposure unconfirmed. | Partial |
