@@ -71,7 +71,9 @@ the library sidebar to enable **Tools**, then install **"Conan Exiles Dedicated
 Server"** (App ID **443030**). Same machine, no upload step, restarts in
 seconds.
 
-Install it to `E:\SteamLibrary` - C: already carries the 169 GB dev kit.
+Installed 2026-09-23 to
+`C:\Program Files (x86)\Steam\steamapps\common\Conan Exiles Dedicated Server`
+(3.55 GB). The executable is `ConanSandboxServer.exe`.
 
 **Branch matters.** App 443030 serves both `public` (Enhanced / UE5) and
 `conan-exiles-legacy` (UE4). The game here is Enhanced 2.2.0, so the server must
@@ -82,6 +84,33 @@ If it does not appear under Tools, install via SteamCMD: `app_update 443030`.
 
 The Phase 2 loop is rebuild (48s) -> restart -> test, run dozens of times. Keep
 it local.
+
+### First run
+
+`ConanSandbox/Mods` and the config files do not exist until the server has run
+once. Launch it, let it generate them, then stop it.
+
+Windows will prompt for firewall access on first launch. For local-only testing,
+private networks are enough - there is no reason to expose it publicly.
+
+Connect from the game client with **Direct Connect** to `127.0.0.1`.
+
+### The iteration loop
+
+    tools\deploy.ps1
+
+Builds the mod and installs it to **both** the client and the server, then
+clears `Saved/ExtractedMods` on each.
+
+That last step matters. Both the game and the server extract the mod's
+per-platform paks into `Saved/ExtractedMods/` and reuse them. A stale extract
+means you are testing old code while believing you are testing new code, with no
+error to tell you. Never skip it.
+
+Use `-SkipBuild` to reinstall an existing `.pak` without recooking.
+
+Close the dev kit editor and stop the server before running it: the editor
+conflicts with cooking, and the server holds locks on the extracted files.
 
 ### G-Portal - use this for pre-release validation only
 
