@@ -65,8 +65,25 @@ directly.
 Every protected placeable stores a single `RequiredRank` integer. Access is
 granted when `PlayerRank >= RequiredRank`.
 
-**`RequiredRank` defaults to 0.** This matters: a freshly installed mod must not
-change the behaviour of a single existing chest. Players opt in per object.
+### Default-open is a product decision, not an oversight
+
+**`RequiredRank` defaults to 0 (`Recruit`).** Every guild member satisfies
+`PlayerRank >= 0`, so installing this mod changes the behaviour of **zero**
+existing objects. Nothing locks until a player deliberately raises it.
+
+This applies to **every placeable and every door**, not just chests.
+
+Stated explicitly by the project owner 2026-09-23: anyone in the guild can open
+any chest, door or placeable by default, *unless* someone has set it higher.
+The inverse - locking everything and making players open things up - was
+rejected as a headache, and it is: a guild of thirty with a thousand placeables
+would face an unbounded amount of clicking before the base functioned again.
+
+**Do not reverse this on "secure by default" grounds.** The security boundary
+this mod cares about is *within* an already-trusted guild. Vanilla's ownership
+rules still run first, via the parent call, so non-members are refused exactly
+as before. Default-open here means "as permissive as vanilla", not "open to the
+world".
 
 ## 2. Access rules
 
