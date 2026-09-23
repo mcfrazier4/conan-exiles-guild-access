@@ -53,3 +53,9 @@ a directory junction (see docs/PHASE-0-SETUP.md), so git tracks the real assets.
   function and immediately delegate to our own mod-owned Blueprint library.
 - Mark anything unverified as `UNKNOWN` rather than guessing at asset or
   function names. Guessed names have cost us nothing yet; keep it that way.
+- **`.uasset` changes are invisible in a diff.** They are LFS pointers, so a
+  behavioural change looks identical to a no-op in `git diff`. Never run
+  `git add -A` alongside a docs edit without checking `git status` first - it
+  once committed a deny-all probe inside a commit whose message was about
+  documentation, leaving HEAD as a mod that blocked every container with no
+  message explaining why. When the editor has been open, stage deliberately.
