@@ -32,6 +32,50 @@ actually is.
 
 ---
 
+## Asset map
+
+Located by searching the dev kit's content tree on disk, 2026-09-23. All paths
+are relative to `Content/` - paste the name into the Content Browser search.
+
+### Open these first
+
+    Systems/Building/BuildingFunctionLibrary          <- task 1.1b
+    Items/Weapons/ItemFunctionLibrary                 <- task 1.1b
+    Systems/Building/Placeables/BP_PlaceableItemContainer   <- THE container
+    Systems/Building/BuildingActorComponents/BP_BAC_Storage <- storage component
+    Systems/Building/BP_BuildDoor                     <- THE door
+    Systems/Building/BP_BuildingBase                  <- building parts base
+    Systems/Building/Placeables/BP_Master_Placeables  <- placeables base
+
+### Also relevant
+
+    Systems/Building/BuildingActorComponents/BP_BAC_CraftingStation  <- task 1.5
+    Systems/Building/Placeables/BP_PlaceableArmorDisplayContainer
+    Systems/Building/Placeables/BP_PL_DefaultPlaceable
+    Systems/Building/BPI_Placeable_PlayerController_Interface
+    Characters/FuncomFunctionLibrary
+
+Doors come in tiers and variants (`BP_BuildDoor_T2`, `_T3`, `_Sliding`,
+`BP_BuildTrapdoor`), which is exactly why task 1.1 needs the shared parent
+rather than a per-door override.
+
+`BuildingActorComponents` holds `BP_BAC_*` components bolted onto placeables -
+`BP_BAC_Storage`, `BP_BAC_CraftingStation`, `BP_BAC_UsesFuel` and so on. If
+container access is gated anywhere in Blueprint, `BP_BAC_Storage` is the single
+most likely place.
+
+### A warning sign
+
+A search across `Systems/` for assets named for *permission*, *access*,
+*owner*, *guild*, *clan* or *rank* returned **nothing relevant** - only a purge
+navmesh area and two clan-emblem decorations. There is no Blueprint asset that
+looks like a permission system.
+
+That is weak evidence that ownership and access checks live in native C++,
+which is the failure mode described in Open Question 1. It makes task 1.2 the
+decisive test rather than a formality. Do not be discouraged if the check is
+not reachable - find out what *is* overridable and bring back the list.
+
 ## Tasks
 
 ### 1.1 — Map the placeable class hierarchy
