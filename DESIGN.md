@@ -213,7 +213,7 @@ So gating "doors" needs **three** override points, not one:
 |---|---|
 | `BP_BuildDoor` | hinged doors, all tiers |
 | `BP_BuildTrapdoor` | trapdoors, all tiers |
-| `BP_PL_Door` | sliding doors, all tiers |
+| `BP_PL_Door` | sliding doors, all tiers - **and the test base's `BP_PL_Door_T1`** (confirmed in game_0.db 2026-09-23), so build this override first |
 
 Tiers inherit, so variants come free. Combined with the container override that
 is **four base assets** total - the conflict surface that section 5 is about.
