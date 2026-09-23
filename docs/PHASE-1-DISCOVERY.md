@@ -190,9 +190,9 @@ it and option A in `DESIGN.md` §4 is viable.
 | 1.1 | Lowest shared ancestor | **None in Blueprint.** Containers and doors descend from different parents, so they need separate overrides. | Confirmed |
 | 1.2 | Access check function | `CanAccessContainer` (category "Placeable Base") and `CanAccessPlaceableInventory` (category "Inventory"). **Both are BlueprintCallable** - they appear as nodes in the palette. | Confirmed |
 | 1.2 | **In Override dropdown?** | **YES.** Both `CanAccessContainer` and `CanAccessPlaceableInventory` appear, declared on `BP Master Placeables`. Overridable from Blueprint. | Confirmed |
-| 1.3 | Rank enum + ordering | Names are localized, not in the DLL. Read off the `GetPlayerRank` node's return type in the editor. | Open |
-| 1.3 | Get-player-rank function | `GetPlayerRank`, `GetPlayerRankByStableId` exist in C++. Blueprint exposure unconfirmed. | Partial |
-| 1.4 | Ownership component/vars | | |
+| 1.3 | Rank enum + ordering | **`ERank`**: Recruit 0, Member 1, Officer 2, GuildMaster 3, ERank_MAX 4. `InvalidRank` is hidden and outside that range - see DESIGN.md section 1. | Confirmed |
+| 1.3 | Get-player-rank function | `Guild.GetPlayerRank(PlayerId)`. Reached via `Pawn -> cast Conan Character -> GetGuild -> Guild`. Chain wired and verified in the editor. | Confirmed |
+| 1.4 | Ownership component/vars | `CanAccessContainer` already returns `InstigatorIsOwner`. `GetContainerOwnerStableId` exists if more is needed. | Confirmed |
 | 1.5 | Bench shares access check? | **Separate path, confirmed.** `CanCraftFromNearbyStorages`, `IsAggregatableWith`, `RegisterAggregatableInventories` are distinct from `CanAccessContainer`. Gating container access alone will not close this hole. | Confirmed |
 | 1.6 | Interaction menu appendable? | | |
 | 1.7 | SaveGame used by vanilla? | | |
