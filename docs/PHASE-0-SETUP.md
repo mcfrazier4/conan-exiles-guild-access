@@ -240,7 +240,10 @@ almost nothing.
 - [x] Launches via `RunDevKit.bat` (with `-WorkingDirectory`, see section 3)
 - [x] `GuildAccess` mod created
 - [x] Junction from dev kit to repo in place (`tools\link-mod.ps1`, verified 2026-09-23)
-- [ ] `CookInfo.ini` generated via 'Choose Assets For Cook'
-- [ ] Headless build produces a `.pak`
-- [ ] `.pak` appears in the in-game mod list
+- [x] `CookInfo.ini` generated via 'Choose Assets For Cook'
+- [x] Headless build produces a `.pak` (48s, 44 KB)
+- [x] `.pak` mounts in-game (verified in game log, 2026-09-23)
 - [ ] Dedicated server running, two accounts, one clan, different ranks
+
+Phase 0 complete apart from the test server, which is only needed once there is
+behaviour to test. Phase 1 discovery does not require it.
