@@ -66,8 +66,19 @@ right. Strip the logging before release.
 
 ### Local dedicated server - use this for development
 
-Free, via Steam: **Library -> filter to Tools -> "Conan Exiles Dedicated
-Server"**. Same machine, no upload step, restarts in seconds.
+Free, via Steam. Use the **"Games and Software" dropdown** at the top-left of
+the library sidebar to enable **Tools**, then install **"Conan Exiles Dedicated
+Server"** (App ID **443030**). Same machine, no upload step, restarts in
+seconds.
+
+Install it to `E:\SteamLibrary` - C: already carries the 169 GB dev kit.
+
+**Branch matters.** App 443030 serves both `public` (Enhanced / UE5) and
+`conan-exiles-legacy` (UE4). The game here is Enhanced 2.2.0, so the server must
+be on `public`. That is the default; check Properties -> Betas if the server
+refuses connections or rejects the mod.
+
+If it does not appear under Tools, install via SteamCMD: `app_update 443030`.
 
 The Phase 2 loop is rebuild (48s) -> restart -> test, run dozens of times. Keep
 it local.
