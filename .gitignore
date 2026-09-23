@@ -1,0 +1,14 @@
+# Unreal intermediates — never commit these
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.pak
+
+# Editor cruft
+*.VC.db
+*.opensdf
+*.sdf
+*.suo
+.vs/

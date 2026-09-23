@@ -1,0 +1,5 @@
+# Unreal binary assets. Enable LFS before the first asset is committed:
+#   git lfs install && git add .gitattributes
+# Retrofitting LFS after the fact means rewriting history.
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap   filter=lfs diff=lfs merge=lfs -text
