@@ -109,15 +109,27 @@ world".
 
 ## 2. Access rules
 
-**Denied outright** if `PlayerRank == ERank::InvalidRank` (no guild). This
-test comes first and is not overridable by any rule below. See section 1.
+**The rank gate applies to guild members only.** Corrected 2026-09-23 after the
+first live pass exposed a regression: the slice ANDed the gate onto every
+container, and a player with no clan (rank 255) failed `<= 3`, so a solo player
+could not open their **own** chest.
 
-Otherwise granted if **any** of:
+Evaluation order, on top of the parent's vanilla answer:
 
-- Player is a server admin (bypass).
-- Player is the **`GuildMaster`** (always allowed — prevents permanent lockout).
-- Object is not clan-owned (personal property; vanilla rules, untouched).
-- `PlayerRank >= RequiredRank`, evaluated only after the `InvalidRank` test.
+1. Not a guild member — thrall, pet, NPC, or a player with no clan
+   (`GetPawnRank` = 255) — **defer entirely to vanilla.** Vanilla already
+   refuses non-members on clan property and must keep allowing them on their
+   own. The `InvalidRank` trap stays closed because non-members never reach
+   the `>=` comparison at all.
+2. Guild member: granted if **any** of
+   - server admin (bypass)
+   - **`GuildMaster`** (always allowed — prevents permanent lockout)
+   - `PlayerRank >= RequiredRank`
+
+One consequence to state plainly: if an owner deliberately leaves a clan
+container **unlocked to the public**, vanilla allows outsiders and this mod does
+not intervene — a rank requirement on a public container would be
+contradictory. Rank gating is a within-clan control.
 
 Otherwise denied, with a client-side message explaining the required rank.
 

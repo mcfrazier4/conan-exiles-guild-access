@@ -37,6 +37,20 @@ clan of one has only a GuildMaster and you cannot demote yourself.
   low - but it is not zero and should be stated plainly in the Workshop
   description until someone verifies it with a real clan.
 
+## The two tests that guard the "members only" rule
+
+Both solo, both on the same build, no rebuild between them:
+
+1. **Leave your clan, place a fresh chest, open it.** It is personally owned,
+   you have no guild, and it **must open**. If it locks, the rank gate is
+   leaking onto non-members - the regression the first live pass had.
+2. **While still clanless, try the old clan-owned chest.** It **must lock**,
+   and that is vanilla doing it, not us. Confirms the mod never loosens.
+
+Caveat: leaving as the sole GuildMaster disbands the clan, and ownership of
+its buildings may transfer or orphan. If the old chest changes owner, test 2
+is void; rebuild the clan and re-test rather than reasoning about it.
+
 ## Forcing a denial without a second account
 
 The trick is to move the *threshold*, not the rank.

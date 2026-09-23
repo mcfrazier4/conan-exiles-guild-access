@@ -87,6 +87,7 @@ Sentinel bisect of the 255 failure. Each row is one cook/deploy/test cycle.
 | `Rank == 255` | **opened** | `GetPawnRank` falls through to 255 |
 | `Rank == 3`, lookup by StableId | locked | ID type was not the cause |
 | `Rank == 250` (cast-failed sentinel) | locked | **the cast succeeds** |
+| `Rank == 3` after the Condition fix | **opened** | **the whole chain works.** Vertical slice proven live. |
 
 Remaining candidates: the guild-validity path (sentinel 251) or `GetPlayerRank`
 returning `InvalidRank` (255).
