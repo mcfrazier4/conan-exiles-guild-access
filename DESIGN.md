@@ -133,7 +133,7 @@ gate.
 | 2 | Opening / closing a door | **`InteractableActivate`** (Interactable Interface) - overridable. Three override points, see section 3b. |
 | 3 | Crafting stations pulling materials from nearby containers | **confirmed separate path**: `CanCraftFromNearbyStorages`, `IsAggregatableWith`, `RegisterAggregatableInventories` |
 | 4 | "Loot all" / quick-transfer paths | needs audit |
-| 5 | Followers (thralls/pets) accessing containers | out of scope for v1 |
+| 5 | Followers (thralls/pets) accessing containers | out of scope for v1. Note vanilla already has a per-door "Lock Door for Thralls" toggle for Living Settlements pathing, which is unrelated to player access but may confuse users if our wording is careless. |
 
 ### 3b. Doors are three unrelated families
 
@@ -283,10 +283,36 @@ least `max(CurrentRequiredRank, Officer)`. Everyone else must not see the entry
 at all, rather than see it greyed out. A greyed entry advertises that the
 container is rank-locked and roughly by whom.
 
-**Step 3 - submenu or widget.** A radial submenu is less work and matches the
-interaction flow; a UMG widget gives room for an explanation and a lockout
-warning, since section 2 permits setting a rank above your own. Decide in
-Phase 4. Prefer the submenu unless it cannot show four options plus a title.
+**Step 3 - follow the vanilla toggle pattern.** Settled 2026-09-23 by looking at
+the real door radial menu. Vanilla's "Lock Door for Thralls" entry reads:
+
+    LOCK DOOR FOR THRALLS
+
+    Toggle whether or not thralls are able to pass freely
+    through this door as part of Living Settlements.
+
+    Currently Unlocked
+
+One radial option, with **current state shown in its own description**. No
+separate window. Our entry should mirror it exactly:
+
+    SET ACCESS RANK
+
+    Choose the lowest clan rank that may open this door.
+
+    Currently: Officer
+
+Activating it cycles to the next rank, or opens a submenu if cycling through
+four values proves confusing. Prefer cycling - it matches vanilla and needs no
+new UI. A UMG widget is now the fallback, not the default, because matching the
+native pattern matters more for a public mod than having room for prose.
+
+This also confirms the description field supports multiple lines plus a trailing
+state line, which is what step 5's hover text needs.
+
+Note: vanilla has **no player-facing door lock**. "Lock Door for Thralls" is
+about NPC pathing for Living Settlements, not access control. The feature this
+mod adds does not exist in the base game in any form.
 
 **Step 4 - confirmation timing.** Fire only after the **server** accepts the
 change, never optimistically on the client. A confirmation for a change the
