@@ -1,0 +1,92 @@
+# Testing strategy
+
+## The constraint
+
+Testing is **solo**. There is no second account that owns Conan Exiles, so no
+second character can be put in a clan at a lower rank.
+
+That means exactly two `ERank` values are reachable in a live test:
+
+| State | Rank observed |
+|---|---|
+| Not in a clan | `ERank::InvalidRank` |
+| In your own clan | `ERank::GuildMaster` (3) |
+
+`Recruit` (0), `Member` (1) and `Officer` (2) cannot be produced, because a
+clan of one has only a GuildMaster and you cannot demote yourself.
+
+## What this does and does not cover
+
+**Covered, and these are the parts that matter most:**
+
+- The override actually fires, and on the server.
+- The pawn -> Conan Character -> Guild -> `GetPlayerRank` chain returns a real
+  rank rather than failing silently.
+- **The `InvalidRank` guard.** Leaving your clan reproduces the exact case that
+  would otherwise grant guildless players access to everything. This is the
+  highest-severity bug in the design and it is fully solo-testable.
+- Denial actually blocks, rather than merely changing what the UI reports -
+  see "Forcing a denial" below.
+- The failed-cast path, by having a thrall or pet interact with a container.
+
+**Not covered:**
+
+- Ordering comparisons between `Recruit`, `Member` and `Officer`. These reduce
+  to an integer `>=` on an enum whose ordering is already confirmed
+  (Recruit 0 < Member 1 < Officer 2 < GuildMaster 3), so the residual risk is
+  low - but it is not zero and should be stated plainly in the Workshop
+  description until someone verifies it with a real clan.
+
+## Forcing a denial without a second account
+
+The trick is to move the *threshold*, not the rank.
+
+1. Make the required rank a variable that can be set without a rebuild - a
+   server INI setting, an admin console command, or worst case a constant that
+   is cheap to recook.
+2. Set it **above** your own rank. Requiring rank 4 (`ERank_MAX`) while you are
+   a GuildMaster (3) must deny you.
+3. Confirm denial is real: the container must not open, not merely grey out.
+   Check the **server** log, not the client's.
+4. Then set it to 0 and confirm you are allowed again.
+
+Combined with the clan-leave test for `InvalidRank`, this exercises both sides
+of the decision without ever needing a Recruit.
+
+## Log everything during Phase 2
+
+The vertical slice should log, server-side, on every access check:
+
+    pawn class, cast success, guild found, ERank value, required rank, decision
+
+Without a second account, the log is the primary evidence that the logic is
+right. Strip the logging before release.
+
+## Servers
+
+### Local dedicated server - use this for development
+
+Free, via Steam: **Library -> filter to Tools -> "Conan Exiles Dedicated
+Server"**. Same machine, no upload step, restarts in seconds.
+
+The Phase 2 loop is rebuild (48s) -> restart -> test, run dozens of times. Keep
+it local.
+
+### G-Portal - use this for pre-release validation only
+
+Available, but each iteration costs an FTP upload and a remote restart. Reserve
+it for confirming behaviour under realistic conditions before release.
+
+To get an unpublished mod onto it, either:
+
+- **FTP the `.pak`** into `ConanSandbox/Mods/` and add its path to the server's
+  `modlist.txt`, or
+- publish a **hidden** Workshop item (`modinfo.json` already has
+  `steamVisibility: 2`) and point G-Portal at the ID.
+
+FTP is preferable pre-release: nothing to clean up afterwards.
+
+### Clients need the mod too
+
+Conan mods are client+server. Any account connecting to a modded server needs
+the same `.pak` installed locally, listed in its own `modlist.txt`.
