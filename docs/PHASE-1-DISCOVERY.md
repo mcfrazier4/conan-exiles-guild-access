@@ -189,7 +189,7 @@ it and option A in `DESIGN.md` §4 is viable.
 | 1.1 | Door parent chain | `BP_BuildDoor` -> `BP_BuildingBase_C` | Confirmed (read from uasset) |
 | 1.1 | Lowest shared ancestor | **None in Blueprint.** Containers and doors descend from different parents, so they need separate overrides. | Confirmed |
 | 1.2 | Access check function | `CanAccessContainer` (category "Placeable Base") and `CanAccessPlaceableInventory` (category "Inventory"). **Both are BlueprintCallable** - they appear as nodes in the palette. | Confirmed |
-| 1.2 | **In Override dropdown?** | | |
+| 1.2 | **In Override dropdown?** | **YES.** Both `CanAccessContainer` and `CanAccessPlaceableInventory` appear, declared on `BP Master Placeables`. Overridable from Blueprint. | Confirmed |
 | 1.3 | Rank enum + ordering | Names are localized, not in the DLL. Read off the `GetPlayerRank` node's return type in the editor. | Open |
 | 1.3 | Get-player-rank function | `GetPlayerRank`, `GetPlayerRankByStableId` exist in C++. Blueprint exposure unconfirmed. | Partial |
 | 1.4 | Ownership component/vars | | |
@@ -290,7 +290,24 @@ those *are* overridable.
 Check the Override dropdown for functions belonging to these interfaces before
 concluding nothing is hookable.
 
-## If 1.2 comes back negative
+## ANSWERED: task 1.2 is positive
+
+2026-09-23. The Override dropdown on `BP_PlaceableItemContainer` lists:
+
+    CanAccessContainer            BP Master Placeables
+    CanAccessPlaceableInventory   BP Master Placeables
+
+Both are overridable from Blueprint, declared on the shared placeable parent.
+Open question 1 in DESIGN.md is answered **yes** and the design stands.
+
+`BP_PlaceableItemContainer` reports **119 overridable functions** in total, so
+there is a wide hook surface if these two turn out to be insufficient.
+
+The fallbacks below are retained only in case the override proves not to be the
+real enforcement point in practice - which Phase 2's vertical slice will prove
+or disprove.
+
+## Fallbacks, if the override turns out not to be the enforcement point
 
 If no permission function is overridable from Blueprint, the design in
 `DESIGN.md` does not work and we pick from:
