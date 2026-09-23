@@ -97,6 +97,31 @@ sealing a chest for the Leader only is legitimate. The UI should confirm when
 the new value would lock the setter out. The Leader bypass guarantees this is
 always recoverable.
 
+## 2b. Getting from the pawn to a rank
+
+`CanAccessContainer` hands us an `Interacting Pawn`. `GetPlayerRank` is a method
+on a `Guild` object. The route between them, confirmed 2026-09-23:
+
+    Interacting Pawn
+      -> cast to Conan Character
+        -> GetGuild              (Target is Conan Character)  -> Guild
+        -> GetCharacterUniqueID                               -> Player Id
+           -> Guild.GetPlayerRank(Player Id)                  -> ERank
+
+Both `GetGuild` and `GetPlayerRank` are pure. `GetPlayerRank` also has a
+`ByStableId` variant if the UniqueID route proves unreliable across sessions.
+
+Null-safety matters at every step and must be handled by denying, not by
+falling through:
+
+- The pawn may not be a `Conan Character` (thralls, pets, NPCs). Failed cast
+  must deny.
+- `GetGuild` returns null for a player with no guild. Must deny.
+- `GetPlayerRank` returns `ERank::InvalidRank` for a non-member. Must deny.
+
+See section 1 on why the `InvalidRank` case cannot be left to an ordering
+comparison.
+
 ## 3. Enforcement points
 
 All checks are **server-side**. The client UI is a convenience and is never the
