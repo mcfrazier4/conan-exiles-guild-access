@@ -63,9 +63,9 @@ gate.
 
 | # | Surface | Status |
 |---|---|---|
-| 1 | Opening a container's inventory | primary target, `UNKNOWN` hook |
+| 1 | Opening a container's inventory | **`CanAccessContainer`** on `BP_Master_Placeables` — overridable, confirmed |
 | 2 | Opening / closing a door | primary target, `UNKNOWN` hook |
-| 3 | Crafting stations pulling materials from nearby containers | **known hole** — see below |
+| 3 | Crafting stations pulling materials from nearby containers | **confirmed separate path**: `CanCraftFromNearbyStorages`, `IsAggregatableWith`, `RegisterAggregatableInventories` |
 | 4 | "Loot all" / quick-transfer paths | needs audit |
 | 5 | Followers (thralls/pets) accessing containers | out of scope for v1 |
 
@@ -87,6 +87,16 @@ testing, in this order of preference:
 
 - **A. `SaveGame`-flagged variable on the placeable.** Cleanest if the game's
   serialiser picks up modded properties. Test first.
+
+  Strong precedent found 2026-09-23: `BP_PlaceableItemContainer` already carries
+  `InventorySharingAccess` (`EInventoryShare`, values On/Off) as a per-container
+  enum that is replicated (`OnRep_InventorySharingAccess`), authority-gated
+  (`Switch Has Authority`), broadcast (`OnSharingAccessChanged`) and persisted
+  via the `ConanBuildingPersistence` component on the same actor. Our
+  `RequiredRank` wants exactly this shape. Copy it rather than invent one.
+
+  Note `EInventoryShare` is only On/Off, so it cannot itself express four rank
+  tiers - it is a model, not a vehicle.
 - **B. Mod-owned registry actor**, mapping placeable unique ID → rank. See the
   dev kit's "Unique ID migration" docs page before relying on placeable IDs
   being stable.
@@ -137,9 +147,12 @@ just refuse.
 
 ## 7. Open questions
 
-1. Is the container access check reachable from Blueprint at all, or is it
-   native C++ with no hook? **This decides whether the project is viable as
-   designed.** Phase 1, first task.
+1. ~~Is the container access check reachable from Blueprint at all?~~
+   **ANSWERED 2026-09-23: yes.** `CanAccessContainer` and
+   `CanAccessPlaceableInventory` are both overridable from Blueprint, declared
+   on `BP_Master_Placeables`. `CanAccessContainer` is pure, with signature
+   `(Target: PlaceableBase, InteractingPawn: Pawn)` returning `CanAccess`,
+   `ContainerIsLocked` and `InstigatorIsOwner`. The design stands.
 2. Does the door check share a code path with the container check, or are they
    separate overrides?
 3. Do modded `SaveGame` variables on a base placeable actually persist?
