@@ -23,9 +23,13 @@ containers, gated on the player's clan rank.
     docs/PHASE-0-SETUP.md §1
 - Repo: `E:\ClaudeCode\conan-exiles\guild-access`
 - Mod name: `GuildAccess`
-- Mod assets live in `GuildAccess/Local/`, **not** `GuildAccess/Content/`. That
-  is the dev kit's convention and it is where `CookInfo.ini` also lives. Commit
-  it; despite the name it is not per-developer state.
+- Mod file layout, confirmed 2026-09-23:
+  - `GuildAccess/Local/` - **new** assets we author, plus `CookInfo.ini`.
+    Despite the name it is not per-developer state; commit it.
+  - `GuildAccess/Content/<original path>/` - **overrides** of base game assets,
+    mirroring the original's path. The original in `UE4/Content/` is left
+    untouched, so Revert is always available.
+  - Both are inside the repo and tracked by git.
 
 ## Division of labour
 
