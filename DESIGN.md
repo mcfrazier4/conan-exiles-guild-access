@@ -377,7 +377,10 @@ padlock.
 change, never optimistically on the client. A confirmation for a change the
 server rejected is worse than no confirmation at all.
 
-**Step 5 - hover text carries the feature.** It is the only always-visible
+**Step 5 - hover text carries the feature.** Vanilla's owner line is derived
+from the owner's guild: a container owned by a player with no clan shows
+"No Owner" even though the DB records the character as owner (seen 2026-09-23).
+Our text must not repeat that mistake; treat "owned, no guild" as its own case. It is the only always-visible
 surface, so it is the whole feature's discoverability. It is unknown whether
 `InteractableGetSimpleDisplayText` supports multiple lines or icons. Verify
 before designing around it.
