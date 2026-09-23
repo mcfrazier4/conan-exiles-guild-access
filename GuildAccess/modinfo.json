@@ -15,7 +15,7 @@
 	},
 	"steamVisibility": 2,
 	"folderName": "GuildAccess",
-	"devkitRevisionNumber": 0,
+	"devkitRevisionNumber": 1002,
 	"devkitSnapshotId": 0,
 	"minimumVersion": "Enhanced",
 	"requestedHttpOrigins": []
