@@ -43,9 +43,20 @@ A `Switch on ERank` node lists the cases in declaration order:
 
 ### InvalidRank is a security trap
 
-**`InvalidRank` does not appear in the Switch node at all.** Switch-on-enum
-omits hidden values, so `InvalidRank` lies outside 0-4. On a `uint8` enum that
-very commonly means **255**.
+**`InvalidRank` = 255, confirmed 2026-09-23.** Extracted from the enum
+registration table in `UnrealEditor-ConanSandbox.dll` by parsing the PE,
+resolving the `ERank::<Name>` string VAs and reading the paired int64 values:
+
+    Recruit     = 0
+    Member      = 1
+    Officer     = 2
+    GuildMaster = 3
+    ERank_MAX   = 4
+    InvalidRank = 255
+
+This is measured, not inferred. It confirms the bounds check was the right
+design: `InvalidRank` really does sit above every real rank, so a bare `>=`
+would have granted guildless players access to everything.
 
 If it is 255, then for a player with no guild:
 
