@@ -43,7 +43,32 @@ Vanilla also renders the "Locked" state automatically from `CanAccess` being
 false - we wrote no UI for it. That covers much of user journey steps 5 and 6;
 we only need to extend the text to name the required rank.
 
-### Still open: server-side vs client-side
+### 2.0d - enforcement is SERVER-SIDE: CONFIRMED
+
+Authority probe, 2026-09-23. `Switch Has Authority` in the override, with:
+
+    Authority (server) -> Return Node, Can Access = false
+    Remote    (client) -> Return Node, parent's real values
+
+Result in game:
+
+    Hover text:   "Open" in green          <- client permitted
+    Press E:      "Container is locked!"   <- server refused
+    Outcome:      container does not open
+
+The client's answer and the server's answer disagreed, and **the server's
+answer won**. Enforcement is server-authoritative, so a modified client cannot
+bypass it. This was the last architectural risk in the design.
+
+Vanilla also raises a "Container is locked!" message box automatically on
+denial - the denial plumbing for user journey step 6 already exists. We will
+want to replace the wording to name the required rank.
+
+> `UNKNOWN`: whether that message's text can be changed from Blueprint, or
+> whether it is fixed in C++. If fixed, the required rank has to be surfaced
+> through `InteractableGetSimpleDisplayText` instead.
+
+### Superseded: server-side vs client-side
 
 The test client has the mod installed, so a client-only check would look
 identical. Enforcement is proven; **its location is not**. A permission system

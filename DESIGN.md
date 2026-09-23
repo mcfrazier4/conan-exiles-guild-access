@@ -144,6 +144,12 @@ comparison.
 All checks are **server-side**. The client UI is a convenience and is never the
 gate.
 
+**Verified 2026-09-23** by an authority probe: with the override denying only
+when `HasAuthority`, the client displayed "Open" in green while the server
+refused with "Container is locked!" and the container did not open. The two
+disagreed and the server won, so `CanAccessContainer` is genuinely a
+server-authoritative decision point.
+
 | # | Surface | Status |
 |---|---|---|
 | 1 | Opening a container's inventory | **`CanAccessContainer`** on `BP_Master_Placeables` — overridable, confirmed |
