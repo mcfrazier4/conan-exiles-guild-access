@@ -29,12 +29,38 @@ Two corrections to the original design:
   fall through a `>=` test. A guildless player must never satisfy a rank
   requirement.
 
-> `UNKNOWN`: the **numeric ordering**. The DLL string table is alphabetically
-> deduplicated, so declaration order cannot be read from it. Verify with a
-> `Switch on ERank` node in the editor, which lists cases in declaration order.
-> Do not assume ascending order, and especially do not assume `InvalidRank`
-> is 0 - if it sorts above `Recruit`, a naive `>=` grants access to players
-> with no guild at all.
+### Ordering, confirmed 2026-09-23
+
+A `Switch on ERank` node lists the cases in declaration order:
+
+| Member | Value |
+|---|---|
+| `Recruit` | 0 |
+| `Member` | 1 |
+| `Officer` | 2 |
+| `GuildMaster` | 3 (displayed "Guild Master") |
+| `ERank_MAX` | 4 |
+
+### InvalidRank is a security trap
+
+**`InvalidRank` does not appear in the Switch node at all.** Switch-on-enum
+omits hidden values, so `InvalidRank` lies outside 0-4. On a `uint8` enum that
+very commonly means **255**.
+
+If it is 255, then for a player with no guild:
+
+    PlayerRank (255) >= RequiredRank (any of 0-3)   ->   TRUE
+
+A naive comparison would grant guildless players access to **every locked
+container in the game** - the exact opposite of this mod's purpose.
+
+**Rule: test `Rank == InvalidRank` first and deny. Never let it reach an
+ordering comparison.** That is correct regardless of the numeric value, so the
+value never needs determining.
+
+`BPL_GuildAccess` must expose a single `MeetsRankRequirement(Rank, Required)`
+function implementing exactly this, and no call site may compare ranks
+directly.
 
 Every protected placeable stores a single `RequiredRank` integer. Access is
 granted when `PlayerRank >= RequiredRank`.
@@ -44,12 +70,15 @@ change the behaviour of a single existing chest. Players opt in per object.
 
 ## 2. Access rules
 
-Granted if **any** of:
+**Denied outright** if `PlayerRank == ERank::InvalidRank` (no guild). This
+test comes first and is not overridable by any rule below. See section 1.
+
+Otherwise granted if **any** of:
 
 - Player is a server admin (bypass).
-- Player is the clan **Leader** (always allowed — prevents permanent lockout).
+- Player is the **`GuildMaster`** (always allowed — prevents permanent lockout).
 - Object is not clan-owned (personal property; vanilla rules, untouched).
-- `PlayerRank >= RequiredRank`.
+- `PlayerRank >= RequiredRank`, evaluated only after the `InvalidRank` test.
 
 Otherwise denied, with a client-side message explaining the required rank.
 
