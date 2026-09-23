@@ -49,6 +49,27 @@ We need to know the lowest shared ancestor of "things this mod protects",
 because that's where the override goes — one override covering everything beats
 forty covering each chest type.
 
+### 1.1b — Read Funcom's function libraries FIRST
+
+Spotted 2026-09-23 in the Pick Parent Class dialog: Funcom ship their own
+`BlueprintFunctionLibrary` subclasses. A function library is a flat list of
+callable functions, so these are far cheaper to read than searching the whole
+asset tree:
+
+    BuildingFunctionLibrary        <- doors, placeables, ownership
+    ItemFunctionLibrary            <- containers, inventory
+    FuncomFunctionLibrary          <- general helpers
+    SurvivalFunctionLibrary
+    SpellcastFunctionLibrary
+    MountFunctionLibrary
+    Dialogue2FunctionLibrary
+    SoundFunctionLibrary
+    RenderToTextureFunctionLibrary
+
+Open `BuildingFunctionLibrary` and `ItemFunctionLibrary` and read the function
+list. Ownership, permission, and access helpers are very likely sitting there in
+plain sight. Do this before tasks 1.2-1.4.
+
 ### 1.2 — Find the access check
 
 Find in Blueprints, and also the Override dropdown on the container blueprint.

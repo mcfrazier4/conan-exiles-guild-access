@@ -23,6 +23,9 @@ containers, gated on the player's clan rank.
     docs/PHASE-0-SETUP.md §1
 - Repo: `E:\ClaudeCode\conan-exiles\guild-access`
 - Mod name: `GuildAccess`
+- Mod assets live in `GuildAccess/Local/`, **not** `GuildAccess/Content/`. That
+  is the dev kit's convention and it is where `CookInfo.ini` also lives. Commit
+  it; despite the name it is not per-developer state.
 
 ## Division of labour
 
