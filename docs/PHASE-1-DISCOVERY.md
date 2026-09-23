@@ -188,14 +188,65 @@ it and option A in `DESIGN.md` §4 is viable.
 | 1.1 | Container parent chain | `BP_PlaceableItemContainer` -> `BP_Master_Placeables_C` | Confirmed (read from uasset) |
 | 1.1 | Door parent chain | `BP_BuildDoor` -> `BP_BuildingBase_C` | Confirmed (read from uasset) |
 | 1.1 | Lowest shared ancestor | **None in Blueprint.** Containers and doors descend from different parents, so they need separate overrides. | Confirmed |
-| 1.2 | Access check function | | |
+| 1.2 | Access check function | `CanAccessContainer` / `CanAccessPlaceableInventory` exist in C++. | Confirmed |
 | 1.2 | **In Override dropdown?** | | |
-| 1.3 | Rank enum + ordering | | |
-| 1.3 | Get-player-rank function | | |
+| 1.3 | Rank enum + ordering | Names are localized, not in the DLL. Read off the `GetPlayerRank` node's return type in the editor. | Open |
+| 1.3 | Get-player-rank function | `GetPlayerRank`, `GetPlayerRankByStableId` exist in C++. Blueprint exposure unconfirmed. | Partial |
 | 1.4 | Ownership component/vars | | |
-| 1.5 | Bench shares access check? | | |
+| 1.5 | Bench shares access check? | **Separate path, confirmed.** `CanCraftFromNearbyStorages`, `IsAggregatableWith`, `RegisterAggregatableInventories` are distinct from `CanAccessContainer`. Gating container access alone will not close this hole. | Confirmed |
 | 1.6 | Interaction menu appendable? | | |
 | 1.7 | SaveGame used by vanilla? | | |
+
+## C++ symbols extracted from UnrealEditor-ConanSandbox.dll
+
+Pulled from the module's string table, 2026-09-23. These are the real function
+names in Funcom's C++. **Whether they are exposed to Blueprint is still
+unknown** - that is what the Override dropdown and the node palette decide.
+
+### Access gates - the targets
+
+    CanAccess
+    CanAccessContainer                 <- containers
+    CanAccessPlaceableInventory        <- placeable inventories
+    EverybodyCanLootCorpse / GetEverybodyCanLootCorpse
+
+### Rank accessors - answers task 1.3
+
+    GetPlayerRank
+    GetPlayerRankByStableId
+    GuildNewRanks
+
+Note `GetGuildEmblemRankRestriction` and
+`GetGuildEmblemRankRestrictionByStableId`: the base game **already gates a
+feature on guild rank** (who may change the clan emblem). That is precedent,
+and a working example of the exact comparison we need.
+
+### The crafting hole, now named - task 1.5
+
+    CanCraftFromNearbyStorages
+    IsAggregatableWith
+    RegisterAggregatableInventories
+
+This confirms task 1.5 is a real, separate code path, not a hypothetical. A
+bench aggregates nearby inventories through
+`AggregatableInventoryContainerInterface`. Gating `CanAccessContainer` alone
+will almost certainly **not** close it.
+
+### Interaction
+
+    InteractableActivate / InteractableMenu / InteractableDefaultAction
+    InteractableCanBeLooted
+    InteractableGetSimpleDisplayText / InteractableGetUIModuleName
+
+`InteractableCanBeLooted` is a second possible gate, and
+`InteractableMenu` / `InteractableDefaultAction` are the likely route for
+task 1.6 (adding a "Set Access Rank" option).
+
+### Rank names are localized
+
+Searching the DLL for `Recruit` / `Member` / `Officer` / `Leader` found
+nothing - the display names live in localization data, not the binary. Read the
+enum and its ordering off the `GetPlayerRank` node's return type in the editor.
 
 ## Native interfaces worth chasing
 
