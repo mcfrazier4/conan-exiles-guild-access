@@ -3,7 +3,7 @@ import os, sys, time, unreal
 
 lib, GE, PL = unreal.BlueprintEditorLibrary, unreal.BlueprintGraphEditor, unreal.BlueprintGraphPinLibrary
 MODE = os.environ.get("GA_MODE", "dry").lower()
-LOCAL = "/Game/Mods/GuildAccess/Local"
+LOCAL = "/Game/Mods/GuildAccess"   # the mod layer mounts Local/ FLATTENED; never reference /Local/ in a package
 DISK_LOCAL = r"E:\ClaudeCode\conan-exiles\guild-access\GuildAccess\Local"
 DISK_CONTENT = r"E:\ClaudeCode\conan-exiles\guild-access\GuildAccess\Content"
 failures = []

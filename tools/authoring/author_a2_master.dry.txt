@@ -1,0 +1,435 @@
+﻿Python enabled via CVar 'Engine.Python.IsEnabledByDefault'
+Using Python 3.11.8
+Display: No pip-enabled plugins with python dependencies found, skipping
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py... started...
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py... took 8.991 ms
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... started...
+registering <class 'ControlRigWorkflows.workflow_deformation_rig_preset.provider'>
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... took 15.389 ms (total: 24.381 ms)
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/MovieScene/MovieRenderPipeline/Content/Python/init_unreal.py... started...
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/MovieScene/MovieRenderPipeline/Content/Python/init_unreal.py... took 1.352 ms (total: 25.734 ms)
+Python enabled via IPythonScriptPlugin::ForceEnablePythonAtRuntime: C:\b\exiles\Engine\Plugins\Experimental\PythonScriptPlugin\Source\PythonScriptPlugin\Private\PythonScriptCommandlet.cpp(43:30) int __cdecl UPythonScriptCommandlet::Main(const class FString &)
+======== mode = dry ========
+   (asset registry scan complete after 0.0s; Local assets: ['BPC_GA_Lock', 'BPC_GA_Player', 'BPL_GuildAccess', 'BP_GA_ModController'])
+   OK   loaded Master override
+   OK   loaded BPC_GA_Lock_C / BPC_GA_Player_C
+   OK   EventGraph editor
+======== 1. SCS component GuildAccessLock (BPC_GA_Lock) ========
+   OK   SubobjectDataSubsystem
+E:/ClaudeCode/conan-exiles/guild-access/tools/authoring/author_a2_master.py:63: DeprecationWarning: SubobjectDataBlueprintFunctionLibrary: Function 'get_object' on 'SubobjectDataBlueprintFunctionLibrary' is deprecated: Use GetAssociatedObject - it will not return template objects for instances
+  obj = SDL.get_object(d)
+   OK   found root actor handle among 15 subobjects
+E:/ClaudeCode/conan-exiles/guild-access/tools/authoring/author_a2_master.py:74: DeprecationWarning: SubobjectDataBlueprintFunctionLibrary: Function 'get_object' on 'SubobjectDataBlueprintFunctionLibrary' is deprecated: Use GetAssociatedObject - it will not return template objects for instances
+  lock_template = SDL.get_object(d) if d else None
+   OK   added SCS component ()
+   rename -> True
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_Master_Placeables.BP_Master_Placeables'
+   OK   compile Master after SCS change
+   component variable name: None | template: GuildAccessLock_GEN_VARIABLE
+======== 2. server handler: OnComponentActivated(GuildAccessLock) ========
+   OK   component bound event -> On Component Activated (GuildAccessLock) ['out OutputDelegate', 'out then', 'out Component', 'out bReset']
+   OK   node HasAuthority
+   OK   connect event -> Branch(authority)
+   OK   connect HasAuthority -> Condition
+   OK   node GetComponentByClass(BPC_GA_Lock) on self
+   OK   GetComponentByClass.ComponentClass = '/Game/Mods/GuildAccess/BPC_GA_Lock.BPC_GA_Lock_C'
+   OK   Get PendingInstigator
+   OK   connect lock -> Get PendingInstigator.self
+   OK   Get PendingRank
+   OK   connect lock -> Get PendingRank.self
+   OK   node GetPawn
+   OK   connect instigator -> GetPawn.self
+   OK   node GetPawnRank
+   OK   connect pawn -> GetPawnRank
+   OK   connect Branch.then -> GetPawnRank
+      candidates for Cast To ConanPlayerController: ['Utilities|Casting|CastToConanPlayerController']
+   OK   Cast To ConanPlayerController: created from 'Utilities|Casting|CastToConanPlayerController'
+      -> [K2Node_DynamicCast] 'Cast To ConanPlayerController' ['in execute', 'in Object', 'out then', 'out CastFailed', 'out AsConan Player Controller']
+   OK   connect instigator -> Cast.Object
+   OK   connect GetPawnRank -> Cast
+   OK   node IsOwner
+   OK   connect pawn -> IsOwner.Pawn
+   OK   IsOwner.bSendGuiNotification = 'false'
+   OK   Get RequiredRank
+   OK   node RankCanSetRequired
+   OK   connect rank -> CanSet.Rank
+   OK   connect RequiredRank -> CanSet.Current
+   OK   node AND
+   OK   connect IsOwner -> AND.A
+   OK   connect CanSet -> AND.B
+   OK   connect Cast.then -> Branch(permission)
+   OK   connect AND -> Condition
+   OK   node NewRank <= 3
+   OK   connect NewRank -> <=.A
+   OK   Byte <= Byte.B = '3'
+   OK   connect permission.then -> Branch(valid)
+   OK   connect <=3 -> Condition
+   OK   Set RequiredRank
+   OK   connect NewRank -> Set RequiredRank
+   OK   connect valid.then -> Set RequiredRank
+   OK   Get ConanBuildingPersistence
+   dirty-related actions on the persistence pin: ['Networking|MarkPropertyDirty', 'Dreamworld|Persistence|Setdirtyflag']
+      candidates for SetDirty: ['Dreamworld|Persistence|Setdirtyflag']
+   OK   SetDirty: created from 'Dreamworld|Persistence|Setdirtyflag'
+      -> [K2Node_CallFunction] 'Set dirty flag' ['in execute', 'in self', 'in bDirty', 'in Delay', 'out then']
+   SetDirty pins: ['in execute', 'in self', 'in bDirty', 'in Delay', 'out then']
+   OK   Set dirty flag.bDirty = 'true'
+   OK   connect Set -> SetDirty
+   OK   node notify ok
+   OK   connect PC -> notify.self
+   OK   node RankToText
+   OK   connect rank -> RankToText
+   OK   node TextToString
+   OK   connect text -> ToString
+   OK   node Concat
+   OK   Append.A = 'Access rank set to '
+   OK   connect string -> Concat.B
+   OK   node StringToText
+   OK   connect Concat -> ToText
+   OK   connect text -> notify ok
+   OK   connect -> notify ok
+   OK   node notify denied
+   OK   connect PC -> notify denied.self
+   OK   node denied text
+   OK   To Text (String).InString = 'You cannot change this access rank'
+   OK   connect denied text -> notify
+   OK   ClientHUDShowNotification.positive = 'false'
+   OK   connect permission.else -> notify denied
+======== 3. radial menu: Set Access Rank + 4 rank sub-items ========
+   OK   Event InteractableMenu found
+   OK   owner-menu Sequence found (feeds HandleLockableContainers)
+   OK   Sequence: add pin
+   OK   new sequence pin ['then_4']
+   OK   node GetOwningPlayerPawn
+   OK   connect RadialMenu -> GetOwningPlayerPawn.self
+   OK   node GetPawnRank
+   OK   connect pawn -> GetPawnRank (menu)
+   OK   connect Sequence.new -> GetPawnRank
+   OK   Get RequiredRank
+   OK   node RankCanSetRequired
+   OK   connect rank -> CanSet
+   OK   connect RequiredRank -> CanSet
+   OK   connect GetPawnRank -> Branch(menu)
+   OK   connect CanSet -> Condition
+   OK   node AddItem (Set Access Rank)
+   OK   connect RadialMenu -> AddItem.self
+   OK   AddItem.label = 'NSLOCTEXT("GuildAccess", "SetAccessRank", "Set Acc'
+   OK   AddItem.icon = '/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMe'
+   OK   node RankToText
+   OK   connect rank -> RankToText
+   OK   node TextToString
+   OK   connect text -> ToString
+   OK   node Concat
+   OK   Append.A = 'Current: '
+   OK   connect string -> Concat.B
+   OK   node StringToText
+   OK   connect Concat -> ToText
+   OK   connect subtitle -> AddItem
+   OK   connect Branch.then -> AddItem
+      candidates for Self: ['Variables|Getareferencetoself']
+   OK   Self: created from 'Variables|Getareferencetoself'
+      -> [K2Node_Self] 'Self-Reference' ['out self']
+   OK   node AddSubItem Recruit
+   OK   connect entry -> AddSubItem[0].self
+   OK   AddSubItem.label = 'NSLOCTEXT("GuildAccess", "Rank0Label", "Recruit")'
+   OK   AddSubItem.subtitle = 'NSLOCTEXT("GuildAccess", "Rank0Desc", "Everyone in'
+   OK   AddSubItem.icon = '/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMe'
+   OK   connect -> AddSubItem[0]
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_Master_Placeables.BP_Master_Placeables'
+      candidates for Assign SignalClicked [0]: ['Menu|Event|AssignSignalClicked']
+   OK   Assign SignalClicked [0]: created from 'Menu|Event|AssignSignalClicked'
+      -> [K2Node_AssignDelegate] 'Assign Signal Clicked' ['in execute', 'in self', 'in Delegate', 'out then']
+   OK   click event created for rank 0 (['SignalClicked_Event', 'Assign Signal Clicked'])
+   OK   connect AddSubItem[0].then -> Assign
+   OK   node GetPlayerController(0)
+   OK   node GetComponentByClass(BPC_GA_Player)
+   OK   connect PC -> GetComponentByClass.self
+   OK   GetComponentByClass.ComponentClass = '/Game/Mods/GuildAccess/BPC_GA_Player.BPC_GA_Player'
+   OK   node ServerSetRequiredRank
+   OK   connect component -> RPC.self
+   OK   connect self -> RPC.Target
+   OK   ServerSetRequiredRank_0.NewRank = '0'
+   OK   connect click[0] -> RPC
+   OK   node AddSubItem Member
+   OK   connect entry -> AddSubItem[1].self
+   OK   AddSubItem.label = 'NSLOCTEXT("GuildAccess", "Rank1Label", "Member")'
+   OK   AddSubItem.subtitle = 'NSLOCTEXT("GuildAccess", "Rank1Desc", "Members and'
+   OK   AddSubItem.icon = '/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMe'
+   OK   connect -> AddSubItem[1]
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_Master_Placeables.BP_Master_Placeables'
+      candidates for Assign SignalClicked [1]: ['Menu|Event|AssignSignalClicked']
+   OK   Assign SignalClicked [1]: created from 'Menu|Event|AssignSignalClicked'
+      -> [K2Node_AssignDelegate] 'Assign Signal Clicked' ['in execute', 'in self', 'in Delegate', 'out then']
+   OK   click event created for rank 1 (['SignalClicked_Event_0', 'Assign Signal Clicked'])
+   OK   connect AddSubItem[1].then -> Assign
+   OK   node GetPlayerController(0)
+   OK   node GetComponentByClass(BPC_GA_Player)
+   OK   connect PC -> GetComponentByClass.self
+   OK   GetComponentByClass.ComponentClass = '/Game/Mods/GuildAccess/BPC_GA_Player.BPC_GA_Player'
+   OK   node ServerSetRequiredRank
+   OK   connect component -> RPC.self
+   OK   connect self -> RPC.Target
+   OK   ServerSetRequiredRank_0.NewRank = '1'
+   OK   connect click[1] -> RPC
+   OK   node AddSubItem Officer
+   OK   connect entry -> AddSubItem[2].self
+   OK   AddSubItem.label = 'NSLOCTEXT("GuildAccess", "Rank2Label", "Officer")'
+   OK   AddSubItem.subtitle = 'NSLOCTEXT("GuildAccess", "Rank2Desc", "Officers an'
+   OK   AddSubItem.icon = '/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMe'
+   OK   connect -> AddSubItem[2]
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_Master_Placeables.BP_Master_Placeables'
+      candidates for Assign SignalClicked [2]: ['Menu|Event|AssignSignalClicked']
+   OK   Assign SignalClicked [2]: created from 'Menu|Event|AssignSignalClicked'
+      -> [K2Node_AssignDelegate] 'Assign Signal Clicked' ['in execute', 'in self', 'in Delegate', 'out then']
+   OK   click event created for rank 2 (['SignalClicked_Event_1', 'Assign Signal Clicked'])
+   OK   connect AddSubItem[2].then -> Assign
+   OK   node GetPlayerController(0)
+   OK   node GetComponentByClass(BPC_GA_Player)
+   OK   connect PC -> GetComponentByClass.self
+   OK   GetComponentByClass.ComponentClass = '/Game/Mods/GuildAccess/BPC_GA_Player.BPC_GA_Player'
+   OK   node ServerSetRequiredRank
+   OK   connect component -> RPC.self
+   OK   connect self -> RPC.Target
+   OK   ServerSetRequiredRank_0.NewRank = '2'
+   OK   connect click[2] -> RPC
+   OK   node AddSubItem Guild Master
+   OK   connect entry -> AddSubItem[3].self
+   OK   AddSubItem.label = 'NSLOCTEXT("GuildAccess", "Rank3Label", "Guild Mast'
+   OK   AddSubItem.subtitle = 'NSLOCTEXT("GuildAccess", "Rank3Desc", "Guild maste'
+   OK   AddSubItem.icon = '/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMe'
+   OK   connect -> AddSubItem[3]
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_Master_Placeables.BP_Master_Placeables'
+      candidates for Assign SignalClicked [3]: ['Menu|Event|AssignSignalClicked']
+   OK   Assign SignalClicked [3]: created from 'Menu|Event|AssignSignalClicked'
+      -> [K2Node_AssignDelegate] 'Assign Signal Clicked' ['in execute', 'in self', 'in Delegate', 'out then']
+   OK   click event created for rank 3 (['SignalClicked_Event_2', 'Assign Signal Clicked'])
+   OK   connect AddSubItem[3].then -> Assign
+   OK   node GetPlayerController(0)
+   OK   node GetComponentByClass(BPC_GA_Player)
+   OK   connect PC -> GetComponentByClass.self
+   OK   GetComponentByClass.ComponentClass = '/Game/Mods/GuildAccess/BPC_GA_Player.BPC_GA_Player'
+   OK   node ServerSetRequiredRank
+   OK   connect component -> RPC.self
+   OK   connect self -> RPC.Target
+   OK   ServerSetRequiredRank_0.NewRank = '3'
+   OK   connect click[3] -> RPC
+======== 4. hover text: InteractableGetSimpleDisplayText ========
+   OK   hover graph editor
+   OK   existing Return Node
+   OK   Get RequiredRank
+   OK   node RequiredRank > 0
+   OK   connect RequiredRank -> >.A
+   OK   Byte > Byte.B = '0'
+   OK   connect entry -> Branch
+   OK   connect > -> Condition
+   OK   connect Branch.else -> original Return
+   OK   second Return Node
+   OK   connect Branch.then -> Return(text)
+   OK   node GetBuildableName
+   OK   GetBuildableName.ignoreCustomName = 'false'
+   OK   node name ToString
+   OK   connect name -> ToString
+   OK   node rank ToString
+   OK   node RankToText
+   OK   connect rank -> RankToText
+   OK   connect RankToText -> ToString
+   OK   node Concat 1
+   OK   Append.A = ' - Requires '
+   OK   connect rank -> Concat1.B
+   OK   node Concat 2
+   OK   connect name -> Concat2.A
+   OK   connect Concat1 -> Concat2.B
+   OK   node ToText
+   OK   connect Concat2 -> ToText
+   OK   connect text -> Return.ReturnValue
+   --- dump InteractableGetSimpleDisplayText ---
+   NODE [K2Node_FunctionEntry] 'InteractableGetSimpleDisplayText'
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_FunctionResult] 'Return Node'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  ReturnValue              val='None'                                   -> []
+   NODE [K2Node_VariableGet] 'Get RequiredRank'
+      out RequiredRank             val='0'                                      -> ['Byte > Byte.A', 'RankToText.Rank']
+   NODE [K2Node_PromotableOperator] 'Byte > Byte'
+      in  A                        val=''                                       -> ['Get RequiredRank.RequiredRank']
+      in  B                        val='0'                                      -> []
+      out ReturnValue              val=''                                       -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['InteractableGetSimpleDisplayText.then']
+      in  Condition                val='true'                                   -> ['Byte > Byte.ReturnValue']
+      out then                     val=''                                       -> ['Return Node.execute']
+      out else                     val=''                                       -> ['Return Node.execute']
+   NODE [K2Node_FunctionResult] 'Return Node'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  ReturnValue              val=''                                       -> ['To Text (String).ReturnValue']
+   NODE [K2Node_CallFunction] 'GetBuildableName'
+      in  ignoreCustomName         val='false'                                  -> []
+      out ReturnValue              val=''                                       -> ['To String (Text).InText']
+   NODE [K2Node_CallFunction] 'To String (Text)'
+      in  InText                   val=''                                       -> ['GetBuildableName.ReturnValue']
+      out ReturnValue              val=''                                       -> ['Append.A']
+   NODE [K2Node_CallFunction] 'To String (Text)'
+      in  InText                   val=''                                       -> ['RankToText.Result']
+      out ReturnValue              val=''                                       -> ['Append.B']
+   NODE [K2Node_CallFunction] 'RankToText'
+      in  Rank                     val='0'                                      -> ['Get RequiredRank.RequiredRank']
+      out Result                   val=''                                       -> ['To String (Text).InText']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'Append'
+      in  A                        val=' - Requires '                           -> []
+      in  B                        val=''                                       -> ['To String (Text).ReturnValue']
+      out ReturnValue              val=''                                       -> ['Append.B']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'Append'
+      in  A                        val=''                                       -> ['To String (Text).ReturnValue']
+      in  B                        val=''                                       -> ['Append.ReturnValue']
+      out ReturnValue              val=''                                       -> ['To Text (String).InString']
+   NODE [K2Node_CallFunction] 'To Text (String)'
+      in  InString                 val=''                                       -> ['Append.ReturnValue']
+      out ReturnValue              val=''                                       -> ['Return Node.ReturnValue']
+======== compile ========
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_Master_Placeables.BP_Master_Placeables'
+   OK   compile BP_Master_Placeables
+   OK   BP_Master_Placeables::EventGraph: no error nodes
+   OK   BP_Master_Placeables::InteractableGetSimpleDisplayText: no error nodes
+======== dump: GuildAccess nodes in EventGraph ========
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                                             -> ['ApplyDamage.DamagedActor']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                                             -> ['ApplyDamage.DamageCauser']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                                             -> ['IsFunctionOverridenFromBase.Object']
+   NODE [K2Node_ComponentBoundEvent] 'On Component Activated (GuildAccessLock)'
+      out then                     val=''                                                             -> ['Branch.execute']
+      out bReset                   val='false'                                                        -> []
+   NODE [K2Node_VariableGet] 'Get PendingInstigator'
+      in  self                     val=''                                                             -> ['GetComponentByClass.ReturnValue']
+      out PendingInstigator        val=''                                                             -> ['Get Controlled Pawn.self', 'Cast To ConanPlayerController.Object']
+   NODE [K2Node_VariableGet] 'Get PendingRank'
+      in  self                     val=''                                                             -> ['GetComponentByClass.ReturnValue']
+      out PendingRank              val='0'                                                            -> ['Byte <= Byte.A', 'Set with Notify RequiredRank.RequiredRank', 'RankToText.Rank']
+   NODE [K2Node_CallFunction] 'RankCanSetRequired'
+      in  Rank                     val='0'                                                            -> ['GetPawnRank.Rank']
+      in  CurrentRequired          val='0'                                                            -> ['Get RequiredRank.RequiredRank']
+      out Result                   val='false'                                                        -> ['AND Boolean.B']
+   NODE [K2Node_CallFunction] 'ClientHUDShowNotification'
+      in  execute                  val=''                                                             -> ['Set dirty flag.then']
+      in  self                     val=''                                                             -> ['Cast To ConanPlayerController.AsConan Player Controller']
+      in  text                     val=''                                                             -> ['To Text (String).ReturnValue']
+      in  positive                 val='true'                                                         -> []
+      in  bPlaySound               val='true'                                                         -> []
+   NODE [K2Node_CallFunction] 'RankToText'
+      in  Rank                     val='0'                                                            -> ['Get PendingRank.PendingRank']
+      out Result                   val=''                                                             -> ['To String (Text).InText']
+   NODE [K2Node_CallFunction] 'ClientHUDShowNotification'
+      in  execute                  val=''                                                             -> ['Branch.else']
+      in  self                     val=''                                                             -> ['Cast To ConanPlayerController.AsConan Player Controller']
+      in  text                     val=''                                                             -> ['To Text (String).ReturnValue']
+      in  positive                 val='false'                                                        -> []
+      in  bPlaySound               val='true'                                                         -> []
+   NODE [K2Node_CallFunction] 'RankCanSetRequired'
+      in  Rank                     val='0'                                                            -> ['GetPawnRank.Rank']
+      in  CurrentRequired          val='0'                                                            -> ['Get RequiredRank.RequiredRank']
+      out Result                   val='false'                                                        -> ['Branch.Condition']
+   NODE [K2Node_CallFunction] 'AddItem'
+      in  execute                  val=''                                                             -> ['Branch.then']
+      in  self                     val=''                                                             -> ['Event InteractableMenu.RadialMenu']
+      in  label                    val='NSLOCTEXT("GuildAccess", "SetAccessRank", "Set Access Rank")' -> []
+      in  subtitle                 val=''                                                             -> ['To Text (String).ReturnValue']
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMenuIconLock' -> []
+      in  keyShortcutName          val='None'                                                         -> []
+      in  index                    val='-1'                                                           -> []
+      out then                     val=''                                                             -> ['AddSubItem.execute']
+      out ReturnValue              val=''                                                             -> ['AddSubItem.self', 'AddSubItem.self', 'AddSubItem.self', 'AddSubItem.self']
+   NODE [K2Node_CallFunction] 'RankToText'
+      in  Rank                     val='0'                                                            -> ['Get RequiredRank.RequiredRank']
+      out Result                   val=''                                                             -> ['To String (Text).InText']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                                             -> ['ServerSetRequiredRank_0.Target', 'ServerSetRequiredRank_0.Target', 'ServerSetRequiredRank_0.Target', 'ServerSetRequiredRank_0.Target']
+   NODE [K2Node_CallFunction] 'AddSubItem'
+      in  execute                  val=''                                                             -> ['AddItem.then']
+      in  self                     val=''                                                             -> ['AddItem.ReturnValue']
+      in  label                    val='NSLOCTEXT("GuildAccess", "Rank0Label", "Recruit")'            -> []
+      in  subtitle                 val='NSLOCTEXT("GuildAccess", "Rank0Desc", "Everyone in the clan"' -> []
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMenuIconLock' -> []
+      in  keyShortcutName          val='None'                                                         -> []
+      in  index                    val='-1'                                                           -> []
+      out then                     val=''                                                             -> ['Assign Signal Clicked.execute']
+      out ReturnValue              val=''                                                             -> ['Assign Signal Clicked.self']
+   NODE [K2Node_CustomEvent] 'SignalClicked_Event'
+      out OutputDelegate           val=''                                                             -> ['Assign Signal Clicked.Delegate']
+      out then                     val=''                                                             -> ['ServerSetRequiredRank_0.execute']
+   NODE [K2Node_CallFunction] 'GetPlayerController'
+      in  PlayerIndex              val='0'                                                            -> []
+      out ReturnValue              val=''                                                             -> ['GetComponentByClass.self']
+   NODE [K2Node_CallFunction] 'ServerSetRequiredRank_0'
+      in  execute                  val=''                                                             -> ['SignalClicked_Event.then']
+      in  self                     val=''                                                             -> ['GetComponentByClass.ReturnValue']
+      in  Target                   val=''                                                             -> ['Self-Reference.self']
+      in  NewRank                  val='0'                                                            -> []
+   NODE [K2Node_CallFunction] 'AddSubItem'
+      in  execute                  val=''                                                             -> ['Assign Signal Clicked.then']
+      in  self                     val=''                                                             -> ['AddItem.ReturnValue']
+      in  label                    val='NSLOCTEXT("GuildAccess", "Rank1Label", "Member")'             -> []
+      in  subtitle                 val='NSLOCTEXT("GuildAccess", "Rank1Desc", "Members and above")'   -> []
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMenuIconLock' -> []
+      in  keyShortcutName          val='None'                                                         -> []
+      in  index                    val='-1'                                                           -> []
+      out then                     val=''                                                             -> ['Assign Signal Clicked.execute']
+      out ReturnValue              val=''                                                             -> ['Assign Signal Clicked.self']
+   NODE [K2Node_CustomEvent] 'SignalClicked_Event_0'
+      out OutputDelegate           val=''                                                             -> ['Assign Signal Clicked.Delegate']
+      out then                     val=''                                                             -> ['ServerSetRequiredRank_0.execute']
+   NODE [K2Node_CallFunction] 'GetPlayerController'
+      in  PlayerIndex              val='0'                                                            -> []
+      out ReturnValue              val=''                                                             -> ['GetComponentByClass.self']
+   NODE [K2Node_CallFunction] 'ServerSetRequiredRank_0'
+      in  execute                  val=''                                                             -> ['SignalClicked_Event_0.then']
+      in  self                     val=''                                                             -> ['GetComponentByClass.ReturnValue']
+      in  Target                   val=''                                                             -> ['Self-Reference.self']
+      in  NewRank                  val='1'                                                            -> []
+   NODE [K2Node_CallFunction] 'AddSubItem'
+      in  execute                  val=''                                                             -> ['Assign Signal Clicked.then']
+      in  self                     val=''                                                             -> ['AddItem.ReturnValue']
+      in  label                    val='NSLOCTEXT("GuildAccess", "Rank2Label", "Officer")'            -> []
+      in  subtitle                 val='NSLOCTEXT("GuildAccess", "Rank2Desc", "Officers and the guil' -> []
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMenuIconLock' -> []
+      in  keyShortcutName          val='None'                                                         -> []
+      in  index                    val='-1'                                                           -> []
+      out then                     val=''                                                             -> ['Assign Signal Clicked.execute']
+      out ReturnValue              val=''                                                             -> ['Assign Signal Clicked.self']
+   NODE [K2Node_CustomEvent] 'SignalClicked_Event_1'
+      out OutputDelegate           val=''                                                             -> ['Assign Signal Clicked.Delegate']
+      out then                     val=''                                                             -> ['ServerSetRequiredRank_0.execute']
+   NODE [K2Node_CallFunction] 'GetPlayerController'
+      in  PlayerIndex              val='0'                                                            -> []
+      out ReturnValue              val=''                                                             -> ['GetComponentByClass.self']
+   NODE [K2Node_CallFunction] 'ServerSetRequiredRank_0'
+      in  execute                  val=''                                                             -> ['SignalClicked_Event_1.then']
+      in  self                     val=''                                                             -> ['GetComponentByClass.ReturnValue']
+      in  Target                   val=''                                                             -> ['Self-Reference.self']
+      in  NewRank                  val='2'                                                            -> []
+   NODE [K2Node_CallFunction] 'AddSubItem'
+      in  execute                  val=''                                                             -> ['Assign Signal Clicked.then']
+      in  self                     val=''                                                             -> ['AddItem.ReturnValue']
+      in  label                    val='NSLOCTEXT("GuildAccess", "Rank3Label", "Guild Master")'       -> []
+      in  subtitle                 val='NSLOCTEXT("GuildAccess", "Rank3Desc", "Guild master only")'   -> []
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/MainRadialMenuIconLock' -> []
+      in  keyShortcutName          val='None'                                                         -> []
+      in  index                    val='-1'                                                           -> []
+      out then                     val=''                                                             -> ['Assign Signal Clicked.execute']
+      out ReturnValue              val=''                                                             -> ['Assign Signal Clicked.self']
+   NODE [K2Node_CustomEvent] 'SignalClicked_Event_2'
+      out OutputDelegate           val=''                                                             -> ['Assign Signal Clicked.Delegate']
+      out then                     val=''                                                             -> ['ServerSetRequiredRank_0.execute']
+   NODE [K2Node_CallFunction] 'GetPlayerController'
+      in  PlayerIndex              val='0'                                                            -> []
+      out ReturnValue              val=''                                                             -> ['GetComponentByClass.self']
+   NODE [K2Node_CallFunction] 'ServerSetRequiredRank_0'
+      in  execute                  val=''                                                             -> ['SignalClicked_Event_2.then']
+      in  self                     val=''                                                             -> ['GetComponentByClass.ReturnValue']
+      in  Target                   val=''                                                             -> ['Self-Reference.self']
+      in  NewRank                  val='3'                                                            -> []
+======== RESULT: ALL OK (dry run, nothing saved) ========
+  obj = SDL.get_object(d)
+  lock_template = SDL.get_object(d) if d else None
+Execution of commandlet took:  44.82 seconds, PeakPhysMemoryMB=8591 MB, PeakVirtMemoryMB=8933 MB
+Display: Object '/ControlRig/Python/RigHierarchy/add_controls_for_selected_PY.ControlOutputFormat' was externally referenced when shutting down Python. Forcibly releasing its Python resources!

@@ -1,0 +1,1240 @@
+﻿Python enabled via CVar 'Engine.Python.IsEnabledByDefault'
+Using Python 3.11.8
+Display: No pip-enabled plugins with python dependencies found, skipping
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py... started...
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py... took 8.433 ms
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... started...
+registering <class 'ControlRigWorkflows.workflow_deformation_rig_preset.provider'>
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... took 14.939 ms (total: 23.373 ms)
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/MovieScene/MovieRenderPipeline/Content/Python/init_unreal.py... started...
+Display: Running start-up script C:/Program Files/Epic Games/CEUE5Devkit/Engine/Plugins/MovieScene/MovieRenderPipeline/Content/Python/init_unreal.py... took 1.194 ms (total: 24.568 ms)
+Python enabled via IPythonScriptPlugin::ForceEnablePythonAtRuntime: C:\b\exiles\Engine\Plugins\Experimental\PythonScriptPlugin\Source\PythonScriptPlugin\Private\PythonScriptCommandlet.cpp(43:30) int __cdecl UPythonScriptCommandlet::Main(const class FString &)
+======== mode = real ========
+   (asset registry scan complete after 0.0s; Local assets: ['BPC_GA_Lock', 'BPL_GuildAccess'])
+   OK   loaded BPL via flattened path
+   library functions: ['GetPawnRank', 'IsGuildMemberRank', 'MeetsRankRequirement', 'RankCanSetRequired', 'RankToText']
+======== /Game/Systems/Building/Placeables/BP_PlaceableItemContainer ========
+   OK   loaded
+   CanAccessContainer: retargeting ['GetPawnRank', 'MeetsRankRequirement', 'IsGuildMemberRank']
+   OK   recreate GetPawnRank from flattened path
+   OK   GetPawnRank.execute -> CanAccessContainer.then
+   OK   GetPawnRank.Pawn -> CanAccessContainer.InteractingPawn
+   OK   GetPawnRank.then -> IsGuildMemberRank.execute
+   OK   GetPawnRank.Rank -> MeetsRankRequirement.Rank
+   OK   GetPawnRank.Rank -> IsGuildMemberRank.Rank
+   OK   recreate MeetsRankRequirement from flattened path
+   OK   MeetsRankRequirement.execute -> IsGuildMemberRank.then
+   OK   MeetsRankRequirement.Rank -> GetPawnRank.Rank
+   OK   MeetsRankRequirement.Required -> Get RequiredRank.RequiredRank
+   OK   MeetsRankRequirement.then -> Return Node.execute
+   OK   MeetsRankRequirement.Result -> OR Boolean.B
+   OK   recreate IsGuildMemberRank from flattened path
+   OK   IsGuildMemberRank.execute -> GetPawnRank.then
+   OK   IsGuildMemberRank.Rank -> GetPawnRank.Rank
+   OK   IsGuildMemberRank.then -> MeetsRankRequirement.execute
+   OK   IsGuildMemberRank.Result -> NOT Boolean.A
+   --- dump CanAccessContainer ---
+   NODE [K2Node_FunctionEntry] 'CanAccessContainer'
+      out then                     val=''                                       -> ['GetPawnRank.execute']
+      out InteractingPawn          val=''                                       -> ['Reroute Node.InputPin', 'GetPawnRank.Pawn']
+   NODE [K2Node_CallParentFunction] 'Parent: CanAccessContainer'
+      in  InteractingPawn          val=''                                       -> ['Reroute Node.OutputPin']
+      out CanAccess                val='false'                                  -> ['AND Boolean.B']
+      out ContainerIsLocked        val='false'                                  -> ['Return Node.ContainerIsLocked']
+      out InstigatorIsOwner        val='false'                                  -> ['Return Node.InstigatorIsOwner']
+   NODE [K2Node_FunctionResult] 'Return Node'
+      in  execute                  val=''                                       -> ['MeetsRankRequirement.then']
+      in  CanAccess                val='false'                                  -> ['AND Boolean.ReturnValue']
+      in  ContainerIsLocked        val='false'                                  -> ['Parent: CanAccessContainer.ContainerIsLocked']
+      in  InstigatorIsOwner        val='false'                                  -> ['Parent: CanAccessContainer.InstigatorIsOwner']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'AND Boolean'
+      in  A                        val='false'                                  -> ['OR Boolean.ReturnValue']
+      in  B                        val='false'                                  -> ['Parent: CanAccessContainer.CanAccess']
+      out ReturnValue              val='false'                                  -> ['Return Node.CanAccess']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['CanAccessContainer.InteractingPawn']
+      out OutputPin                val=''                                       -> ['Parent: CanAccessContainer.InteractingPawn']
+   NODE [K2Node_CallFunction] 'NOT Boolean'
+      in  A                        val='false'                                  -> ['IsGuildMemberRank.Result']
+      out ReturnValue              val='false'                                  -> ['OR Boolean.A']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'OR Boolean'
+      in  A                        val='false'                                  -> ['NOT Boolean.ReturnValue']
+      in  B                        val='false'                                  -> ['MeetsRankRequirement.Result']
+      out ReturnValue              val='false'                                  -> ['AND Boolean.A']
+   NODE [K2Node_VariableGet] 'Get RequiredRank'
+      out RequiredRank             val='0'                                      -> ['MeetsRankRequirement.Required']
+   NODE [K2Node_CallFunction] 'GetPawnRank'
+      in  execute                  val=''                                       -> ['CanAccessContainer.then']
+      in  Pawn                     val=''                                       -> ['CanAccessContainer.InteractingPawn']
+      out then                     val=''                                       -> ['IsGuildMemberRank.execute']
+      out Rank                     val='0'                                      -> ['MeetsRankRequirement.Rank', 'IsGuildMemberRank.Rank']
+   NODE [K2Node_CallFunction] 'MeetsRankRequirement'
+      in  execute                  val=''                                       -> ['IsGuildMemberRank.then']
+      in  Rank                     val='0'                                      -> ['GetPawnRank.Rank']
+      in  Required                 val='0'                                      -> ['Get RequiredRank.RequiredRank']
+      out then                     val=''                                       -> ['Return Node.execute']
+      out Result                   val='false'                                  -> ['OR Boolean.B']
+   NODE [K2Node_CallFunction] 'IsGuildMemberRank'
+      in  execute                  val=''                                       -> ['GetPawnRank.then']
+      in  Rank                     val='0'                                      -> ['GetPawnRank.Rank']
+      out then                     val=''                                       -> ['MeetsRankRequirement.execute']
+      out Result                   val='false'                                  -> ['NOT Boolean.A']
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_PlaceableItemContainer.BP_PlaceableItemContainer'
+   OK   compile BP_PlaceableItemContainer
+   OK   BP_PlaceableItemContainer::CanAccessContainer: no error nodes
+   save_packages(BP_PlaceableItemContainer) -> True
+   OK   BP_PlaceableItemContainer written to disk (16:19:05, 434650 B)
+======== /Game/Systems/Building/Placeables/BP_PL_Door ========
+   OK   loaded
+   EventGraph: retargeting ['GetPawnRank', 'IsGuildMemberRank', 'MeetsRankRequirement']
+   OK   recreate GetPawnRank from flattened path
+   OK   GetPawnRank.execute -> Event Custom Interaction.then
+   OK   GetPawnRank.Pawn -> Get Controlled Pawn.ReturnValue
+   OK   GetPawnRank.then -> IsGuildMemberRank.execute
+   OK   GetPawnRank.Rank -> IsGuildMemberRank.Rank
+   OK   GetPawnRank.Rank -> MeetsRankRequirement.Rank
+   OK   recreate IsGuildMemberRank from flattened path
+   OK   IsGuildMemberRank.execute -> GetPawnRank.then
+   OK   IsGuildMemberRank.Rank -> GetPawnRank.Rank
+   OK   IsGuildMemberRank.then -> MeetsRankRequirement.execute
+   OK   IsGuildMemberRank.Result -> NOT Boolean.A
+   OK   recreate MeetsRankRequirement from flattened path
+   OK   MeetsRankRequirement.execute -> IsGuildMemberRank.then
+   OK   MeetsRankRequirement.Rank -> GetPawnRank.Rank
+   OK   MeetsRankRequirement.Required -> Get RequiredRank.RequiredRank
+   OK   MeetsRankRequirement.then -> Branch.execute
+   OK   MeetsRankRequirement.Result -> OR Boolean.B
+   --- dump EventGraph ---
+   NODE [K2Node_Timeline] 'Timeline'
+      in  Play                     val=''                                       -> ['PlaySoundAtLocation.then']
+      in  Reverse                  val=''                                       -> ['PlaySoundAtLocation.then']
+      in  NewTime                  val='0.0'                                    -> []
+      out Update                   val=''                                       -> ['Set Relative Rotation.execute']
+      out Finished                 val=''                                       -> ['Set IsLastOpenCloseFinished.execute']
+      out Rotation                 val=''                                       -> ['float * float.A']
+   NODE [K2Node_CallFunction] 'MakeRotator'
+      in  Roll                     val='0.0'                                    -> []
+      in  Pitch                    val='0.0'                                    -> []
+      in  Yaw                      val='0.0'                                    -> ['float * float.ReturnValue']
+      out ReturnValue              val='0, 0, 0'                                -> ['Set Relative Rotation.NewRotation']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'float * float'
+      in  A                        val='0.0'                                    -> ['Timeline.Rotation']
+      in  B                        val='-90'                                    -> []
+      out ReturnValue              val='0.0'                                    -> ['MakeRotator.Yaw']
+   NODE [K2Node_VariableGet] 'Get StaticMesh'
+      out StaticMesh               val=''                                       -> ['Set Relative Rotation.self']
+   NODE [K2Node_CallFunction] 'Set Relative Rotation'
+      in  execute                  val=''                                       -> ['Timeline.Update']
+      in  self                     val=''                                       -> ['Get StaticMesh.StaticMesh']
+      in  NewRotation              val='0, 0, 0'                                -> ['MakeRotator.ReturnValue']
+      in  bSweep                   val='false'                                  -> []
+      in  bTeleport                val='false'                                  -> []
+   NODE [K2Node_Timeline] 'Timeline_0'
+      in  Play                     val=''                                       -> ['PlaySoundAtLocation.then']
+      in  Reverse                  val=''                                       -> ['PlaySoundAtLocation.then']
+      in  NewTime                  val='0.0'                                    -> []
+      out Update                   val=''                                       -> ['Set Relative Rotation.execute']
+      out Finished                 val=''                                       -> ['Set IsLastOpenCloseFinished.execute']
+      out Rotation                 val=''                                       -> ['float * float.A']
+   NODE [K2Node_CallFunction] 'MakeRotator'
+      in  Roll                     val='0.0'                                    -> []
+      in  Pitch                    val='0.0'                                    -> []
+      in  Yaw                      val='0.0'                                    -> ['float * float.ReturnValue']
+      out ReturnValue              val='0, 0, 0'                                -> ['Set Relative Rotation.NewRotation']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'float * float'
+      in  A                        val='0.0'                                    -> ['Timeline_0.Rotation']
+      in  B                        val='90'                                     -> []
+      out ReturnValue              val='0.0'                                    -> ['MakeRotator.Yaw']
+   NODE [K2Node_VariableGet] 'Get StaticMesh'
+      out StaticMesh               val=''                                       -> ['Set Relative Rotation.self']
+   NODE [K2Node_CallFunction] 'Set Relative Rotation'
+      in  execute                  val=''                                       -> ['Timeline_0.Update']
+      in  self                     val=''                                       -> ['Get StaticMesh.StaticMesh']
+      in  NewRotation              val='0, 0, 0'                                -> ['MakeRotator.ReturnValue']
+      in  bSweep                   val='false'                                  -> []
+      in  bTeleport                val='false'                                  -> []
+   NODE [K2Node_Event] 'Event BeginPlay'
+      out then                     val=''                                       -> ['Parent: BeginPlay.execute']
+   NODE [K2Node_CallFunction] 'PlaySoundAtLocation'
+      in  execute                  val=''                                       -> ['ClosedToOpenReverse.then']
+      in  Sound                    val='/Game/Sound/SFX/Doors/sfx_door_normal_open_1_Cue.sfx_door_normal_open_1_Cue' -> []
+      in  Location                 val='0, 0, 0'                                -> ['Get Actor Location.ReturnValue']
+      in  Rotation                 val='0, 0, 0'                                -> []
+      in  VolumeMultiplier         val='1.000000'                               -> []
+      in  PitchMultiplier          val='1.000000'                               -> []
+      in  StartTime                val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Timeline_0.Play']
+   NODE [K2Node_CallFunction] 'Get Actor Location'
+      out ReturnValue              val='0, 0, 0'                                -> ['PlaySoundAtLocation.Location', 'PlaySoundAtLocation.Location']
+   NODE [K2Node_CallFunction] 'PlaySoundAtLocation'
+      in  execute                  val=''                                       -> ['OpenReversedToClosed.then']
+      in  Sound                    val='/Game/Sound/SFX/Doors/sfx_door_normal_close_1_Cue.sfx_door_normal_close_1_Cue' -> []
+      in  Location                 val='0, 0, 0'                                -> ['Get Actor Location.ReturnValue']
+      in  Rotation                 val='0, 0, 0'                                -> []
+      in  VolumeMultiplier         val='1.000000'                               -> []
+      in  PitchMultiplier          val='1.000000'                               -> []
+      in  StartTime                val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Timeline_0.Reverse']
+   NODE [K2Node_CallFunction] 'PlaySoundAtLocation'
+      in  execute                  val=''                                       -> ['ClosedToOpenNormal.then']
+      in  Sound                    val='/Game/Sound/SFX/Doors/sfx_door_normal_open_1_Cue.sfx_door_normal_open_1_Cue' -> []
+      in  Location                 val='0, 0, 0'                                -> ['Get Actor Location.ReturnValue']
+      in  Rotation                 val='0, 0, 0'                                -> []
+      in  VolumeMultiplier         val='1.000000'                               -> []
+      in  PitchMultiplier          val='1.000000'                               -> []
+      in  StartTime                val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Timeline.Play']
+   NODE [K2Node_CallFunction] 'PlaySoundAtLocation'
+      in  execute                  val=''                                       -> ['OpenNormalToClosed.then']
+      in  Sound                    val='/Game/Sound/SFX/Doors/sfx_door_normal_close_1_Cue.sfx_door_normal_close_1_Cue' -> []
+      in  Location                 val='0, 0, 0'                                -> ['Get Actor Location.ReturnValue']
+      in  Rotation                 val='0, 0, 0'                                -> []
+      in  VolumeMultiplier         val='1.000000'                               -> []
+      in  PitchMultiplier          val='1.000000'                               -> []
+      in  StartTime                val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Timeline.Reverse']
+   NODE [K2Node_CustomEvent] 'ClosedToOpenNormal'
+      out then                     val=''                                       -> ['PlaySoundAtLocation.execute']
+   NODE [K2Node_CustomEvent] 'ClosedToOpenReverse'
+      out then                     val=''                                       -> ['PlaySoundAtLocation.execute']
+   NODE [K2Node_CustomEvent] 'OpenNormalToClosed'
+      out then                     val=''                                       -> ['PlaySoundAtLocation.execute']
+   NODE [K2Node_CustomEvent] 'OpenReversedToClosed'
+      out then                     val=''                                       -> ['PlaySoundAtLocation.execute']
+   NODE [K2Node_CallFunction] 'SetDoorState'
+      in  execute                  val=''                                       -> ['Parent: BeginPlay.then']
+      in  NewState                 val='NewEnumerator0'                         -> ['Get DoorState.DoorState']
+      in  IsBeingPlayForceInstant  val='true'                                   -> []
+      out then                     val=''                                       -> ['StartAutoCloseTimer.execute']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['SetDoorState.NewState']
+   NODE [K2Node_CallFunction] 'Set Timer by Event'
+      in  execute                  val=''                                       -> ['Or+ Branch.True']
+      in  Delegate                 val=''                                       -> ['AutoCloseDoor.OutputDelegate']
+      in  Time                     val='0.0'                                    -> ['Get DoorAutoCloseTime.DoorAutoCloseTime']
+      in  bLooping                 val='false'                                  -> []
+      in  bMaxOncePerFrame         val='false'                                  -> []
+      in  InitialStartDelay        val='0.000000'                               -> []
+      in  InitialStartDelayVariance val='0.000000'                               -> []
+   NODE [K2Node_CustomEvent] 'AutoCloseDoor'
+      out OutputDelegate           val=''                                       -> ['Set Timer by Event.Delegate']
+      out then                     val=''                                       -> ['And+ Branch.execute']
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Set IsLastOpenCloseFinished.then']
+      in  DoorState                val='NewEnumerator0'                         -> []
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Not Equal (Enum).A']
+   NODE [K2Node_CallFunction] 'Get Actor Location'
+      out ReturnValue              val='0, 0, 0'                                -> ['PlaySoundAtLocation.Location', 'PlaySoundAtLocation.Location']
+   NODE [K2Node_CallFunction] 'StartAutoCloseTimer'
+      in  execute                  val=''                                       -> ['SetDoorState.then']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_Event] 'Event InteractableMenu'
+      out then                     val=''                                       -> ['Parent: InteractableMenu.execute']
+      out RadialMenu               val=''                                       -> ['Parent: InteractableMenu.RadialMenu', 'Reroute Node.InputPin']
+      out HitIndex                 val='0'                                      -> ['Parent: InteractableMenu.HitIndex']
+   NODE [K2Node_CallParentFunction] 'Parent: InteractableMenu'
+      in  execute                  val=''                                       -> ['Event InteractableMenu.then']
+      in  RadialMenu               val=''                                       -> ['Event InteractableMenu.RadialMenu']
+      in  HitIndex                 val='0'                                      -> ['Event InteractableMenu.HitIndex']
+      out then                     val=''                                       -> ['Sequence.execute']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Event InteractableMenu.RadialMenu']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin', 'Reroute Node.InputPin']
+   NODE [K2Node_CallFunction] 'AddItem'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      in  label                    val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "C0092B294D817FEAA1C02A9A2818586C", "Disable Auto Close")' -> []
+      in  subtitle                 val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "9C6552504E71EBFC043EAFB96E4438BA", "Door will no longer close automatically.")' -> []
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/T_MainRadialMenuIconOpen.T_MainRadialMenuIconOpen' -> []
+      in  keyShortcutName          val='None'                                   -> []
+      in  index                    val='0'                                      -> []
+      out then                     val=''                                       -> ['Bind Event to Signal Clicked.execute']
+      out ReturnValue              val=''                                       -> ['Bind Event to Signal Clicked.self']
+   NODE [K2Node_AddDelegate] 'Bind Event to Signal Clicked'
+      in  execute                  val=''                                       -> ['AddItem.then']
+      in  self                     val=''                                       -> ['AddItem.ReturnValue']
+      in  Delegate                 val=''                                       -> ['DisableAutoClose.OutputDelegate']
+   NODE [K2Node_CustomEvent] 'DisableAutoClose'
+      out OutputDelegate           val=''                                       -> ['Bind Event to Signal Clicked.Delegate']
+      out then                     val=''                                       -> ['Controller_SetDoorAutoCloseEnabled.execute']
+   NODE [K2Node_VariableGet] 'Get AutoCloseDoorEnabled'
+      out AutoCloseDoorEnabled     val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Sequence.then_0']
+      in  Condition                val='false'                                  -> ['Get AutoCloseDoorEnabled.AutoCloseDoorEnabled']
+      out then                     val=''                                       -> ['AddItem.execute']
+      out else                     val=''                                       -> ['AddItem.execute']
+   NODE [K2Node_CallFunction] 'AddItem'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      in  label                    val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "0B9BA36F478B09E3CA1AED968EC94B55", "Enable Auto Close")' -> []
+      in  subtitle                 val=''                                       -> ['Format Text.Result']
+      in  icon                     val='/Game/UI/Textures/GUIs/MainRadialMenu/T_MainRadialMenuIconOpen.T_MainRadialMenuIconOpen' -> []
+      in  keyShortcutName          val='None'                                   -> []
+      in  index                    val='0'                                      -> []
+      out then                     val=''                                       -> ['Bind Event to Signal Clicked.execute']
+      out ReturnValue              val=''                                       -> ['Bind Event to Signal Clicked.self']
+   NODE [K2Node_AddDelegate] 'Bind Event to Signal Clicked'
+      in  execute                  val=''                                       -> ['AddItem.then']
+      in  self                     val=''                                       -> ['AddItem.ReturnValue']
+      in  Delegate                 val=''                                       -> ['EnableAutoClose.OutputDelegate']
+   NODE [K2Node_CustomEvent] 'EnableAutoClose'
+      out OutputDelegate           val=''                                       -> ['Bind Event to Signal Clicked.Delegate']
+      out then                     val=''                                       -> ['Controller_SetDoorAutoCloseEnabled.execute']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Equal (Enum).A', 'Equal (Enum).A']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator1'                         -> []
+      out ReturnValue              val=''                                       -> ['Or+ Branch.Condition 1']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator2'                         -> []
+      out ReturnValue              val=''                                       -> ['Or+ Branch.Condition 2']
+   NODE [K2Node_MacroInstance] 'Or+ Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition 1              val=''                                       -> ['Equal (Enum).ReturnValue']
+      in  Condition 2              val=''                                       -> ['Equal (Enum).ReturnValue']
+      out True                     val=''                                       -> ['Set Timer by Event.execute']
+   NODE [K2Node_VariableGet] 'Get DoorAutoCloseTime'
+      out DoorAutoCloseTime        val='0.0'                                    -> ['Set Timer by Event.Time']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['AddItem.self', 'AddItem.self', 'GetOwningPlayer.self']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_FormatText] 'Format Text'
+      in  Format                   val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "A9CD2FA74C81B937D643F3B7E1FBAAB2", "Door will close automatically after {Time} seconds.")' -> []
+      in  Time                     val=''                                       -> ['Truncate.ReturnValue']
+      out Result                   val=''                                       -> ['AddItem.subtitle']
+   NODE [K2Node_VariableGet] 'Get DoorAutoCloseTime'
+      out DoorAutoCloseTime        val='0.0'                                    -> ['Truncate.A']
+   NODE [K2Node_CallFunction] 'Truncate'
+      in  A                        val='0.0'                                    -> ['Get DoorAutoCloseTime.DoorAutoCloseTime']
+      out ReturnValue              val='0'                                      -> ['Format Text.Time']
+   NODE [K2Node_CallFunction] 'IsServer'
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Event StartAutoCloseTimer.then']
+      in  Condition                val='false'                                  -> ['IsServer.ReturnValue']
+      out then                     val=''                                       -> ['Or+ Branch.execute']
+   NODE [K2Node_CallFunction] 'GetOwningPlayer'
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      out ReturnValue              val=''                                       -> ['Controller_SetDoorAutoCloseEnabled.self', 'Controller_SetDoorAutoCloseEnabled.self']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                       -> ['Controller_SetDoorAutoCloseEnabled.Door']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                       -> ['Controller_SetDoorAutoCloseEnabled.Door']
+   NODE [K2Node_MacroInstance] 'And+ Branch'
+      in  execute                  val=''                                       -> ['AutoCloseDoor.then']
+      in  Condition 1              val=''                                       -> ['Not Equal (Enum).ReturnValue']
+      in  Condition 2              val=''                                       -> ['Get AutoCloseDoorEnabled.AutoCloseDoorEnabled']
+      out True                     val=''                                       -> ['Set IsLastOpenCloseFinished.execute']
+   NODE [K2Node_VariableGet] 'Get AutoCloseDoorEnabled'
+      out AutoCloseDoorEnabled     val='false'                                  -> ['And+ Branch.Condition 2']
+   NODE [K2Node_EnumInequality] 'Not Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator0'                         -> []
+      out ReturnValue              val=''                                       -> ['And+ Branch.Condition 1']
+   NODE [K2Node_Event] 'Event StartAutoCloseTimer'
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_VariableSet] 'Set IsLastOpenCloseFinished'
+      in  execute                  val=''                                       -> ['Timeline_0.Finished']
+      in  IsLastOpenCloseFinished  val='true'                                   -> []
+      out then                     val=''                                       -> ['ChangeNavMeshArea.execute']
+      out Output_Get               val='false'                                  -> []
+   NODE [K2Node_VariableSet] 'Set IsLastOpenCloseFinished'
+      in  execute                  val=''                                       -> ['Timeline.Finished']
+      in  IsLastOpenCloseFinished  val='true'                                   -> []
+      out then                     val=''                                       -> ['ChangeNavMeshArea.execute']
+      out Output_Get               val='false'                                  -> []
+   NODE [K2Node_CallFunction] 'ChangeNavMeshArea'
+      in  execute                  val=''                                       -> ['Set IsLastOpenCloseFinished.then']
+   NODE [K2Node_CallFunction] 'ChangeNavMeshArea'
+      in  execute                  val=''                                       -> ['Set IsLastOpenCloseFinished.then']
+   NODE [K2Node_Event] 'Event Custom Interaction'
+      out then                     val=''                                       -> ['GetPawnRank.execute']
+      out Instigator               val=''                                       -> ['Get Controlled Pawn.self', 'Get Controlled Pawn.self', 'Get Controlled Pawn.self']
+      out HitIndex                 val='0'                                      -> []
+      out IsOwner                  val='false'                                  -> []
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                       -> ['Get Actor Location.self', 'GetActorRightVector.self']
+   NODE [K2Node_CallFunction] 'Get Controlled Pawn'
+      in  self                     val=''                                       -> ['Event Custom Interaction.Instigator']
+      out ReturnValue              val=''                                       -> ['Get Actor Location.self']
+   NODE [K2Node_CallFunction] 'Get Actor Location'
+      in  self                     val=''                                       -> ['Get Controlled Pawn.ReturnValue']
+      out ReturnValue              val='0, 0, 0'                                -> ['vector - vector.A']
+   NODE [K2Node_CallFunction] 'Get Actor Location'
+      in  self                     val=''                                       -> ['Self-Reference.self']
+      out ReturnValue              val='0, 0, 0'                                -> ['vector - vector.B']
+   NODE [K2Node_CallFunction] 'vector - vector'
+      in  A                        val='0, 0, 0'                                -> ['Get Actor Location.ReturnValue']
+      in  B                        val='0, 0, 0'                                -> ['Get Actor Location.ReturnValue']
+      out ReturnValue              val='0, 0, 0'                                -> ['Normalize.A']
+   NODE [K2Node_CallFunction] 'Normalize'
+      in  A                        val='0, 0, 0'                                -> ['vector - vector.ReturnValue']
+      in  Tolerance                val='0.000100'                               -> []
+      out ReturnValue              val='0, 0, 0'                                -> ['Dot Product.B']
+   NODE [K2Node_CallFunction] 'Dot Product'
+      in  A                        val='0, 0, 0'                                -> ['GetActorRightVector.ReturnValue']
+      in  B                        val='0, 0, 0'                                -> ['Normalize.ReturnValue']
+      out ReturnValue              val='0.0'                                    -> ['float > float.A']
+   NODE [K2Node_CallFunction] 'float > float'
+      in  A                        val='0.0'                                    -> ['Dot Product.ReturnValue']
+      in  B                        val='0.0'                                    -> []
+      out ReturnValue              val='false'                                  -> ['Select.Index']
+   NODE [K2Node_CallFunction] 'GetActorRightVector'
+      in  self                     val=''                                       -> ['Self-Reference.self']
+      out ReturnValue              val='0, 0, 0'                                -> ['Dot Product.A']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Equal (Enum).A']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator0'                         -> []
+      out ReturnValue              val=''                                       -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Set IsLastOpenCloseFinished.then']
+      in  Condition                val='false'                                  -> ['Equal (Enum).ReturnValue']
+      out then                     val=''                                       -> ['Branch.execute']
+      out else                     val=''                                       -> ['Set with Notify DoorState.execute']
+   NODE [K2Node_Select] 'Select'
+      in  Option 0                 val='NewEnumerator2'                         -> []
+      in  Option 1                 val='NewEnumerator1'                         -> []
+      in  Index                    val='false'                                  -> ['float > float.ReturnValue']
+      out ReturnValue              val=''                                       -> ['Set with Notify DoorState.DoorState']
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  DoorState                val='NewEnumerator0'                         -> ['Select.ReturnValue']
+      out then                     val=''                                       -> ['Branch.execute']
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  DoorState                val='NewEnumerator0'                         -> []
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_CallFunction] 'StartAutoCloseTimer'
+      in  execute                  val=''                                       -> ['Branch.then']
+   NODE [K2Node_VariableGet] 'Get AutoCloseDoorEnabled'
+      out AutoCloseDoorEnabled     val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Set with Notify DoorState.then', 'Set with Notify DoorState.then']
+      in  Condition                val='false'                                  -> ['Get AutoCloseDoorEnabled.AutoCloseDoorEnabled']
+      out then                     val=''                                       -> ['StartAutoCloseTimer.execute']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  Condition                val='false'                                  -> ['Get IsLastOpenCloseFinished.IsLastOpenCloseFinished']
+      out then                     val=''                                       -> ['Set IsLastOpenCloseFinished.execute']
+   NODE [K2Node_VariableGet] 'Get IsLastOpenCloseFinished'
+      out IsLastOpenCloseFinished  val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_VariableSet] 'Set IsLastOpenCloseFinished'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  IsLastOpenCloseFinished  val='false'                                  -> []
+      out then                     val=''                                       -> ['Branch.execute']
+      out Output_Get               val='false'                                  -> []
+   NODE [K2Node_VariableSet] 'Set IsLastOpenCloseFinished'
+      in  execute                  val=''                                       -> ['And+ Branch.True']
+      in  IsLastOpenCloseFinished  val='false'                                  -> []
+      out then                     val=''                                       -> ['Set with Notify DoorState.execute']
+      out Output_Get               val='false'                                  -> []
+   NODE [K2Node_Event] 'Event CleanupAfterPlaced'
+      out then                     val=''                                       -> ['Parent: CleanupAfterPlaced.execute']
+   NODE [K2Node_CallFunction] 'Destroy Component'
+      in  execute                  val=''                                       -> ['Parent: CleanupAfterPlaced.then']
+      in  self                     val=''                                       -> ['Get DoorChecker.DoorChecker']
+   NODE [K2Node_VariableGet] 'Get DoorChecker'
+      out DoorChecker              val=''                                       -> ['Destroy Component.self']
+   NODE [K2Node_CallParentFunction] 'Parent: CleanupAfterPlaced'
+      in  execute                  val=''                                       -> ['Event CleanupAfterPlaced.then']
+      out then                     val=''                                       -> ['Destroy Component.execute']
+   NODE [K2Node_CallParentFunction] 'Parent: BeginPlay'
+      in  execute                  val=''                                       -> ['Event BeginPlay.then']
+      out then                     val=''                                       -> ['SetDoorState.execute']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition                val='false'                                  -> ['Get OpenOnlyOutwards.OpenOnlyOutwards']
+      out then                     val=''                                       -> ['Set with Notify DoorState.execute']
+      out else                     val=''                                       -> ['Set with Notify DoorState.execute']
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  DoorState                val='NewEnumerator1'                         -> []
+      out then                     val=''                                       -> ['Branch.execute']
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_VariableGet] 'Get OpenOnlyOutwards'
+      out OpenOnlyOutwards         val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_CustomEvent] 'GenerateNavLink'
+      out OutputDelegate           val=''                                       -> ['Reroute Node.InputPin']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'IsServer'
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['GenerateNavLink.then']
+      in  Condition                val='false'                                  -> ['IsServer.ReturnValue']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'SetupNavLink'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  RelativeLeft             val='0, 0, 0'                                -> ['CalcNavLinkPositions.LeftRelative']
+      in  RelativeRight            val='0, 0, 0'                                -> ['CalcNavLinkPositions.RightRelative']
+      in  bStartEnabled            val='false'                                  -> ['Equal (Enum).ReturnValue']
+      in  EnabledAreaClass         val=''                                       -> ['Select.ReturnValue']
+      in  DisabledAreaClass        val='/Script/NavigationSystem.NavArea_Null'  -> []
+      in  AcceptanceRadius         val='0.0'                                    -> ['Get NavLinkAcceptanceRadius.NavLinkAcceptanceRadius']
+      in  bCustomNPCLogicOnLink    val='true'                                   -> []
+      in  AllowedDirections        val='BothWays'                               -> []
+      out then                     val=''                                       -> ['QueuePeriodicNavLinkCheck.execute']
+   NODE [K2Node_CallFunction] 'CalcNavLinkPositions'
+      in  execute                  val=''                                       -> ['Is Low AILOD.true']
+      out then                     val=''                                       -> ['Branch.execute']
+      out Success                  val='false'                                  -> ['Branch.Condition']
+      out LeftRelative             val='0, 0, 0'                                -> ['SetupNavLink.RelativeLeft']
+      out RightRelative            val='0, 0, 0'                                -> ['SetupNavLink.RelativeRight']
+   NODE [K2Node_VariableGet] 'Get GenerateNavLinkWhileClosed'
+      out GenerateNavLinkWhileClosed val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition                val='false'                                  -> ['Get GenerateNavLinkWhileClosed.GenerateNavLinkWhileClosed']
+      out then                     val=''                                       -> ['Clear and Invalidate Timer by Handle.execute']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['CalcNavLinkPositions.then']
+      in  Condition                val='false'                                  -> ['CalcNavLinkPositions.Success']
+      out then                     val=''                                       -> ['SetupNavLink.execute']
+      out else                     val=''                                       -> ['QueueRetryNavLinkCreation.execute']
+   NODE [K2Node_CallFunction] 'Set Timer by Event'
+      in  execute                  val=''                                       -> ['Is Low AILOD.true']
+      in  Delegate                 val=''                                       -> ['Reroute Node.OutputPin']
+      in  Time                     val='60'                                     -> []
+      in  bLooping                 val='false'                                  -> []
+      in  bMaxOncePerFrame         val='false'                                  -> []
+      in  InitialStartDelay        val='0.000000'                               -> []
+      in  InitialStartDelayVariance val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Set NavLinkGenTimer.execute']
+      out ReturnValue              val=''                                       -> ['Set NavLinkGenTimer.NavLinkGenTimer']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['GenerateNavLink.OutputDelegate']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Set Timer by Event.Delegate', 'Set Timer by Event.Delegate', 'Set Timer by Event.Delegate']
+   NODE [K2Node_VariableSet] 'Set NavLinkGenTimer'
+      in  execute                  val=''                                       -> ['Set Timer by Event.then']
+      in  NavLinkGenTimer          val=''                                       -> ['Set Timer by Event.ReturnValue']
+   NODE [K2Node_VariableGet] 'Get NavLinkGenTimer'
+      out NavLinkGenTimer          val=''                                       -> ['Clear and Invalidate Timer by Handle.Handle']
+   NODE [K2Node_CallFunction] 'Clear and Invalidate Timer by Handle'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Handle                   val=''                                       -> ['Get NavLinkGenTimer.NavLinkGenTimer']
+      out then                     val=''                                       -> ['DestroyNavLink.execute']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Equal (Enum).A']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator0'                         -> []
+      out ReturnValue              val=''                                       -> ['SetupNavLink.bStartEnabled']
+   NODE [K2Node_VariableGet] 'Get ConanBuildingPersistence'
+      out ConanBuildingPersistence val=''                                       -> ['Get m_bWasLoadedFromDB.self']
+   NODE [K2Node_VariableGet] 'Get m_bWasLoadedFromDB'
+      in  self                     val=''                                       -> ['Get ConanBuildingPersistence.ConanBuildingPersistence']
+      out m_bWasLoadedFromDB       val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Bind Event to Event AILOD.then']
+      in  Condition                val='false'                                  -> ['Get m_bWasLoadedFromDB.m_bWasLoadedFromDB']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_VariableGet] 'Get ConanBuildingPersistence'
+      out ConanBuildingPersistence val=''                                       -> ['IsDataDoneLoading.self', 'Bind Event to On Signal Data Loaded.self']
+   NODE [K2Node_CallFunction] 'IsDataDoneLoading'
+      in  self                     val=''                                       -> ['Get ConanBuildingPersistence.ConanBuildingPersistence']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition                val='false'                                  -> ['IsDataDoneLoading.ReturnValue']
+      out then                     val=''                                       -> ['OnLoadedFromDB.execute']
+      out else                     val=''                                       -> ['Bind Event to On Signal Data Loaded.execute']
+   NODE [K2Node_AddDelegate] 'Bind Event to On Signal Data Loaded'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  self                     val=''                                       -> ['Get ConanBuildingPersistence.ConanBuildingPersistence']
+      in  Delegate                 val=''                                       -> ['OnLoadedFromDB.OutputDelegate']
+   NODE [K2Node_CustomEvent] 'OnLoadedFromDB'
+      out OutputDelegate           val=''                                       -> ['Bind Event to On Signal Data Loaded.Delegate']
+      out then                     val=''                                       -> ['QueueInitialNavLinkCreation.execute']
+   NODE [K2Node_CallFunction] 'OnLoadedFromDB'
+      in  execute                  val=''                                       -> ['Branch.then']
+   NODE [K2Node_VariableGet] 'Get IsABrush'
+      out IsABrush                 val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['StartAutoCloseTimer.then']
+      in  Condition                val='false'                                  -> ['Get IsABrush.IsABrush']
+      out then                     val=''                                       -> ['ToggleNavBlocking.execute']
+      out else                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_Event] 'Event OnPlaced'
+      out then                     val=''                                       -> ['Parent: OnPlaced.execute']
+      out PlacedBy                 val=''                                       -> ['Parent: OnPlaced.PlacedBy']
+   NODE [K2Node_CallParentFunction] 'Parent: OnPlaced'
+      in  execute                  val=''                                       -> ['Event OnPlaced.then']
+      in  PlacedBy                 val=''                                       -> ['Event OnPlaced.PlacedBy']
+      out then                     val=''                                       -> ['GenerateNavLink.execute']
+   NODE [K2Node_CallFunction] 'GenerateNavLink'
+      in  execute                  val=''                                       -> ['Parent: OnPlaced.then']
+   NODE [K2Node_CustomEvent] 'QueueInitialNavLinkCreation'
+      out then                     val=''                                       -> ['Is Low AILOD.execute']
+   NODE [K2Node_CallFunction] 'Set Timer by Event'
+      in  execute                  val=''                                       -> ['Is Low AILOD.true']
+      in  Delegate                 val=''                                       -> ['Reroute Node.OutputPin']
+      in  Time                     val='15'                                     -> []
+      in  bLooping                 val='false'                                  -> []
+      in  bMaxOncePerFrame         val='false'                                  -> []
+      in  InitialStartDelay        val='0.000000'                               -> []
+      in  InitialStartDelayVariance val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Set NavLinkGenTimer.execute']
+      out ReturnValue              val=''                                       -> ['Set NavLinkGenTimer.NavLinkGenTimer']
+   NODE [K2Node_VariableSet] 'Set NavLinkGenTimer'
+      in  execute                  val=''                                       -> ['Set Timer by Event.then']
+      in  NavLinkGenTimer          val=''                                       -> ['Set Timer by Event.ReturnValue']
+   NODE [K2Node_CustomEvent] 'QueuePeriodicNavLinkCheck'
+      out then                     val=''                                       -> ['Is Low AILOD.execute']
+   NODE [K2Node_CallFunction] 'Set Timer by Event'
+      in  execute                  val=''                                       -> ['Is Low AILOD.true']
+      in  Delegate                 val=''                                       -> ['Reroute Node.OutputPin']
+      in  Time                     val='300'                                    -> []
+      in  bLooping                 val='true'                                   -> []
+      in  bMaxOncePerFrame         val='false'                                  -> []
+      in  InitialStartDelay        val='0.000000'                               -> []
+      in  InitialStartDelayVariance val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Set NavLinkGenTimer.execute']
+      out ReturnValue              val=''                                       -> ['Set NavLinkGenTimer.NavLinkGenTimer']
+   NODE [K2Node_VariableSet] 'Set NavLinkGenTimer'
+      in  execute                  val=''                                       -> ['Set Timer by Event.then']
+      in  NavLinkGenTimer          val=''                                       -> ['Set Timer by Event.ReturnValue']
+   NODE [K2Node_CustomEvent] 'QueueRetryNavLinkCreation'
+      out then                     val=''                                       -> ['Is Low AILOD.execute']
+   NODE [K2Node_CallFunction] 'QueueRetryNavLinkCreation'
+      in  execute                  val=''                                       -> ['Branch.else']
+   NODE [K2Node_CallFunction] 'QueuePeriodicNavLinkCheck'
+      in  execute                  val=''                                       -> ['SetupNavLink.then']
+   NODE [K2Node_CallFunction] 'QueueInitialNavLinkCreation'
+      in  execute                  val=''                                       -> ['OnLoadedFromDB.then']
+   NODE [K2Node_Event] 'Event OnNPCStartUsingNavLink'
+      out then                     val=''                                       -> ['Parent: OnNPCStartUsingNavLink.execute']
+      out NPC                      val=''                                       -> ['Reroute Node.InputPin']
+      out Destination              val='0, 0, 0'                                -> ['Parent: OnNPCStartUsingNavLink.Destination']
+   NODE [K2Node_VariableGet] 'Get AILOD'
+      out AILOD                    val=''                                       -> ['Bind Event to Event AILOD.self']
+   NODE [K2Node_AddDelegate] 'Bind Event to Event AILOD'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  self                     val=''                                       -> ['Get AILOD.AILOD']
+      in  Delegate                 val=''                                       -> ['OnAILODChanged.OutputDelegate']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_MacroInstance] 'Is Low AILOD'
+      in  execute                  val=''                                       -> ['DestroyNavLink.then']
+      out true                     val=''                                       -> ['CalcNavLinkPositions.execute']
+   NODE [K2Node_CustomEvent] 'OnAILODChanged'
+      out OutputDelegate           val=''                                       -> ['Bind Event to Event AILOD.Delegate']
+      out then                     val=''                                       -> ['Branch.execute']
+      out EventType                val='Changed'                                -> ['Equal (Enum).A']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['OnAILODChanged.EventType']
+      in  B                        val='Changed'                                -> []
+      out ReturnValue              val=''                                       -> ['Branch.Condition']
+   NODE [K2Node_MacroInstance] 'Is Low AILOD'
+      in  execute                  val=''                                       -> ['QueuePeriodicNavLinkCheck.then']
+      out true                     val=''                                       -> ['Set Timer by Event.execute']
+   NODE [K2Node_MacroInstance] 'Is Low AILOD'
+      in  execute                  val=''                                       -> ['QueueInitialNavLinkCreation.then']
+      out true                     val=''                                       -> ['Set Timer by Event.execute']
+   NODE [K2Node_MacroInstance] 'Is Low AILOD'
+      in  execute                  val=''                                       -> ['QueueRetryNavLinkCreation.then']
+      out true                     val=''                                       -> ['Set Timer by Event.execute']
+   NODE [K2Node_MacroInstance] 'Is Low AILOD'
+      in  execute                  val=''                                       -> ['Branch.then']
+      out true                     val=''                                       -> ['GenerateNavLink.execute']
+      out False                    val=''                                       -> ['Clear and Invalidate Timer by Handle.execute']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['OnAILODChanged.then']
+      in  Condition                val='false'                                  -> ['Equal (Enum).ReturnValue']
+      out then                     val=''                                       -> ['Is Low AILOD.execute']
+   NODE [K2Node_VariableGet] 'Get NavLinkGenTimer'
+      out NavLinkGenTimer          val=''                                       -> ['Clear and Invalidate Timer by Handle.Handle']
+   NODE [K2Node_CallFunction] 'Clear and Invalidate Timer by Handle'
+      in  execute                  val=''                                       -> ['Is Low AILOD.False']
+      in  Handle                   val=''                                       -> ['Get NavLinkGenTimer.NavLinkGenTimer']
+      out then                     val=''                                       -> ['DestroyNavLink.execute']
+   NODE [K2Node_CallFunction] 'IsServer'
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  Condition                val='false'                                  -> ['IsServer.ReturnValue']
+      out then                     val=''                                       -> ['Bind Event to Event AILOD.execute']
+   NODE [K2Node_VariableGet] 'Get NavLinkAcceptanceRadius'
+      out NavLinkAcceptanceRadius  val='0.0'                                    -> ['SetupNavLink.AcceptanceRadius']
+   NODE [K2Node_Event] 'Event ForceDoorStateForDuration'
+      out then                     val=''                                       -> ['Sequence.execute']
+      out Open                     val='false'                                  -> ['Not Equal (Boolean).A']
+      out Duration                 val='0.0'                                    -> ['Reroute Node.InputPin']
+      out Actor                    val=''                                       -> ['GetDirectionToOpen.OpeningActor']
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  DoorState                val='NewEnumerator0'                         -> ['GetDirectionToOpen.OpenDirection']
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Sequence.then_0']
+      in  Condition                val='false'                                  -> ['Not Equal (Boolean).ReturnValue']
+      out then                     val=''                                       -> ['Set with Notify DoorState.execute']
+   NODE [K2Node_CallFunction] 'Not Equal (Boolean)'
+      in  A                        val='false'                                  -> ['Event ForceDoorStateForDuration.Open']
+      in  B                        val='false'                                  -> ['Select.ReturnValue']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_Select] 'Select'
+      in  NewEnumerator0           val='false'                                  -> []
+      in  NewEnumerator1           val='true'                                   -> []
+      in  NewEnumerator2           val='true'                                   -> []
+      in  Index                    val='NewEnumerator0'                         -> ['Get DoorState.DoorState']
+      out ReturnValue              val=''                                       -> ['Not Equal (Boolean).B']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Select.Index']
+   NODE [K2Node_ExecutionSequence] 'Sequence'
+      in  execute                  val=''                                       -> ['Event ForceDoorStateForDuration.then']
+      out then_0                   val=''                                       -> ['Branch.execute']
+      out then_1                   val=''                                       -> ['Clear and Invalidate Timer by Handle.execute']
+   NODE [K2Node_VariableGet] 'Get ForceTimer'
+      out ForceTimer               val=''                                       -> ['Clear and Invalidate Timer by Handle.Handle']
+   NODE [K2Node_CallFunction] 'Clear and Invalidate Timer by Handle'
+      in  execute                  val=''                                       -> ['Sequence.then_1']
+      in  Handle                   val=''                                       -> ['Get ForceTimer.ForceTimer']
+      out then                     val=''                                       -> ['Set Timer by Event.execute']
+   NODE [K2Node_VariableSet] 'Set ForceTimer'
+      in  execute                  val=''                                       -> ['Set Timer by Event.then']
+      in  ForceTimer               val=''                                       -> ['Set Timer by Event.ReturnValue']
+   NODE [K2Node_CallFunction] 'Set Timer by Event'
+      in  execute                  val=''                                       -> ['Clear and Invalidate Timer by Handle.then']
+      in  Delegate                 val=''                                       -> ['ForcedDoorStateTimerEnded.OutputDelegate']
+      in  Time                     val='0.0'                                    -> ['Reroute Node.OutputPin']
+      in  bLooping                 val='false'                                  -> []
+      in  bMaxOncePerFrame         val='false'                                  -> []
+      in  InitialStartDelay        val='0.000000'                               -> []
+      in  InitialStartDelayVariance val='0.000000'                               -> []
+      out then                     val=''                                       -> ['Set ForceTimer.execute']
+      out ReturnValue              val=''                                       -> ['Set ForceTimer.ForceTimer']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Event ForceDoorStateForDuration.Duration']
+      out OutputPin                val=''                                       -> ['Set Timer by Event.Time']
+   NODE [K2Node_CustomEvent] 'ForcedDoorStateTimerEnded'
+      out OutputDelegate           val=''                                       -> ['Set Timer by Event.Delegate']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'StartAutoCloseTimer'
+      in  execute                  val=''                                       -> ['Branch.then']
+   NODE [K2Node_VariableGet] 'Get AutoCloseDoorEnabled'
+      out AutoCloseDoorEnabled     val='false'                                  -> ['AND Boolean.A']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['ForcedDoorStateTimerEnded.then']
+      in  Condition                val='false'                                  -> ['AND Boolean.ReturnValue']
+      out then                     val=''                                       -> ['StartAutoCloseTimer.execute']
+   NODE [K2Node_Select] 'Select'
+      in  NewEnumerator0           val='false'                                  -> []
+      in  NewEnumerator1           val='true'                                   -> []
+      in  NewEnumerator2           val='true'                                   -> []
+      in  Index                    val='NewEnumerator0'                         -> ['Get DoorState.DoorState']
+      out ReturnValue              val=''                                       -> ['AND Boolean.B']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Select.Index']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'AND Boolean'
+      in  A                        val='false'                                  -> ['Get AutoCloseDoorEnabled.AutoCloseDoorEnabled']
+      in  B                        val='false'                                  -> ['Select.ReturnValue']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_VariableGet] 'Get ForceTimer'
+      out ForceTimer               val=''                                       -> ['Is Timer Active by Handle.Handle']
+   NODE [K2Node_CallFunction] 'Is Timer Active by Handle'
+      in  Handle                   val=''                                       -> ['Get ForceTimer.ForceTimer']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition                val='false'                                  -> ['Is Timer Active by Handle.ReturnValue']
+      out then                     val=''                                       -> ['Cast To ConanCharacter.execute']
+      out else                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'Get Controlled Pawn'
+      in  self                     val=''                                       -> ['Event Custom Interaction.Instigator']
+      out ReturnValue              val=''                                       -> ['Cast To ConanCharacter.Object']
+   NODE [K2Node_DynamicCast] 'Cast To ConanCharacter'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Object                   val=''                                       -> ['Get Controlled Pawn.ReturnValue']
+      out then                     val=''                                       -> ['ClientHUDShowNotification.execute']
+      out AsConan Character        val=''                                       -> ['ClientHUDShowNotification.self']
+   NODE [K2Node_CallFunction] 'ClientHUDShowNotification'
+      in  execute                  val=''                                       -> ['Cast To ConanCharacter.then']
+      in  self                     val=''                                       -> ['Cast To ConanCharacter.AsConan Character']
+      in  text                     val=''                                       -> ['MakeLiteralText.ReturnValue']
+      in  positive                 val='false'                                  -> []
+      in  bPlaySound               val='true'                                   -> []
+   NODE [K2Node_CallFunction] 'MakeLiteralText'
+      in  Value                    val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "0DF91CC44FB16B20E2C73E8D56C24804", "It is jammed into position.")' -> []
+      out ReturnValue              val=''                                       -> ['ClientHUDShowNotification.text']
+   NODE [K2Node_CallFunction] 'Set Timer by Event'
+      in  execute                  val=''                                       -> ['Or+ Branch.True']
+      in  Delegate                 val=''                                       -> ['NPCCloseDoor.OutputDelegate']
+      in  Time                     val='4'                                      -> []
+      in  bLooping                 val='false'                                  -> []
+      in  bMaxOncePerFrame         val='false'                                  -> []
+      in  InitialStartDelay        val='0.000000'                               -> []
+      in  InitialStartDelayVariance val='0.000000'                               -> []
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Set IsLastOpenCloseFinished.then']
+      in  DoorState                val='NewEnumerator0'                         -> []
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Not Equal (Enum).A']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Equal (Enum).A', 'Equal (Enum).A']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator1'                         -> []
+      out ReturnValue              val=''                                       -> ['Or+ Branch.Condition 1']
+   NODE [K2Node_EnumEquality] 'Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator2'                         -> []
+      out ReturnValue              val=''                                       -> ['Or+ Branch.Condition 2']
+   NODE [K2Node_MacroInstance] 'Or+ Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition 1              val=''                                       -> ['Equal (Enum).ReturnValue']
+      in  Condition 2              val=''                                       -> ['Equal (Enum).ReturnValue']
+      out True                     val=''                                       -> ['Set Timer by Event.execute']
+   NODE [K2Node_CallFunction] 'IsServer'
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['StartNPCCloseTimer.then']
+      in  Condition                val='false'                                  -> ['IsServer.ReturnValue']
+      out then                     val=''                                       -> ['Or+ Branch.execute']
+   NODE [K2Node_EnumInequality] 'Not Equal (Enum)'
+      in  A                        val=''                                       -> ['Get DoorState.DoorState']
+      in  B                        val='NewEnumerator0'                         -> []
+      out ReturnValue              val=''                                       -> ['Branch.Condition']
+   NODE [K2Node_VariableSet] 'Set IsLastOpenCloseFinished'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  IsLastOpenCloseFinished  val='false'                                  -> []
+      out then                     val=''                                       -> ['Set with Notify DoorState.execute']
+      out Output_Get               val='false'                                  -> []
+   NODE [K2Node_CustomEvent] 'StartNPCCloseTimer'
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CustomEvent] 'NPCCloseDoor'
+      out OutputDelegate           val=''                                       -> ['Set Timer by Event.Delegate']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'GetDirectionToOpen'
+      in  OpeningActor             val=''                                       -> ['Event ForceDoorStateForDuration.Actor']
+      out OpenDirection            val='NewEnumerator0'                         -> ['Set with Notify DoorState.DoorState']
+   NODE [K2Node_VariableSet] 'Set with Notify DoorState'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  DoorState                val='NewEnumerator0'                         -> ['GetDirectionToOpen.OpenDirection']
+      out then                     val=''                                       -> ['StartNPCCloseTimer.execute']
+      out Output_Get               val='NewEnumerator0'                         -> []
+   NODE [K2Node_CallFunction] 'GetDirectionToOpen'
+      in  OpeningActor             val=''                                       -> ['Reroute Node.OutputPin']
+      out OpenDirection            val='NewEnumerator0'                         -> ['Set with Notify DoorState.DoorState']
+   NODE [K2Node_CustomEvent] 'NPCOpenDoor'
+      out then                     val=''                                       -> ['Switch Has Authority.Execute']
+      out Actor                    val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Switch Has Authority.Authority']
+      in  Condition                val='false'                                  -> ['Select.ReturnValue']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_Select] 'Select'
+      in  NewEnumerator0           val='true'                                   -> []
+      in  NewEnumerator1           val='false'                                  -> []
+      in  NewEnumerator2           val='false'                                  -> []
+      in  Index                    val='NewEnumerator0'                         -> ['Get DoorState.DoorState']
+      out ReturnValue              val=''                                       -> ['Branch.Condition']
+   NODE [K2Node_VariableGet] 'Get DoorState'
+      out DoorState                val='NewEnumerator0'                         -> ['Select.Index']
+   NODE [K2Node_CallFunction] 'StartNPCCloseTimer'
+      in  execute                  val=''                                       -> ['Set with Notify DoorState.then']
+   NODE [K2Node_Event] 'Event SetDoorAmbientLifeLocked'
+      out then                     val=''                                       -> ['Set IsAmbientLifeLocked.execute']
+      out IsLocked                 val='false'                                  -> ['Set IsAmbientLifeLocked.IsAmbientLifeLocked']
+   NODE [K2Node_Select] 'Select'
+      in  Option 0                 val='/Game/Systems/AI/Settlement/NavArea_AmbientLifeAccessibleDoor.NavArea_AmbientLifeAccessibleDoor_C' -> []
+      in  Option 1                 val='/Game/Systems/AI/Purge/NavArea_PurgeAccessibleDoor.NavArea_PurgeAccessibleDoor_C' -> []
+      in  Index                    val='false'                                  -> ['Get IsAmbientLifeLocked.IsAmbientLifeLocked']
+      out ReturnValue              val=''                                       -> ['SetupNavLink.EnabledAreaClass']
+   NODE [K2Node_VariableGet] 'Get IsAmbientLifeLocked'
+      out IsAmbientLifeLocked      val='false'                                  -> ['Select.Index']
+   NODE [K2Node_VariableSet] 'Set IsAmbientLifeLocked'
+      in  execute                  val=''                                       -> ['Event SetDoorAmbientLifeLocked.then']
+      in  IsAmbientLifeLocked      val='false'                                  -> ['Event SetDoorAmbientLifeLocked.IsLocked']
+      out then                     val=''                                       -> ['Set dirty flag.execute']
+      out Output_Get               val='false'                                  -> []
+   NODE [K2Node_ExecutionSequence] 'Sequence'
+      in  execute                  val=''                                       -> ['Parent: InteractableMenu.then']
+      out then_0                   val=''                                       -> ['Branch.execute']
+      out then_1                   val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'AddItem'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      in  label                    val=''                                       -> ['Reroute Node.OutputPin']
+      in  subtitle                 val=''                                       -> ['Reroute Node.OutputPin']
+      in  icon                     val=''                                       -> ['Select.ReturnValue']
+      in  keyShortcutName          val='None'                                   -> []
+      in  index                    val='0'                                      -> []
+      out then                     val=''                                       -> ['Bind Event to Signal Clicked.execute']
+      out ReturnValue              val=''                                       -> ['Bind Event to Signal Clicked.self']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['GetOwningPlayerPawn.self', 'Reroute Node.InputPin']
+   NODE [K2Node_Select] 'Select'
+      in  Option 0                 val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "4800B76C4F1F92AAAC5C6F84125D1C0B", "Lock Door for Thralls")' -> []
+      in  Option 1                 val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "9FC13411472B53E77B76088DFAC8F276", "Unlock Door for Thralls")' -> []
+      in  Index                    val='false'                                  -> ['Get IsAmbientLifeLocked.IsAmbientLifeLocked']
+      out ReturnValue              val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_VariableGet] 'Get IsAmbientLifeLocked'
+      out IsAmbientLifeLocked      val='false'                                  -> ['Select.Index']
+   NODE [K2Node_CallFunction] 'GetOwningPlayerPawn'
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      out ReturnValue              val=''                                       -> ['IsOwner.Pawn']
+   NODE [K2Node_CallFunction] 'IsOwner'
+      in  Pawn                     val=''                                       -> ['GetOwningPlayerPawn.ReturnValue']
+      in  bSendGuiNotification     val='false'                                  -> []
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Sequence.then_1']
+      in  Condition                val='false'                                  -> ['IsOwner.ReturnValue']
+      out then                     val=''                                       -> ['AddItem.execute']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Select.ReturnValue']
+      out OutputPin                val=''                                       -> ['AddItem.label']
+   NODE [K2Node_CallFunction] 'MakeLiteralText'
+      in  Value                    val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "5E1A9F554A97D9B348C6FCAC630B946C", "Toggle whether or not thralls are able to pass freely\\nthrough this door as part of Living Settlements. \\n\\nCurrently {LockedState}")' -> []
+      out ReturnValue              val=''                                       -> ['Format Text.Format']
+   NODE [K2Node_Select] 'Select'
+      in  Option 0                 val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "3A9F0260485CF8DDA93CCFB6216B47D0", "UNLOCKED")' -> []
+      in  Option 1                 val='NSLOCTEXT("[49095A9140F030F1E7CE4CAA9D889418]", "88C8519E40A425A5B1E9C8BC1D1684B7", "LOCKED")' -> []
+      in  Index                    val='false'                                  -> ['Get IsAmbientLifeLocked.IsAmbientLifeLocked']
+      out ReturnValue              val=''                                       -> ['Format Text.LockedState']
+   NODE [K2Node_FormatText] 'Format Text'
+      in  Format                   val=''                                       -> ['MakeLiteralText.ReturnValue']
+      in  LockedState              val=''                                       -> ['Select.ReturnValue']
+      out Result                   val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Format Text.Result']
+      out OutputPin                val=''                                       -> ['AddItem.subtitle']
+   NODE [K2Node_VariableGet] 'Get IsAmbientLifeLocked'
+      out IsAmbientLifeLocked      val='false'                                  -> ['Select.Index']
+   NODE [K2Node_Select] 'Select'
+      in  Option 0                 val='/Game/UI/Textures/GUIs/MainRadialMenu/T_RadialMenu_AmbientLife_DisableDoors.T_RadialMenu_AmbientLife_DisableDoors' -> []
+      in  Option 1                 val='/Game/UI/Textures/GUIs/MainRadialMenu/T_RadialMenu_AmbientLife_EnableDoors.T_RadialMenu_AmbientLife_EnableDoors' -> []
+      in  Index                    val='false'                                  -> ['Get IsAmbientLifeLocked.IsAmbientLifeLocked']
+      out ReturnValue              val=''                                       -> ['AddItem.icon']
+   NODE [K2Node_VariableGet] 'Get IsAmbientLifeLocked'
+      out IsAmbientLifeLocked      val='false'                                  -> ['Select.Index']
+   NODE [K2Node_AddDelegate] 'Bind Event to Signal Clicked'
+      in  execute                  val=''                                       -> ['AddItem.then']
+      in  self                     val=''                                       -> ['AddItem.ReturnValue']
+      in  Delegate                 val=''                                       -> ['Select.ReturnValue']
+   NODE [K2Node_Select] 'Select'
+      in  Option 0                 val=''                                       -> ['LockDoorForAmbientLife.OutputDelegate']
+      in  Option 1                 val=''                                       -> ['UnlockDoorForAmbientLife.OutputDelegate']
+      in  Index                    val='false'                                  -> ['Get IsAmbientLifeLocked.IsAmbientLifeLocked']
+      out ReturnValue              val=''                                       -> ['Bind Event to Signal Clicked.Delegate']
+   NODE [K2Node_VariableGet] 'Get IsAmbientLifeLocked'
+      out IsAmbientLifeLocked      val='false'                                  -> ['Select.Index']
+   NODE [K2Node_CustomEvent] 'LockDoorForAmbientLife'
+      out OutputDelegate           val=''                                       -> ['Select.Option 0']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CustomEvent] 'UnlockDoorForAmbientLife'
+      out OutputDelegate           val=''                                       -> ['Select.Option 1']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['LockDoorForAmbientLife.then']
+      in  Condition                val='false'                                  -> ['IsServer.ReturnValue']
+      out then                     val=''                                       -> ['SetDoorAmbientLifeLocked.execute']
+      out else                     val=''                                       -> ['Controller_SetDoorAmbientLifeLocked.execute']
+   NODE [K2Node_CallFunction] 'IsServer'
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['UnlockDoorForAmbientLife.then']
+      in  Condition                val='false'                                  -> ['IsServer.ReturnValue']
+      out then                     val=''                                       -> ['SetDoorAmbientLifeLocked.execute']
+      out else                     val=''                                       -> ['Controller_SetDoorAmbientLifeLocked.execute']
+   NODE [K2Node_CallFunction] 'IsServer'
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin', 'Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['AddItem.self']
+   NODE [K2Node_CallFunction] 'GetOwningPlayer'
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      out ReturnValue              val=''                                       -> ['Reroute Node.InputPin', 'Controller_SetDoorAmbientLifeLocked.self']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['GetOwningPlayer.self']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['GetOwningPlayer.ReturnValue']
+      out OutputPin                val=''                                       -> ['Controller_SetDoorAmbientLifeLocked.self']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                       -> ['Controller_SetDoorAmbientLifeLocked.Door']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                       -> ['Controller_SetDoorAmbientLifeLocked.Door']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['NPCCloseDoor.then']
+      in  Condition                val='false'                                  -> ['Not Equal (Enum).ReturnValue']
+      out then                     val=''                                       -> ['Set IsLastOpenCloseFinished.execute']
+   NODE [K2Node_Message] 'Controller_SetDoorAmbientLifeLocked'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  self                     val=''                                       -> ['GetOwningPlayer.ReturnValue']
+      in  Door                     val=''                                       -> ['Self-Reference.self']
+      in  Locked                   val='true'                                   -> []
+   NODE [K2Node_Message] 'Controller_SetDoorAmbientLifeLocked'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      in  Door                     val=''                                       -> ['Self-Reference.self']
+      in  Locked                   val='false'                                  -> []
+   NODE [K2Node_Message] 'Controller_SetDoorAutoCloseEnabled'
+      in  execute                  val=''                                       -> ['EnableAutoClose.then']
+      in  self                     val=''                                       -> ['GetOwningPlayer.ReturnValue']
+      in  Door                     val=''                                       -> ['Self-Reference.self']
+      in  Enabled                  val='true'                                   -> []
+   NODE [K2Node_Message] 'Controller_SetDoorAutoCloseEnabled'
+      in  execute                  val=''                                       -> ['DisableAutoClose.then']
+      in  self                     val=''                                       -> ['GetOwningPlayer.ReturnValue']
+      in  Door                     val=''                                       -> ['Self-Reference.self']
+      in  Enabled                  val='false'                                  -> []
+   NODE [K2Node_CallFunction] 'SetDoorAmbientLifeLocked'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  IsLocked                 val='true'                                   -> []
+   NODE [K2Node_CallFunction] 'SetDoorAmbientLifeLocked'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  IsLocked                 val='false'                                  -> []
+   NODE [K2Node_VariableGet] 'Get ConanBuildingPersistence'
+      out ConanBuildingPersistence val=''                                       -> ['Set dirty flag.self']
+   NODE [K2Node_CallFunction] 'Set dirty flag'
+      in  execute                  val=''                                       -> ['Set IsAmbientLifeLocked.then']
+      in  self                     val=''                                       -> ['Get ConanBuildingPersistence.ConanBuildingPersistence']
+      in  bDirty                   val='true'                                   -> []
+      in  Delay                    val='5.000000'                               -> []
+      out then                     val=''                                       -> ['GenerateNavLink.execute']
+   NODE [K2Node_CallFunction] 'GetComponentByInterface'
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      in  InterfaceClass           val='/Game/Systems/AI/Purge/AI/Engagement/I_PurgeEngagement.I_PurgeEngagement_C' -> []
+      out ReturnValue              val=''                                       -> ['Is Valid.InputObject', 'EngageWithDoor.self']
+   NODE [K2Node_MacroInstance] 'Is Valid'
+      in  exec                     val=''                                       -> ['Reroute Node.OutputPin', 'Branch.else']
+      in  InputObject              val=''                                       -> ['GetComponentByInterface.ReturnValue']
+      out Is Valid                 val=''                                       -> ['EngageWithDoor.execute']
+      out Is Not Valid             val=''                                       -> ['NPCDoneUsingNavLink.execute']
+   NODE [K2Node_CallFunction] 'NPCDoneUsingNavLink'
+      in  execute                  val=''                                       -> ['Is Valid.Is Not Valid']
+      in  NPC                      val=''                                       -> ['Reroute Node.OutputPin']
+   NODE [K2Node_Message] 'EngageWithDoor'
+      in  execute                  val=''                                       -> ['Is Valid.Is Valid']
+      in  self                     val=''                                       -> ['GetComponentByInterface.ReturnValue']
+      in  Placeable                val=''                                       -> ['Self-Reference.self']
+   NODE [K2Node_Self] 'Self-Reference'
+      out self                     val=''                                       -> ['EngageWithDoor.Placeable']
+   NODE [K2Node_CallParentFunction] 'Parent: OnNPCStartUsingNavLink'
+      in  execute                  val=''                                       -> ['Event OnNPCStartUsingNavLink.then']
+      in  NPC                      val=''                                       -> ['Reroute Node.OutputPin']
+      in  Destination              val='0, 0, 0'                                -> ['Event OnNPCStartUsingNavLink.Destination']
+      out then                     val=''                                       -> ['IsOpen.execute']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Event OnNPCStartUsingNavLink.NPC']
+      out OutputPin                val=''                                       -> ['Parent: OnNPCStartUsingNavLink.NPC', 'Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin', 'GetComponentByInterface.self']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['GetOwnerUniqueId.self', 'NPCDoneUsingNavLink.NPC', 'Reroute Node.InputPin', 'Reroute Node.InputPin']
+   NODE [K2Node_Message] 'GetOwnerUniqueId'
+      in  execute                  val=''                                       -> ['Branch.else']
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      out then                     val=''                                       -> ['Branch.execute']
+      out OwnerUniqueId            val=''                                       -> ['Equal (UUID).A']
+   NODE [K2Node_VariableGet] 'Get OwnerUniqueID'
+      out OwnerUniqueID            val=''                                       -> ['Equal (UUID).B']
+   NODE [K2Node_CallFunction] 'Equal (UUID)'
+      in  A                        val=''                                       -> ['GetOwnerUniqueId.OwnerUniqueId']
+      in  B                        val=''                                       -> ['Get OwnerUniqueID.OwnerUniqueID']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['GetOwnerUniqueId.then']
+      in  Condition                val='false'                                  -> ['Equal (UUID).ReturnValue']
+      out then                     val=''                                       -> ['Reroute Node.InputPin']
+      out else                     val=''                                       -> ['Is Valid.exec']
+   NODE [K2Node_CallFunction] 'NPCDoneUsingNavLink'
+      in  execute                  val=''                                       -> ['NPCOpenDoor.then']
+      in  NPC                      val=''                                       -> ['Reroute Node.OutputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin', 'NPCOpenDoor.Actor']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['NPCDoneUsingNavLink.NPC']
+   NODE [K2Node_CallFunction] 'IsOpen'
+      in  execute                  val=''                                       -> ['Parent: OnNPCStartUsingNavLink.then']
+      out then                     val=''                                       -> ['Branch.execute']
+      out Open                     val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['IsOpen.then']
+      in  Condition                val='false'                                  -> ['IsOpen.Open']
+      out then                     val=''                                       -> ['NPCDoneUsingNavLink.execute']
+      out else                     val=''                                       -> ['GetOwnerUniqueId.execute']
+   NODE [K2Node_CallFunction] 'NPCDoneUsingNavLink'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  NPC                      val=''                                       -> ['Reroute Node.OutputPin']
+   NODE [K2Node_CallFunction] 'NPCOpenDoor'
+      in  execute                  val=''                                       -> ['Reroute Node.OutputPin']
+      in  Actor                    val=''                                       -> ['Reroute Node.OutputPin']
+      out then                     val=''                                       -> ['NPCDoneUsingNavLink.execute']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin', 'Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['NPCDoneUsingNavLink.NPC']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_CallFunction] 'GetAIController'
+      in  ControlledActor          val=''                                       -> ['Reroute Node.OutputPin']
+      out ReturnValue              val=''                                       -> ['Is Valid.InputObject', 'Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['GetAIController.ControlledActor']
+   NODE [K2Node_MacroInstance] 'Is Valid'
+      in  exec                     val=''                                       -> ['Branch.else']
+      in  InputObject              val=''                                       -> ['GetAIController.ReturnValue']
+      out Is Valid                 val=''                                       -> ['GetTavernIfVisitor.execute']
+      out Is Not Valid             val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['GetAIController.ReturnValue']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Message] 'GetTavernIfVisitor'
+      in  execute                  val=''                                       -> ['Is Valid.Is Valid']
+      in  self                     val=''                                       -> ['Reroute Node.OutputPin']
+      out then                     val=''                                       -> ['Branch.execute']
+      out IsVisitor                val='false'                                  -> ['AND Boolean.A']
+      out Owner UUID               val=''                                       -> ['Equal (UUID).A']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['GetTavernIfVisitor.self']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Is Valid.Is Not Valid']
+      out OutputPin                val=''                                       -> ['Is Valid.exec']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'AND Boolean'
+      in  A                        val='false'                                  -> ['GetTavernIfVisitor.IsVisitor']
+      in  B                        val='false'                                  -> ['Equal (UUID).ReturnValue']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_VariableGet] 'Get OwnerUniqueID'
+      out OwnerUniqueID            val=''                                       -> ['Equal (UUID).B']
+   NODE [K2Node_CallFunction] 'Equal (UUID)'
+      in  A                        val=''                                       -> ['GetTavernIfVisitor.Owner UUID']
+      in  B                        val=''                                       -> ['Get OwnerUniqueID.OwnerUniqueID']
+      out ReturnValue              val='false'                                  -> ['AND Boolean.B']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['GetTavernIfVisitor.then']
+      in  Condition                val='true'                                   -> ['AND Boolean.ReturnValue']
+      out then                     val=''                                       -> ['Reroute Node.InputPin']
+      out else                     val=''                                       -> ['Is Valid.exec']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Branch.then', 'Branch.then']
+      out OutputPin                val=''                                       -> ['NPCOpenDoor.execute']
+   NODE [K2Node_CallFunction] 'ToggleNavBlocking'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  bEnabled                 val='false'                                  -> []
+   NODE [K2Node_VariableGet] 'Get IsAmbientLifeLocked'
+      out IsAmbientLifeLocked      val='false'                                  -> ['NOT Boolean.A']
+   NODE [K2Node_CallFunction] 'NOT Boolean'
+      in  A                        val='false'                                  -> ['Get IsAmbientLifeLocked.IsAmbientLifeLocked']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['Branch.then']
+      in  Condition                val='true'                                   -> ['NOT Boolean.ReturnValue']
+      out then                     val=''                                       -> ['Set with Notify DoorState.execute']
+      out else                     val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_CallFunction] 'DWLogString'
+      in  execute                  val=''                                       -> ['Reroute Node.OutputPin']
+      in  InString                 val='Hello'                                  -> ['To String (Text).ReturnValue']
+      in  Channel                  val='AI'                                     -> []
+      in  DebugLevel               val='INFOL_CODEWARNING'                      -> []
+      in  bPrintToScreen           val='true'                                   -> []
+      in  TextColor                val='(R=1.000000,G=0.410000,B=0.000000,A=1.000000)' -> []
+      in  Duration                 val='10.000000'                              -> []
+      out then                     val=''                                       -> ['SetNavLinkEnabledAreaClass.execute']
+   NODE [K2Node_FormatText] 'Format Text'
+      in  Format                   val='INVTEXT("Actor [{NPCActor}] Attempted to open a door that should have been locked. Suspected incorrect nav area class on the nav link.")' -> []
+      in  NPCActor                 val=''                                       -> ['Reroute Node.OutputPin']
+      out Result                   val=''                                       -> ['To String (Text).InText']
+   NODE [K2Node_CallFunction] 'To String (Text)'
+      in  InText                   val=''                                       -> ['Format Text.Result']
+      out ReturnValue              val=''                                       -> ['DWLogString.InString']
+   NODE [K2Node_CallFunction] 'SetNavLinkEnabledAreaClass'
+      in  execute                  val=''                                       -> ['DWLogString.then']
+      in  EnabledAreaClass         val='/Game/Systems/AI/Purge/NavArea_PurgeAccessibleDoor.NavArea_PurgeAccessibleDoor_C' -> []
+   NODE [K2Node_MacroInstance] 'Switch Has Authority'
+      in  Execute                  val=''                                       -> ['NPCOpenDoor.then']
+      out Authority                val=''                                       -> ['Branch.execute']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Branch.else']
+      out OutputPin                val=''                                       -> ['DWLogString.execute']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['NPCOpenDoor.Actor']
+      out OutputPin                val=''                                       -> ['Reroute Node.InputPin']
+   NODE [K2Node_Knot] 'Reroute Node'
+      in  InputPin                 val=''                                       -> ['Reroute Node.OutputPin']
+      out OutputPin                val=''                                       -> ['Format Text.NPCActor', 'GetDirectionToOpen.OpeningActor']
+   NODE [K2Node_CallFunction] 'GenerateNavLink'
+      in  execute                  val=''                                       -> ['Is Low AILOD.true']
+   NODE [K2Node_CallFunction] 'DestroyNavLink'
+      in  execute                  val=''                                       -> ['Clear and Invalidate Timer by Handle.then']
+   NODE [K2Node_CallFunction] 'GenerateNavLink'
+      in  execute                  val=''                                       -> ['Set dirty flag.then']
+   NODE [K2Node_CallFunction] 'DestroyNavLink'
+      in  execute                  val=''                                       -> ['Clear and Invalidate Timer by Handle.then']
+      out then                     val=''                                       -> ['Is Low AILOD.execute']
+   NODE [K2Node_CallFunction] 'Get Controlled Pawn'
+      in  self                     val=''                                       -> ['Event Custom Interaction.Instigator']
+      out ReturnValue              val=''                                       -> ['GetPawnRank.Pawn']
+   NODE [K2Node_CallFunction] 'NOT Boolean'
+      in  A                        val='false'                                  -> ['IsGuildMemberRank.Result']
+      out ReturnValue              val='false'                                  -> ['OR Boolean.A']
+   NODE [K2Node_CommutativeAssociativeBinaryOperator] 'OR Boolean'
+      in  A                        val='false'                                  -> ['NOT Boolean.ReturnValue']
+      in  B                        val='false'                                  -> ['MeetsRankRequirement.Result']
+      out ReturnValue              val='false'                                  -> ['Branch.Condition']
+   NODE [K2Node_VariableGet] 'Get RequiredRank'
+      out RequiredRank             val='0'                                      -> ['MeetsRankRequirement.Required']
+   NODE [K2Node_IfThenElse] 'Branch'
+      in  execute                  val=''                                       -> ['MeetsRankRequirement.then']
+      in  Condition                val='true'                                   -> ['OR Boolean.ReturnValue']
+      out then                     val=''                                       -> ['Branch.execute']
+   NODE [K2Node_CallFunction] 'GetPawnRank'
+      in  execute                  val=''                                       -> ['Event Custom Interaction.then']
+      in  Pawn                     val=''                                       -> ['Get Controlled Pawn.ReturnValue']
+      out then                     val=''                                       -> ['IsGuildMemberRank.execute']
+      out Rank                     val='0'                                      -> ['IsGuildMemberRank.Rank', 'MeetsRankRequirement.Rank']
+   NODE [K2Node_CallFunction] 'IsGuildMemberRank'
+      in  execute                  val=''                                       -> ['GetPawnRank.then']
+      in  Rank                     val='0'                                      -> ['GetPawnRank.Rank']
+      out then                     val=''                                       -> ['MeetsRankRequirement.execute']
+      out Result                   val='false'                                  -> ['NOT Boolean.A']
+   NODE [K2Node_CallFunction] 'MeetsRankRequirement'
+      in  execute                  val=''                                       -> ['IsGuildMemberRank.then']
+      in  Rank                     val='0'                                      -> ['GetPawnRank.Rank']
+      in  Required                 val='0'                                      -> ['Get RequiredRank.RequiredRank']
+      out then                     val=''                                       -> ['Branch.execute']
+      out Result                   val='false'                                  -> ['OR Boolean.B']
+Compiling Blueprint '/Game/Systems/Building/Placeables/BP_PL_Door.BP_PL_Door'
+   OK   compile BP_PL_Door
+   OK   BP_PL_Door::EventGraph: no error nodes
+   save_packages(BP_PL_Door) -> True
+   OK   BP_PL_Door written to disk (16:19:17, 1146365 B)
+======== RESULT: ALL OK ========
+Execution of commandlet took:  42.57 seconds, PeakPhysMemoryMB=8589 MB, PeakVirtMemoryMB=8958 MB
+Display: Object '/ControlRig/Python/RigHierarchy/add_controls_for_selected_PY.ControlOutputFormat' was externally referenced when shutting down Python. Forcibly releasing its Python resources!

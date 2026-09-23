@@ -18,7 +18,7 @@ lib, GE, PL = unreal.BlueprintEditorLibrary, unreal.BlueprintGraphEditor, unreal
 MASTER = "/Game/Systems/Building/Placeables/BP_Master_Placeables"
 CONT = "/Game/Systems/Building/Placeables/BP_PlaceableItemContainer"
 DOOR = "/Game/Systems/Building/Placeables/BP_PL_Door"
-BPL_CLASS = "/Game/Mods/GuildAccess/Local/BPL_GuildAccess.BPL_GuildAccess_C"
+BPL_CLASS = "/Game/Mods/GuildAccess/BPL_GuildAccess.BPL_GuildAccess_C"
 MODROOT = r"E:\ClaudeCode\conan-exiles\guild-access\GuildAccess\Content\Systems\Building\Placeables"
 DISK = {MASTER: os.path.join(MODROOT, "BP_Master_Placeables.uasset"),
         CONT: os.path.join(MODROOT, "BP_PlaceableItemContainer.uasset"),
