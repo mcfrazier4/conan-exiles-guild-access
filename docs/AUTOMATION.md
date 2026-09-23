@@ -101,6 +101,9 @@ graph; a screenshot is not.
   platform layer redirects the physical write into
   `GuildAccess/Content/...`. Verified by byte-comparing the vanilla file
   against a backup taken before the write. Keep taking that backup anyway.
+- **Python strips the `Kismet` prefix.** `KismetMathLibrary` is
+  `unreal.MathLibrary`, `KismetSystemLibrary` is `unreal.SystemLibrary`.
+  `unreal.KismetMathLibrary` is an AttributeError that aborts the whole script.
 - Exit code 3 from `UnrealEditor-Cmd.exe` on teardown is normal. The success
   signal is `Python script executed successfully` plus your own on-disk checks.
 

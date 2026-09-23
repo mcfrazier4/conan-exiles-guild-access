@@ -115,6 +115,32 @@ errors and verified on disk by a second dump. Lesson: the macro was my
 recommendation; a plain `IsValid` + `Branch` would have had no hidden second
 input. Replace it during cleanup.
 
+## Members-only rule: authored headlessly (2026-09-23)
+
+First real graph authoring through the Python API, not just pin edits. Built and
+verified in a **dry run** (nothing saved), then applied in two runs:
+
+    GA_MODE=bpl       without -ModDevKit   adds BPL_GuildAccess.IsGuildMemberRank(Rank: Byte) -> Bool = Rank <= 3
+    GA_MODE=override  with    -ModDevKit   rewires CanAccessContainer
+
+Resulting override logic, confirmed by dumping the saved asset:
+
+    CanAccess = Parent.CanAccess AND ( NOT IsGuildMemberRank(rank) OR MeetsRankRequirement(rank, 3) )
+
+Non-members (rank 255) short-circuit to vanilla; members hit the rank gate.
+
+Function-path formats that `add_call_function_node` accepts, discovered by
+trying candidates in the dry run:
+
+    /Script/Engine.KismetMathLibrary:LessEqual_ByteByte
+    /Script/Engine.KismetMathLibrary:Not_PreBool
+    /Script/Engine.KismetMathLibrary:BooleanOR
+    /Game/Mods/GuildAccess/Local/BPL_GuildAccess.BPL_GuildAccess_C:IsGuildMemberRank
+
+Known cosmetic debt: `set_node_pos` rejected my arguments, so the three new
+nodes sit at the graph origin. Harmless at runtime; tidy when someone next
+opens the graph in the GUI, or once the signature is confirmed.
+
 ## Automation route: editor Python
 
 Epic's MCP plugin is present in this dev kit as descriptors only - no compiled
