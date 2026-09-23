@@ -12,7 +12,47 @@ is still small enough to throw away.
 
 ---
 
-## Answer these three before writing anything
+## RESULTS - the three checks, answered 2026-09-23
+
+### 2.0c - parent call: YES
+
+The dev kit **auto-generated** `Parent: CanAccessContainer` and pre-wired it.
+We extend Funcom's logic rather than replace it.
+
+### 2.0a - exec pins: YES
+
+Despite `CanAccessContainer (pure, const)`, the override's implementation graph
+has execution pins on the entry node, the parent call and the return node. Impure
+nodes should therefore be placeable. **Still to confirm by actually placing a
+Print String**, which is also how we settle server-vs-client below.
+
+### 2.0b - the override enforces: YES
+
+Deny-all probe: broke the `Can Access` wire into the Return Node so the function
+always returns false. Result in game:
+
+    Large Chest
+    Hold E for more options
+    Locked                    <- red, rendered by vanilla
+    Owner: test clan
+
+The chest would not open. **Overriding this pure function decides access rather
+than merely reporting it.** The architecture in DESIGN.md holds.
+
+Vanilla also renders the "Locked" state automatically from `CanAccess` being
+false - we wrote no UI for it. That covers much of user journey steps 5 and 6;
+we only need to extend the text to name the required rank.
+
+### Still open: server-side vs client-side
+
+The test client has the mod installed, so a client-only check would look
+identical. Enforcement is proven; **its location is not**. A permission system
+that only runs client-side is worthless against a modified client.
+
+Settle it with a `Print String` in the override and confirm the line appears in
+the **dedicated server's** log, not just the client's.
+
+## The three checks, as originally written
 
 Each is a ten-minute check, and each can change the approach.
 
