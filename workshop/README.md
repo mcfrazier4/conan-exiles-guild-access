@@ -1,12 +1,12 @@
 # Steam Workshop listing
 
-Supplied by the project owner 2026-09-23. Thumbnail replaced 2026-09-23 (1408x1408, 748 KB). Not uploaded yet.
+Supplied by the project owner 2026-09-23. Thumbnail replaced 2026-09-23 (1408x1408, 748 KB). **Published 2026-09-23: Workshop ID 3807033854** (https://steamcommunity.com/sharedfiles/filedetails/?id=3807033854), visibility Public, uploaded from the dev kit panel as mcfrazieriv. The dev kit copies the preview to `GuildAccess/preview.png` and stores the ID under `steamWorkshopFileIds.mainClient` in modinfo.json.
 
 | Field | Value |
 |---|---|
 | Name | **Guild Access Levels** |
 | Description | `description.bbcode` (Steam BBCode, paste verbatim) |
-| Preview image | `preview.jpg` — dev kit limit is **< 1 MB** |
+| Preview image | `preview.png` (1024x1024, 256 colours, 869 KB) — dev kit limit is **< 1 MB** |
 | Visibility at first upload | Hidden (`steamVisibility: 2` in `modinfo.json`) |
 
 ## Before uploading

@@ -1,9 +1,9 @@
 {
-	"name": "GuildAccess",
-	"description": "Per-object access levels for doors and storage based on clan rank. Hold E on any placeable -> Set Access Rank.",
+	"name": "Guild Access Levels",
+	"description": "Per-object access levels for doors and storage based on clan rank. Hold E on any placeable -> Set Access Rank.\r\n\r\n[h1]Keep Your Hands Off My Hoard[/h1]\r\nHyboria is full of brave souls. Some of them just joined your clan yesterday and have already found the chest you \"forgot\" behind the third tapestry.\r\n\r\nThis mod lets a guild master set access levels on doors and storage so the people who built the fortress are not funding the people who just learned which end of the sword is sharp.\r\n\r\n[h2]What it does[/h2]\r\n[list]\r\n[*] Guild masters assign access levels to doors\r\n[*] Guild masters assign access levels to storage\r\n[*] Recruits stay in the hallway, staring at the lock like it personally insulted their mother\r\n[*] Your under-the-bed emergency fortune remains an emergency fortune\r\n[*] Treasure troves stay troves, not community snack bars\r\n[/list]\r\n\r\n[h2]Who this is for[/h2]\r\nClan leaders who have opened a box and found only a note that says \"thanks for the steel\" and a single cactus wine.\r\n\r\nAlso for anyone who has ever said \"we share everything\" and then immediately regretted saying that about the legendary kit.\r\n\r\n[h2]Who this is not for[/h2]\r\nRecruits with sticky fingers, \"just looking\" energy, or a spiritual calling to empty every crate \"in case we need it later.\"\r\n\r\nYou do not need it later. The guild master needed it later. That is why it was behind a door.\r\n\r\n[h2]The official policy[/h2]\r\n[list]\r\n[*] Rank has its privileges\r\n[*] Rank also has a key\r\n[*] If you can see the gleam under the bed, that is a test of character, not an invitation\r\n[*] Failed tests are resolved by a locked lid and a short walk back to the barracks\r\n[/list]\r\n\r\n[h2]Load / use notes[/h2]\r\nServer and clients need the same version.\r\nHave a guild master set the access levels. Everyone else enjoys the architecture from the correct side of the door.\r\n\r\nIf a recruit reports that \"the box is broken,\" the box is working.\r\n\r\n[i]By Crom, if I wanted a communal treasure pile I would have left it in the desert and painted a sign that said \"please take the good stuff first.\"[/i]",
 	"changeNote": "Initial release: rank-gated chests and placeable doors, radial-menu setter, hover text, denial messages.",
 	"author": "mcfrazieriv",
-	"authorUrl": "",
+	"authorUrl": "github.com/mcfrazier4/conan-exiles-guild-access",
 	"versionMajor": 1,
 	"versionMinor": 0,
 	"versionBuild": 0,
@@ -12,8 +12,9 @@
 	"steamTestLivePublishedFileId": "",
 	"steamWorkshopFileIds":
 	{
+		"mainClient": "3807033854"
 	},
-	"steamVisibility": 2,
+	"steamVisibility": 0,
 	"folderName": "GuildAccess",
 	"devkitRevisionNumber": 1002,
 	"devkitSnapshotId": 0,
