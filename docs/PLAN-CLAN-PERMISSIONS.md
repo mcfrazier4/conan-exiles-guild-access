@@ -53,6 +53,9 @@ Rules that do not need a checkbox because they are structural:
 
 - Guild Master is always all-allowed and cannot be edited (the top row in the
   brief).
+- **Only the Guild Master edits.** Every other member can open the panel and
+  read it (rank names, who may do what) but every control is disabled for
+  them. Decided 2026-09-24.
 - **A rank may never dismantle or pick up an object whose access rank is above
   its own.** This closes the "destroy the door to get in" hole regardless of
   how the table is configured. Implemented as: dismantle/pick-up checks
@@ -113,8 +116,17 @@ Three ways to open it, best first:
 
 Layout, from the brief: ranks across the top (Recruit -> Guild Master, left to
 right), permissions down the left, checkmarks in the cells, Guild Master
-column locked on. Rank names editable inline in the header row. Reuse the
-roster's row styling so it reads as part of the Clan screen.
+column locked on. Rank names editable inline in the header row (GM only; the
+panel is read-only for everyone else). Reuse the roster's row styling so it
+reads as part of the Clan screen.
+
+**Rank badges.** The Clan roster already draws a chevron badge per rank (one
+chevron for Recruit up to the stacked chevrons for Guild Master). Reuse those
+exact textures: as the column headers of the table, and as the icons of the
+four circles in the radial "Set Access Rank" submenu (today all four use the
+lock icon). Probe: find the badge textures / the widget that maps ERank to
+badge (UNKNOWN asset names - do not guess), and check they are plain
+`Texture2D`s so `RadialMenuEntry.AddSubItem(icon)` accepts them.
 
 Authoring reality: UMG widgets are the one thing the headless Python route has
 not touched. Expect the panel to be built in the GUI (owner) from a written
@@ -127,15 +139,14 @@ spec, with the logic behind it (data, RPCs, checks) authored headlessly.
 2. Storage + replication on the ModController, with a console-only way to
    edit it. Enforce the "cannot dismantle above your rank" rule. Test on the
    local server with the ghost-GM trick.
-3. Rank names wired into all existing text.
+3. Rank names wired into all existing text; rank badges on the radial
+   submenu circles (small, independent of the panel - can ship first).
 4. Panel via route 2 (keybound) so it ships without a widget override; route
    1 as a later option if the override is clean.
 5. Workshop update with a change note listing the new permissions.
 
 ## 9. Open questions for the owner
 
-- Should Officers be allowed to edit the table, or only the Guild Master?
-  (Draft says GM only.)
 - Should "repair" be a permission at all? Restricting it can leave a base to
   decay if the GM is away.
 - Is per-clan configuration enough, or do servers want an admin-wide default
