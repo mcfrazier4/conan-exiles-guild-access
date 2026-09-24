@@ -1,6 +1,6 @@
 # Steam Workshop listing
 
-Supplied by the project owner 2026-09-23. Not uploaded yet.
+Supplied by the project owner 2026-09-23. Thumbnail replaced 2026-09-23 (1408x1408, 748 KB). Not uploaded yet.
 
 | Field | Value |
 |---|---|
@@ -15,7 +15,9 @@ Supplied by the project owner 2026-09-23. Not uploaded yet.
   `description`. The dev kit's Mod info panel writes those fields to Steam.
   Decide whether the in-game mod list should show "GuildAccess" or
   "Guild Access Levels" before changing `name` — it is also the folder name.
-- The description promises doors and a guild-master UI. Both are still
-  unbuilt (see DESIGN.md); do not upload until they exist.
+- The description's promises (doors, guild-master UI) are built and were
+  verified live on 2026-09-23 (docs/PHASE-3-5-PROGRESS.md). Building-part
+  doors (`BP_BuildDoor`/`BP_BuildTrapdoor`) are NOT covered yet; say so in
+  the listing or build them first.
 - `bRequiresLoadOnStartup` and `devkitRevisionNumber` in `modinfo.json` must
   be right for the dev kit version at upload time (docs/PHASE-0-SETUP.md 7b).

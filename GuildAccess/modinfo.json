@@ -1,7 +1,7 @@
 {
 	"name": "GuildAccess",
-	"description": "",
-	"changeNote": "",
+	"description": "Per-object access levels for doors and storage based on clan rank. Hold E on any placeable -> Set Access Rank.",
+	"changeNote": "Initial release: rank-gated chests and placeable doors, radial-menu setter, hover text, denial messages.",
 	"author": "",
 	"authorUrl": "",
 	"versionMajor": 1,
