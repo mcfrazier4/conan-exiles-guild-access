@@ -68,6 +68,9 @@ Rules that do not need a checkbox because they are structural:
 Defaults = vanilla behaviour, so installing v2 changes nothing until a guild
 master edits the table (same principle as v1's default rank 0).
 
+Decided 2026-09-24: **repair is a regular permission row** (default allowed for
+all ranks), and configuration is **per clan only** - no server-wide default.
+
 ## 4. Custom rank names
 
 Four strings per clan, defaults "Recruit / Member / Officer / Guild Master".
@@ -144,10 +147,3 @@ spec, with the logic behind it (data, RPCs, checks) authored headlessly.
 4. Panel via route 2 (keybound) so it ships without a widget override; route
    1 as a later option if the override is clean.
 5. Workshop update with a change note listing the new permissions.
-
-## 9. Open questions for the owner
-
-- Should "repair" be a permission at all? Restricting it can leave a base to
-  decay if the GM is away.
-- Is per-clan configuration enough, or do servers want an admin-wide default
-  (ServerSettings-style) that clans inherit?
