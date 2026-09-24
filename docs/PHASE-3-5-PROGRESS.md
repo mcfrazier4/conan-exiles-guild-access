@@ -114,7 +114,7 @@ Without step 2 the rank resets on server restart.
 
 ## Not yet addressed
 
-- Building-part doors (`BP_BuildDoor`, `BP_BuildTrapdoor`) - separate family.
+- Building-part doors (`BP_BuildDoor`, hinged doors in doorframes) - separate family, next. Trapdoors are out of scope.
 - Crafting-bench aggregation (`CanCraftFromNearbyStorages`) - separate path.
 - Admin bypass.
 - Denial message for doors (chests already get vanilla's "Container is locked!").

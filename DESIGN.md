@@ -198,7 +198,7 @@ Confirmed 2026-09-23 by reading parent classes out of the uassets:
 
     BP_BuildingBase_C
       +- BP_BuildDoor_C          -> BP_BuildDoor_T2, _T3
-      +- BP_BuildTrapdoor_C      -> BP_BuildTrapdoor_T2, _T3
+      (BP_BuildTrapdoor_C sits beside it; trapdoors are OUT OF SCOPE - owner's decision 2026-09-23)
 
     BP_Master_Placeables_C
       +- BP_PL_Door_C
@@ -207,13 +207,12 @@ Confirmed 2026-09-23 by reading parent classes out of the uassets:
 **Sliding doors are placeables, not building parts.** They share a root with
 containers rather than with other doors.
 
-So gating "doors" needs **three** override points, not one:
+So gating "doors" needs **two** override points, not one:
 
 | Override on | Covers |
 |---|---|
-| `BP_BuildDoor` | hinged doors, all tiers |
-| `BP_BuildTrapdoor` | trapdoors, all tiers |
-| `BP_PL_Door` | sliding doors, all tiers - **and the test base's `BP_PL_Door_T1`** (confirmed in game_0.db 2026-09-23), so build this override first |
+| `BP_BuildDoor` | hinged doors that snap into a doorframe, all tiers - the common case |
+| `BP_PL_Door` | placeable doors (sliding doors and the `BP_PL_Door_T1` family), all tiers - **done and verified live 2026-09-23** |
 
 Tiers inherit, so variants come free. Combined with the container override that
 is **four base assets** total - the conflict surface that section 5 is about.
