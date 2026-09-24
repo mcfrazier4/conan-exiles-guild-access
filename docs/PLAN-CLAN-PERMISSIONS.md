@@ -32,6 +32,19 @@ Research tasks (headless probes, no GUI):
    `InteractableMenu` sequence, so the hook points are known for placeables.
 3. Confirm the ModController persists a SaveGame map across restarts.
 
+## 2b. Probe results (2026-09-24, `tools/authoring/probe_v2.py`, `probe_v2b.py`)
+
+| Question | Answer |
+|---|---|
+| Native permission matrix | **None.** `Guild` exposes `get_player_rank`, `is_officer`, `get_owner`, `get_guild_members`, `update_member_rank`, `promote_to_guild_master`, `remove_member`. Rank powers are hard-wired in the clan UI. The table is entirely mod-side. |
+| ModController persistence | It has an `ActorPersistenceComponent` (`save_frequency` 60 s, `skip_saving` false). Map-typed Blueprint variables are creatable headlessly (`get_map_type`). Still to prove: a SaveGame map survives a restart - do this first in step 2. |
+| Placeable dismantle / pick-up / move / demolish | Client menu handlers send `BasePlayerCharInterface` messages (`Player Interactable Dismantle`, `... Demolish`, `... ReturnToInventory`, `... SetLockedState`) to the character, which calls C++ `BuildSystemComponent.server_dismantle_building / server_return_placeable_to_inventory / move_placeable`. |
+| Server-side gate for placeables | `BP_Master_Placeables :: GetCanBeDismantled(DismantlingCharacter)` and `CanReturnToInventory(ownerCharacter)` both take the acting character and are Blueprint functions on a class we already override. If C++ consults them server-side (likely - they receive the character - but UNKNOWN until tested with a spoofed Recruit), they are the enforcement points for dismantle and pick-up without touching the character Blueprint. Move: `BuildSystemComponent.allow_movement_of_placeable(placeable)` is C++; the menu also calls it. |
+| Server-side gate for building pieces | `BP_BuildingBase` has **no** `GetCanBeDismantled`/menu graphs; removal goes through C++ `is_building_removal_allowed` / `server_dismantle_building`. UNKNOWN whether any Blueprint hook exists on the piece; if not, gating building-piece dismantle needs an override of the player character (large surface) - decide after a targeted probe of `BuildingBase` native events. |
+| Clan tab widget | `/Game/UI/Widgets/Guild/W_GuildView` (parent C++ `GuildViewBase`, which owns `ButtonBar`, `GuildMembersList`, the name/MOTD editing). The green-box button would go on its `ButtonBar`. The Blueprint layer is thin (two handlers + EventGraph), so an override adding one button is small - but it is still a vanilla UI override that any other clan-UI mod would conflict with. |
+| Rank badges | `/Game/UI/Textures/GUIs/Guild/T_Rank_Recruit / _Member / _Officer / _GuildMaster`, plain `Texture2D`, **16x23 px**. Fine for the table headers; on the radial circles they will upscale - test how it looks, and fall back to the lock icon plus the badge as a small overlay if it is mushy. |
+| Repair hook | `PlaceableBase.repair_module_with_all_ingredients` / `get_required_extra_inventories_for_repair` exist in C++; the repair UI path is UNKNOWN - probe when building the repair row. |
+
 ## 3. Permission model
 
 Per clan, a table `Rank x Permission -> allowed`, stored once (not per object):
@@ -137,8 +150,9 @@ spec, with the logic behind it (data, RPCs, checks) authored headlessly.
 
 ## 8. Order of work
 
-1. Probes: guild API surface, dismantle/pick-up hook points, ModController
-   persistence, clan-tab widget name. One day.
+1. Probes - done (section 2b). Remaining: prove ModController SaveGame
+   persistence; confirm `GetCanBeDismantled` is consulted server-side; find a
+   building-piece hook.
 2. Storage + replication on the ModController, with a console-only way to
    edit it. Enforce the "cannot dismantle above your rank" rule. Test on the
    local server with the ghost-GM trick.
