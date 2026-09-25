@@ -2,8 +2,8 @@
 Run WITH -ModDevKit. GA_MODE=dry|real. Idempotent.
 
 BPL_GuildAccess (+):
-  GAKey2(GuildId:int, A:byte) -> String            "<g>:<a>"
-  GAKey3(GuildId:int, A:byte, B:byte) -> String    "<g>:<a>:<b>"
+  GAKey2(GuildId:string (guild StableId), A:byte) -> String            "<g>:<a>"
+  GAKey3(GuildId:string, A:byte, B:byte) -> String    "<g>:<a>:<b>"
   DefaultAllowed(Perm:byte, Rank:byte) -> Bool     vanilla-equivalent defaults (pure)
   PermToText(Perm:byte) -> Text                    row labels (pure)
   GetGAController() -> BP_GA_ModController         first instance in the world
@@ -33,11 +33,17 @@ wait_registry()
 bpl = unreal.load_asset(BPL_PATH); mod = unreal.load_asset(MOD_PATH)
 check(bpl is not None and mod is not None, "loaded BPL + ModController")
 mod_cls = lib.generated_class(mod)
+# recreate the guild-keyed graphs from scratch (GuildId type changed): remove dependents first, then compile both
+for bp_, names_ in ((mod, ("GetRankName", "IsAllowed", "SetRankName", "SetAllowed", "BuildAllowed", "BuildNames")), (bpl, ("GAKey2", "GAKey3"))):
+    for nm in names_:
+        if nm in [str(x) for x in lib.list_graph_names(bp_)]: lib.remove_function_graph(bp_, nm); print(f"   removed {nm} for recreation")
+check(lib.compile_blueprint(mod), "ModController compiles without the old graphs"); check(lib.compile_blueprint(bpl), "BPL compiles without the old graphs")
 
 def out(n, name=None):
     if n is None: return None
     if name: return lib.find_output_pin(n, name)
     o = lib.list_output_pins(n); return o[0] if o else None
+RECREATE = {"GAKey2", "GAKey3", "GetRankName", "IsAllowed", "SetRankName", "SetAllowed"}
 def fn_graph(bp, name, inputs, outputs, pure=False):
     """returns (editor, {input pins}, return node, created?)"""
     names = [str(x) for x in lib.list_graph_names(bp)]
@@ -64,13 +70,13 @@ def concat(ed, a_pin, b_pin=None, b_lit=None):
 
 # ============================================================= BPL helpers
 sec("BPL: GAKey2 / GAKey3 / DefaultAllowed / PermToText / GetGAController")
-ed, ins, ret, new = fn_graph(bpl, "GAKey2", [("GuildId", int_t), ("A", byte_t)], [("Key", str_t)], pure=True)
+ed, ins, ret, new = fn_graph(bpl, "GAKey2", [("GuildId", str_t), ("A", byte_t)], [("Key", str_t)], pure=True)
 if new:
-    g = concat(ed, int_to_str(ed, ins["GuildId"]), b_lit=":"); k = concat(ed, g, byte_to_str(ed, ins["A"]))
+    g = concat(ed, ins["GuildId"], b_lit=":"); k = concat(ed, g, byte_to_str(ed, ins["A"]))
     connect(k, lib.find_input_pin(ret, "Key"), "key -> Return"); wire_exec(ed, ret)
-ed, ins, ret, new = fn_graph(bpl, "GAKey3", [("GuildId", int_t), ("A", byte_t), ("B", byte_t)], [("Key", str_t)], pure=True)
+ed, ins, ret, new = fn_graph(bpl, "GAKey3", [("GuildId", str_t), ("A", byte_t), ("B", byte_t)], [("Key", str_t)], pure=True)
 if new:
-    g = concat(ed, int_to_str(ed, ins["GuildId"]), b_lit=":"); k1 = concat(ed, g, byte_to_str(ed, ins["A"])); k2 = concat(ed, k1, b_lit=":"); k = concat(ed, k2, byte_to_str(ed, ins["B"]))
+    g = concat(ed, ins["GuildId"], b_lit=":"); k1 = concat(ed, g, byte_to_str(ed, ins["A"])); k2 = concat(ed, k1, b_lit=":"); k = concat(ed, k2, byte_to_str(ed, ins["B"]))
     connect(k, lib.find_input_pin(ret, "Key"), "key -> Return"); wire_exec(ed, ret)
 ed, ins, ret, new = fn_graph(bpl, "DefaultAllowed", [("Perm", byte_t), ("Rank", byte_t)], [("Allowed", bool_t)], pure=True)
 if new:
@@ -119,7 +125,7 @@ if "Perms" not in have: check(lib.add_member_variable(mod, "Perms", lib.get_map_
 check(lib.compile_blueprint(mod), "compile after maps")
 
 sec("ModController: GetRankName")
-ed, ins, ret, new = fn_graph(mod, "GetRankName", [("GuildId", int_t), ("Rank", byte_t)], [("Name", str_t)])
+ed, ins, ret, new = fn_graph(mod, "GetRankName", [("GuildId", str_t), ("Rank", byte_t)], [("Name", str_t)])
 if new:
     key = call(ed, f"{BPL_C}:GAKey2", "GAKey2"); connect(ins["GuildId"], lib.find_input_pin(key, "GuildId"), "g"); connect(ins["Rank"], lib.find_input_pin(key, "A"), "r")
     m = ed.add_get_member_variable_node("RankNames")
@@ -133,7 +139,7 @@ if new:
     t2s = call(ed, T + "Conv_TextToString", "TextToString"); connect(out(rt, "Result"), lib.find_input_pin(t2s, "InText"), "-> str"); connect(out(t2s, "ReturnValue"), lib.find_input_pin(ret2, "Name"), "default -> Name")
 
 sec("ModController: IsAllowed")
-ed, ins, ret, new = fn_graph(mod, "IsAllowed", [("GuildId", int_t), ("Perm", byte_t), ("Rank", byte_t)], [("Allowed", bool_t)])
+ed, ins, ret, new = fn_graph(mod, "IsAllowed", [("GuildId", str_t), ("Perm", byte_t), ("Rank", byte_t)], [("Allowed", bool_t)])
 if new:
     gm = call(ed, M + "EqualEqual_ByteByte", "Rank==3"); connect(ins["Rank"], lib.find_input_pin(gm, "A"), "rank"); setval(gm, "B", "3")
     br0 = ed.add_branch_node(); connect(ed.find_graph_entry_pin(), exec_in(br0), "entry -> Branch(GM)"); connect(out(gm, "ReturnValue"), lib.find_condition_pin(br0), "==3")
@@ -167,8 +173,8 @@ def setter(name, inputs, mapvar, keyfn, keyargs, valname):
         r = ed.add_return_node(); connect(then_out(sd), exec_in(r), "-> Return")
     else:
         r = ed.add_return_node(); connect(then_out(add), exec_in(r), "-> Return")
-setter("SetRankName", [("GuildId", int_t), ("Rank", byte_t), ("Name", str_t)], "RankNames", "GAKey2", [("GuildId", "GuildId"), ("Rank", "A")], "Name")
-setter("SetAllowed", [("GuildId", int_t), ("Perm", byte_t), ("Rank", byte_t), ("Allowed", bool_t)], "Perms", "GAKey3", [("GuildId", "GuildId"), ("Perm", "A"), ("Rank", "B")], "Allowed")
+setter("SetRankName", [("GuildId", str_t), ("Rank", byte_t), ("Name", str_t)], "RankNames", "GAKey2", [("GuildId", "GuildId"), ("Rank", "A")], "Name")
+setter("SetAllowed", [("GuildId", str_t), ("Perm", byte_t), ("Rank", byte_t), ("Allowed", bool_t)], "Perms", "GAKey3", [("GuildId", "GuildId"), ("Perm", "A"), ("Rank", "B")], "Allowed")
 
 sec("compile")
 compile_ok(mod, [(GE.get_graph_editor_by_name(mod, g), g) for g in ("GetRankName", "IsAllowed", "SetRankName", "SetAllowed")], "BP_GA_ModController")

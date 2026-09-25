@@ -63,6 +63,15 @@ def snapshot(ed): return {n.get_name() for n in ed.list_all_nodes()}
 def as_pin(cast_node):
     outs = [p for p in lib.list_output_pins(cast_node) if str(PL.get_pin_name(p)).startswith("As")]
     return outs[0] if outs else None
+def pin_exact_in(n, name):
+    for p in lib.list_input_pins(n):
+        if str(PL.get_pin_name(p)) == name: return p
+    return None
+def pin_exact_out(n, name):
+    for p in lib.list_output_pins(n):
+        if str(PL.get_pin_name(p)) == name: return p
+    return None
+def has_exec(n): return pin_exact_in(n, "execute") is not None
 def exec_in(n): return lib.find_execute_pin(n)
 def then_out(n): return lib.find_then_pin(n)
 def dump(ed, name):
