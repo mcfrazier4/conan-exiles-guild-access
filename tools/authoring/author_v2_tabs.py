@@ -101,7 +101,7 @@ else:
         nxt = [PL.get_owning_node(c) for c in PL.list_connected_pins(then_out(old[0]))]
         if nxt and nxt[0].get_class().get_name() == "K2Node_ExecutionSequence" and "Set TabsBuilt" in [title(n) for n in walk_exec(pin_exact_out(nxt[0], "then_1"))]:
             seq = nxt[0]; victims = walk_exec(pin_exact_out(seq, "then_1")); print("   stripping our old tab build:", sorted(set(title(n) for n in victims))); ed.remove_nodes(victims)
-    for n in [n for n in ed.list_all_nodes() if n.get_class().get_name() == "K2Node_CustomEvent" and title(n).replace(" ", "") in ("SignalClicked_Event", "SignalClicked_Event_0", "SignalClosing_Event", "RosterTab", "RanksTab", "WindowClosing")]:
+    for n in [n for n in ed.list_all_nodes() if n.get_class().get_name() == "K2Node_CustomEvent" and title(n).replace(" ", "").startswith("Signal")]:
         victims = walk_exec(then_out(n)); ed.remove_nodes(victims + [n])
     lib.compile_blueprint(gv)
     for nm, t in (("TabsBuilt", lib.get_basic_type_by_name("bool")), ("TabRoster", lib.get_object_reference_type(unreal.FLXButtonBase)), ("TabRanks", lib.get_object_reference_type(unreal.FLXButtonBase)), ("Comp", lib.get_object_reference_type(unreal.load_class(None, PL_C)))):
@@ -138,11 +138,16 @@ else:
         snc = call(ed, "/Script/ConanSandbox.RootWidget:SetupNewChild", f"SetupNewChild({label})"); connect(bp_, pin_exact_in(snc, "child"), "tab"); connect(tail, exec_in(snc), "-> SetupNewChild"); tail = then_out(snc)
         st = ed.add_set_member_variable_node(key); connect(bp_, pin_exact_in(st, key), f"-> {key}"); connect(tail, exec_in(st), f"-> Set {key}"); tail = then_out(st)
         tabs[key] = bp_
-    ion = call(ed, f"{FLX}:InstantSetIsToggledOn", "Roster tab on"); connect(tabs["TabRoster"], selfpin(ion), "tab"); PL.set_pin_value(first_param(ion), "true"); connect(tail, exec_in(ion), "-> Roster on"); tail = then_out(ion)
+    ion = call(ed, f"{FLX}:SetIsToggledOn", "Roster tab on"); connect(tabs["TabRoster"], selfpin(ion), "tab"); setval(ion, "NewIsToggledOn", "true"); setval(ion, "ShouldSendEvent", "false"); setval(ion, "IsInstantTransition", "false"); connect(tail, exec_in(ion), "-> Roster on"); tail = then_out(ion)
     sb = ed.add_set_member_variable_node("TabsBuilt"); PL.set_pin_value(pin_exact_in(sb, "TabsBuilt"), "true"); connect(tail, exec_in(sb), "-> TabsBuilt"); tail = then_out(sb)
-    asg_r, h_roster = assign(ed, tabs["TabRoster"], "Events|AssignSignalClicked", "Assign Roster click"); connect(tail, exec_in(asg_r), "-> Assign Roster"); tail = then_out(asg_r)
+    asg_r, h_roster = assign(ed, tabs["TabRoster"], "Events|AssignSignalToggled", "Assign Roster toggled"); connect(tail, exec_in(asg_r), "-> Assign Roster"); tail = then_out(asg_r)
     lib.compile_blueprint(gv)
-    asg_k, h_ranks = assign(ed, tabs["TabRanks"], "Events|AssignSignalClicked", "Assign Ranks click"); connect(tail, exec_in(asg_k), "-> Assign Ranks"); tail = then_out(asg_k)
+    asg_k, h_ranks = assign(ed, tabs["TabRanks"], "Events|AssignSignalToggled", "Assign Ranks toggled"); connect(tail, exec_in(asg_k), "-> Assign Ranks"); tail = then_out(asg_k)
+    print("   toggled handler pins:", pins(h_roster))
+    def only_on(h):
+        """a toggled handler fires for on and off; only 'on' switches tabs"""
+        bp_ = next((p for p in lib.list_output_pins(h) if str(PL.get_pin_name(p)) not in ("then", "OutputDelegate", "Button")), None); check(bp_ is not None, "toggled handler bool pin")
+        b = ed.add_branch_node(); connect(bp_, lib.find_condition_pin(b), "toggled on?"); connect(then_out(h), exec_in(b), "handler -> on?"); return then_out(b)
     lib.compile_blueprint(gv)
     asg_c, h_close = assign(ed, None, "Signals|AssignSignalClosing", "Assign SignalClosing"); connect(tail, exec_in(asg_c), "-> Assign Closing")
     # --- shared pieces for the handlers
@@ -157,16 +162,16 @@ else:
     def toggle(tail, roster_on):
         for key, on in (("TabRoster", roster_on), ("TabRanks", not roster_on)):
             g = ed.add_get_member_variable_node(key); s = call(ed, f"{FLX}:SetIsToggledOn", f"{key} -> {on}"); connect(out(g), selfpin(s), key)
-            setval(s, "NewIsToggledOn", "true" if on else "false"); setval(s, "ShouldSendEvent", "false"); setval(s, "IsInstantTransition", "true"); connect(tail, exec_in(s), f"-> {key}"); tail = then_out(s)
+            setval(s, "NewIsToggledOn", "true" if on else "false"); setval(s, "ShouldSendEvent", "false"); setval(s, "IsInstantTransition", "false"); connect(tail, exec_in(s), f"-> {key}"); tail = then_out(s)
         return tail
     # Roster click
-    t = then_out(h_roster); sbx, swp = roster_bits(); t = set_vis(ed, sbx, "Visible", t, "roster"); t = set_vis(ed, swp, "Visible", t, "show offline")
+    t = only_on(h_roster); sbx, swp = roster_bits(); t = set_vis(ed, sbx, "Visible", t, "roster"); t = set_vis(ed, swp, "Visible", t, "show offline")
     c, p, valid = panel_bits(); b = ed.add_branch_node(); connect(valid, lib.find_condition_pin(b), "panel?"); connect(t, exec_in(b), "-> panel?")
     t2 = set_vis(ed, p, "Collapsed", then_out(b), "panel"); toggle(t2, True)
     # the toggle chain starts at the SetIsToggledOn node fed by t2; the no-panel branch joins it there
     first_toggle = PL.get_owning_node(list(PL.list_connected_pins(t2))[0]); connect(lib.find_else_pin(b), exec_in(first_toggle), "no panel -> toggles")
     # Ranks click
-    t = then_out(h_ranks); sbx, swp = roster_bits(); t = set_vis(ed, sbx, "Collapsed", t, "roster"); t = set_vis(ed, swp, "Collapsed", t, "show offline"); t = toggle(t, False)
+    t = only_on(h_ranks); sbx, swp = roster_bits(); t = set_vis(ed, sbx, "Collapsed", t, "roster"); t = set_vis(ed, swp, "Collapsed", t, "show offline"); t = toggle(t, False)
     c, p, valid = panel_bits(); b = ed.add_branch_node(); connect(valid, lib.find_condition_pin(b), "panel?"); connect(t, exec_in(b), "-> panel?")
     set_vis(ed, p, "Visible", then_out(b), "panel")
     sh = ed.add_set_member_variable_node("RanksHost", PL_C); connect(c, selfpin(sh), "comp"); connect(out(me), pin_exact_in(sh, "RanksHost"), "self"); connect(lib.find_else_pin(b), exec_in(sh), "no panel -> RanksHost = self")
