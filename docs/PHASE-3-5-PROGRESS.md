@@ -147,3 +147,14 @@ GuildAccess: no resolve/load errors, both ModControllers registered.
 Cost: non-container, non-door placeables no longer get the menu - which is
 correct, they have nothing to lock. The radial circles also now show the
 vanilla rank badges (A6). Not yet on the Workshop.
+
+## A8 - radial badges at 50%, centred (2026-09-25)
+
+The vanilla `T_Rank_*` badges are 16x23 and the radial icon slot is 92x92
+(the vanilla `MainRadialMenuIcon*` textures), so the badge was stretched to
+fill the circle and looked pixelated. `RadialMenuEntry` exposes no icon size,
+so the fix is in the texture: `tools/authoring/icons_src/` holds the exported
+badges and `T_GA_Rank_*.png` (92x92, badge scaled to 46 px tall, centred).
+`author_a8_icons.py` imports them under `/Game/Mods/GuildAccess` (UI texture
+group, no mips) and repoints the four `AddSubItem` icon pins on all three
+leaf overrides. The four textures are listed in `CookInfo.ini`.
