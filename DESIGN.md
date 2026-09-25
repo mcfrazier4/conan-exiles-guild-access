@@ -426,3 +426,11 @@ lock visual may be reusable. Check before drawing our own.
 8. Does `bRequiresLoadOnStartup` in `modinfo.json` need to be `true` for a mod
    that overrides base-game blueprints? Currently `false` (the dev kit default).
    Prime suspect if the mod loads but its overrides never take effect.
+
+## 5b. Override list (current, 2026-09-24)
+
+Base assets overridden: `BP_PlaceableItemContainer`, `BP_PL_Door`,
+`BP_BuildDoor`. **Not** `BP_Master_Placeables` any more (LBPR conflict, see
+docs/PHASE-3-5-PROGRESS.md A7). Mod-owned: `BPL_GuildAccess`, `BPC_GA_Lock`,
+`BPC_GA_Player`, `BP_GA_ModController` (attaches `BPC_GA_Player` to
+`FunCombat_PlayerController_C` without overriding it).

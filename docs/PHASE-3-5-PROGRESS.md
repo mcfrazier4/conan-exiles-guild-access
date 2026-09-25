@@ -119,3 +119,31 @@ Without step 2 the rank resets on server restart.
 - Admin bypass.
 - Denial message for doors (chests already get vanilla's "Container is locked!").
 - Node positions in the graphs are all (0,0); cosmetic, GUI-only.
+
+## A7 - conflict fix: no more BP_Master_Placeables override (2026-09-24)
+
+Reported live: with LBPR (No_Building_Placement_Restrictions) installed, the
+rank options vanished from placeables. LBPR also overrides
+`BP_Master_Placeables` (and `BP_BuildingBase`); it loads after us, so its copy
+replaced ours and our door/container overrides logged
+`Failed to resolve bytecode referenced field ... BP_Master_Placeables_C:RequiredRank`.
+
+Fix: the Master override is gone. Everything it carried now lives on the
+three leaf classes, each with its own `RequiredRank` (RepNotify + SaveGame),
+`GuildAccessLock` SCS component, server handler, radial submenu, hover text
+and denial message:
+
+| Override | Menu hook |
+|---|---|
+| `BP_PlaceableItemContainer` | new `Event InteractableMenu` -> `Parent: InteractableMenu` (the parent-call node is GUI-only: right-click the event, "Add call to parent function"; `author_a7_leaf.py` wires it) -> ours |
+| `BP_PL_Door` | vanilla event kept; a Sequence inserted after it feeds ours |
+| `BP_BuildDoor` | unchanged from A5 (already leaf-local) |
+
+Override surface is now four leaf classes (`BP_PlaceableItemContainer`,
+`BP_PL_Door`, `BP_BuildDoor` + the library and components), none of which
+LBPR touches. Verified on the local server with LBPR mounted **after**
+GuildAccess: no resolve/load errors, both ModControllers registered.
+
+Cost: non-container, non-door placeables no longer get the menu - which is
+correct, they have nothing to lock. The radial circles also now show the
+vanilla rank badges (A6). Not yet on the Workshop.
