@@ -40,7 +40,7 @@ Research tasks (headless probes, no GUI):
 | ModController persistence | It has an `ActorPersistenceComponent` (`save_frequency` 60 s, `skip_saving` false). Map-typed Blueprint variables are creatable headlessly (`get_map_type`). Still to prove: a SaveGame map survives a restart - do this first in step 2. |
 | Placeable dismantle / pick-up / move / demolish | Client menu handlers send `BasePlayerCharInterface` messages (`Player Interactable Dismantle`, `... Demolish`, `... ReturnToInventory`, `... SetLockedState`) to the character, which calls C++ `BuildSystemComponent.server_dismantle_building / server_return_placeable_to_inventory / move_placeable`. |
 | Server-side gate for placeables | `BP_Master_Placeables :: GetCanBeDismantled(DismantlingCharacter)` and `CanReturnToInventory(ownerCharacter)` both take the acting character and are Blueprint functions on a class we already override. If C++ consults them server-side (likely - they receive the character - but UNKNOWN until tested with a spoofed Recruit), they are the enforcement points for dismantle and pick-up without touching the character Blueprint. Move: `BuildSystemComponent.allow_movement_of_placeable(placeable)` is C++; the menu also calls it. |
-| Server-side gate for building pieces | **Confirmed: no Blueprint hook.** `BP_BuildingBase` exposes no dismantle/removal function or event to override (`probe_v2c.py`: only damage/overlap/LOD events; C++ `BuildingBase` has `remove_building_instance` but nothing a Blueprint is asked before removal). Removal is decided in C++ (`BuildSystemComponent.is_building_removal_allowed()`, no arguments) and executed by `server_dismantle_building`. Gating building-piece dismantle by rank therefore needs one of: (a) an override of the player character's `Player Interactable Dismantle` implementation (large, conflict-prone surface); (b) accepting that only *placeables* get the dismantle permission in v2 and relying on the door's access rank for doors. Decision needed. `BP_BuildDoorFrame` has no Blueprint knowledge of its socketed door either. |
+| Server-side gate for building pieces | **Confirmed: no Blueprint hook.** `BP_BuildingBase` exposes no dismantle/removal function or event to override (`probe_v2c.py`: only damage/overlap/LOD events; C++ `BuildingBase` has `remove_building_instance` but nothing a Blueprint is asked before removal). Removal is decided in C++ (`BuildSystemComponent.is_building_removal_allowed()`, no arguments) and executed by `server_dismantle_building`. Gating building-piece dismantle by rank therefore needs one of: (a) an override of the player character's `Player Interactable Dismantle` implementation (large, conflict-prone surface); (b) accepting that only *placeables* get the dismantle permission in v2 and relying on the door's access rank for doors. **Decided 2026-09-24: (b).** No character override. v2's dismantle / pick-up / move permissions apply to placeables (chests, benches, placeable doors, gates); building pieces keep vanilla behaviour and the mod says so in the listing. `BP_BuildDoorFrame` has no Blueprint knowledge of its socketed door either, so the frame-inherits-door rule in section 3 is dropped. |
 | Clan tab widget | `/Game/UI/Widgets/Guild/W_GuildView` (parent C++ `GuildViewBase`, which owns `ButtonBar`, `GuildMembersList`, the name/MOTD editing). The green-box button would go on its `ButtonBar`. The Blueprint layer is thin (two handlers + EventGraph), so an override adding one button is small - but it is still a vanilla UI override that any other clan-UI mod would conflict with. |
 | Rank badges | `/Game/UI/Textures/GUIs/Guild/T_Rank_Recruit / _Member / _Officer / _GuildMaster`, plain `Texture2D`, **16x23 px**. Fine for the table headers; on the radial circles they will upscale - test how it looks, and fall back to the lock icon plus the badge as a small overlay if it is mushy. |
 | Repair hook | `PlaceableBase.repair_module_with_all_ingredients` / `get_required_extra_inventories_for_repair` exist in C++; the repair UI path is UNKNOWN - probe when building the repair row. |
@@ -73,10 +73,11 @@ Rules that do not need a checkbox because they are structural:
   its own.** This closes the "destroy the door to get in" hole regardless of
   how the table is configured. Implemented as: dismantle/pick-up checks
   `MeetsRankRequirement(rank, RequiredRank)` first, then the table.
-- Doorframes: the frame has no access rank of its own; the door in it does.
-  Dismantling a frame drops its door, so the frame inherits the door's
-  requirement while a door is socketed (UNKNOWN: how to find the socketed
-  door from the frame - probe `BP_BuildDoorFrame` / `BP_BuildSocket_Door`).
+- Doorframes and other building pieces are outside the permission system
+  (no Blueprint hook, and the owner declined a character override). Known
+  limitation to state plainly in the listing: a clan member can still
+  dismantle the frame around a rank-locked hinged door. Placeable doors and
+  gates are fully covered.
 
 Defaults = vanilla behaviour, so installing v2 changes nothing until a guild
 master edits the table (same principle as v1's default rank 0).
@@ -110,7 +111,7 @@ clan widget.
 | Action | Where the decision is made | Family |
 |---|---|---|
 | dismantle / pick up / move | `MasterPlaceables_Handle*` composites feeding the menu, plus the server RPCs they call (UNKNOWN names) | placeables |
-| dismantle / repair / upgrade building piece | `BP_BuildingBase` menu + server side (UNKNOWN) | building pieces |
+| dismantle / repair / upgrade building piece | out of scope (C++ only; no override) | building pieces |
 | invite / kick / promote | vanilla clan UI - out of scope for v2 unless the calls are Blueprint-reachable | clan |
 
 Hiding a menu entry is cosmetic; the server RPC behind it must check too, or
