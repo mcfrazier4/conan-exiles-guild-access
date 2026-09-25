@@ -72,10 +72,13 @@ def gate(fname, perm, result_pin_name):
     igm = call(ed, f"{BPL_C}:IsGuildMemberRank", "IsGuildMemberRank"); connect(out(gpr, "Rank"), pin_in(igm, "Rank"), "rank"); connect(then_out(gpr), exec_in(igm), "-> member")
     req = ed.add_get_member_variable_node("RequiredRank")
     mrr = call(ed, f"{BPL_C}:MeetsRankRequirement", "MeetsRankRequirement"); connect(out(gpr, "Rank"), pin_in(mrr, "Rank"), "rank"); connect(out(req), pin_in(mrr, "Required"), "required"); connect(then_out(igm), exec_in(mrr), "-> meets")
-    cc = create_by_search(ed, [char], ("Cast", "ConanCharacter"), "Cast To ConanCharacter", exact="Utilities|Casting|CastToConanCharacter")
-    connect(char, pin_in(cc, "Object"), "character -> cast"); connect(then_out(mrr), exec_in(cc), "-> cast")
-    gid = call(ed, "/Script/ConanSandbox.ConanCharacter:GetGuildStableId", "GetGuildStableId"); connect(as_pin(cc), lib.find_self_pin(gid) or pin_in(gid, "self"), "char -> GetGuildStableId")
-    tail = then_out(cc)
+    cast_names = available(ed, [char], "Cast", "ConanCharacter")
+    if cast_names:
+        cc = create_by_search(ed, [char], ("Cast", "ConanCharacter"), "Cast To ConanCharacter", exact="Utilities|Casting|CastToConanCharacter")
+        connect(char, pin_in(cc, "Object"), "character -> cast"); connect(then_out(mrr), exec_in(cc), "-> cast"); char_pin = as_pin(cc); tail = then_out(cc); cast_failed = lib.find_output_pin(cc, "CastFailed")
+    else:
+        print("   (parameter is already a ConanCharacter - no cast needed)"); char_pin = char; tail = then_out(mrr); cast_failed = None
+    gid = call(ed, "/Script/ConanSandbox.ConanCharacter:GetGuildStableId", "GetGuildStableId"); connect(char_pin, lib.find_self_pin(gid) or pin_in(gid, "self"), "char -> GetGuildStableId")
     if has_exec(gid): connect(tail, exec_in(gid), "-> GetGuildStableId"); tail = then_out(gid)
     conv = call(ed, unreal.StableIdFunctionLibrary.static_class().get_path_name() + ":Conv_StableIdToString", "StableId->String"); connect(out(gid, "ReturnValue"), lib.list_input_pins(conv)[0], "stable id -> string")
     if has_exec(conv): connect(tail, exec_in(conv), "-> Conv"); tail = then_out(conv)
@@ -90,12 +93,8 @@ def gate(fname, perm, result_pin_name):
     # the cast can fail (NPCs): CastFailed -> Return with the parent's verdict
     PL.break_pin_links(res_in); connect(out(a2, "ReturnValue"), res_in, "AND -> Return")
     connect(then_out(isa), exec_in(ret), "IsAllowed -> Return")
-    ret2 = ed.add_return_node(); connect(lib.find_output_pin(cc, "CastFailed"), exec_in(ret2), "CastFailed -> Return(parent)"); connect(parent_res, pin_in(ret2, result_pin_name), "parent -> Return2")
-    for p in lib.list_input_pins(ret2):   # copy the other parent outputs (e.g. outReason) to the second return
-        nm = str(PL.get_pin_name(p))
-        if nm in ("execute", result_pin_name): continue
-        src = next((q for q in lib.list_output_pins(parent) if str(PL.get_pin_name(q)) == nm), None)
-        if src is not None: PL.try_create_connection(src, p)
+    if cast_failed is not None:
+        ret2 = ed.add_return_node(); connect(cast_failed, exec_in(ret2), "CastFailed -> Return(parent)"); connect(parent_res, pin_in(ret2, result_pin_name), "parent -> Return2")
     return ed
 
 e1 = gate("GetCanBeDismantled", 0, "CanBeDismantled")
