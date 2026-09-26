@@ -163,3 +163,21 @@ spec, with the logic behind it (data, RPCs, checks) authored headlessly.
 4. Panel via route 2 (keybound) so it ships without a widget override; route
    1 as a later option if the override is clean.
 5. Workshop update with a change note listing the new permissions.
+
+## Status 2026-09-26: v2 clan tabs verified locally
+
+Clan window (override of `W_GuildView`) now has Roster / Ranks / Permissions
+tabs in the top-nav style (`W_GA_TabButton`). Ranks: badge, editable rank
+name (pencil, rename modal in the game's popup chrome), ranking 4..1.
+Permissions: static Access Base / Command Thralls / Manage Members / Welcome
+Message / Manage Guild / Set Access. Tables copy the roster (Heading_5 /
+Body_4, tint, 40 px rows, alternate fill). Rank names reach the radial
+(`RankToText` prefers the client cache; sub-item labels wired) and the
+server denial messages (`RankNameServer`). Scripts: `author_v2_widget5.py`,
+`author_v2_tabs3.py`, `author_v2_ranknames.py`, `author_v2_styled_buttons.py`.
+
+Known limits: the roster's Rank column cannot show the name (row widgets are
+C++-bound, unreachable); the footer 'Ranks' ButtonData entry is collapsed at
+runtime (template, not editable headlessly); the permission table is static.
+Release rules: see `docs/AUDIT-PACKAGING.md` (version bump, Workshop + G-Portal
+in one sitting, verify with the Workshop copy).
