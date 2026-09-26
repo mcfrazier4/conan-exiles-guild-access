@@ -95,6 +95,14 @@ else:
         PL.break_pin_links(exec_in(notif)); connect(pred, exec_in(rns), "-> RankNameServer"); connect(then_out(rns), exec_in(notif), "-> notification")
         ed.remove_nodes([n]); done += 1
     print(f"   server sites rewired: {done}")
+    LABELS = {"Recruit": 0, "Member": 1, "Officer": 2, "Guild Master": 3}
+    for n in nodes_titled(ed, "AddSubItem"):
+        lp = lib.find_input_pin(n, "label")
+        if lp is None or list(PL.list_connected_pins(lp)): continue
+        lit = PL.get_pin_value(lp) or ""; rank = next((v for k, v in LABELS.items() if f'"{k}"' in lit), None)
+        if rank is None: continue
+        rt = call(ed, f"{BPL_C}:RankToText", f"RankToText({rank})"); setval(rt, "Rank", str(rank)); connect(out(rt, "Result"), lp, f"sub-item {rank} label <- clan name"); done += 1
+    print(f"   radial sub-item labels wired: {sum(1 for n in nodes_titled(ed, 'AddSubItem') if list(PL.list_connected_pins(lib.find_input_pin(n, 'label'))))}")
     compile_ok(bp, [(ed, "EventGraph")], TARGET)
     if MODE == "real" and not failures and done: save(bp, os.path.join(DISK_CONTENT, REL), TARGET)
     elif MODE == "real" and failures: print("   NOT SAVING: failures above")
