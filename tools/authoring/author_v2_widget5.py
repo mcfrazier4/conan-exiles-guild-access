@@ -23,7 +23,7 @@ TINT = "(SpecifiedColor=(R=0.854993,G=0.775822,B=0.637597,A=0.700000),ColorUseRu
 LIN = "(R=0.854993,G=0.775822,B=0.637597,A=1.000000)"
 BADGES = ["/Game/UI/Textures/GUIs/Guild/T_Rank_Recruit.T_Rank_Recruit", "/Game/UI/Textures/GUIs/Guild/T_Rank_Member.T_Rank_Member", "/Game/UI/Textures/GUIs/Guild/T_Rank_Officer.T_Rank_Officer", "/Game/UI/Textures/GUIs/Guild/T_Rank_GuildMaster.T_Rank_GuildMaster"]
 PENCIL = "/Game/UI/Textures/GUIs/Guild/T_EditButton.T_EditButton"; CHECK = "/Game/UI/Textures/Components/T_Checkmark.T_Checkmark"; BG = "/Game/UI/Textures/GUIs/Guild/T_BgPanel.T_BgPanel"
-ROWFILL = "(R=0.000000,G=0.000000,B=0.000000,A=0.450000)"   # the roster's row bar, as a flat tint
+ROWFILL = "(R=0.000000,G=0.000000,B=0.000000,A=0.220000)"   # the roster's row bar, as a flat tint
 # vanilla popup chrome, as Make Slate Brush pin values (pin name -> literal)
 WIN_BG = {"ResourceObject": "/Game/UI/Textures/Backgrounds/T_UI_GeneralWindow_Background.T_UI_GeneralWindow_Background", "ImageSize": "(X=512.000000,Y=512.000000)", "Margin": "(Left=0.050000,Top=0.050000,Right=0.050000,Bottom=0.050000)", "Tiling": "Both", "DrawAs": "Image"}
 FRAME_H = {"ResourceObject": "/Game/UI/Textures/Backgrounds/T_UI_Panel_Frame_TopBottom.T_UI_Panel_Frame_TopBottom", "ImageSize": "(X=512.000000,Y=32.000000)", "Margin": "(Left=0.000000,Top=0.250000,Right=0.000000,Bottom=0.250000)", "DrawAs": "Box"}
@@ -76,12 +76,16 @@ def styled_text(style_cls, tint, label, tail, text_pin=None, literal=None, justi
         jc = ed.add_set_member_variable_node("Justification", "/Script/UMG.TextBlock"); connect(tp, selfpin(jc), "text"); PL.set_pin_value(pin(jc, "Justification"), justify); connect(tail, exec_in(jc), "-> justify"); tail = then_out(jc)
     return tp, tail
 def image(texture, w_, h_, label, tail, tint=None):
+    """SizeBox(w x h)[Image(texture)] - the box pins the size, the image fills it. Returns (box pin, tail)."""
     ip, tail = construct("/Script/UMG.Image", label, tail)
     sb = call(ed, "/Script/UMG.Image:SetBrushFromTexture", f"SetBrush({label})"); connect(ip, selfpin(sb), "img"); check(PL.set_pin_value(pin(sb, "Texture"), texture), f"{label}: texture"); PL.set_pin_value(next((q for q in lib.list_input_pins(sb) if "Match" in str(PL.get_pin_name(q))), None), "false"); connect(tail, exec_in(sb), "-> brush"); tail = then_out(sb)
-    ds = call(ed, "/Script/UMG.Image:SetDesiredSizeOverride", f"size({label})"); connect(ip, selfpin(ds), "img"); check(PL.set_pin_value(first_param(ds), f"(X={w_:.6f},Y={h_:.6f})"), f"{label}: size"); connect(tail, exec_in(ds), "-> size"); tail = then_out(ds)
     if tint:
         co = call(ed, "/Script/UMG.Image:SetColorAndOpacity", f"tint({label})"); connect(ip, selfpin(co), "img"); check(PL.set_pin_value(first_param(co), tint), f"{label}: tint"); connect(tail, exec_in(co), "-> tint"); tail = then_out(co)
-    return ip, tail
+    bx, tail = construct("/Script/UMG.SizeBox", f"{label} box", tail)
+    for f_, v_ in (("SetWidthOverride", w_), ("SetHeightOverride", h_)):
+        n_ = call(ed, f"/Script/UMG.SizeBox:{f_}", f"{label} {f_}"); connect(bx, selfpin(n_), "box"); PL.set_pin_value(first_param(n_), f"{v_:.1f}"); connect(tail, exec_in(n_), f"-> {f_}"); tail = then_out(n_)
+    a = call(ed, "/Script/UMG.PanelWidget:AddChild", f"{label} box <- image"); connect(bx, selfpin(a), "box"); connect(ip, pin(a, "Content"), "img"); connect(tail, exec_in(a), "-> add"); tail = then_out(a)
+    return bx, tail
 def hcell(hbox_pin, widget_pin, ratio, halign, tail, pad=None):
     a = call(ed, "/Script/UMG.HorizontalBox:AddChildToHorizontalBox", "AddChildToHorizontalBox"); connect(hbox_pin, selfpin(a), "hbox"); connect(widget_pin, pin(a, "Content"), "cell"); connect(tail, exec_in(a), "-> add cell"); tail = then_out(a); sl = out(a, "ReturnValue")
     s = call(ed, "/Script/UMG.HorizontalBoxSlot:SetSize", "cell size"); connect(sl, selfpin(s), "slot"); check(PL.set_pin_value(first_param(s), f"(Value={ratio:.6f},SizeRule=Fill)"), "cell size literal"); connect(tail, exec_in(s), "-> size"); tail = then_out(s)
@@ -94,7 +98,7 @@ def row(vbox_pin, label, tail, highlight, header=False):
     """SizeBox(44)[Overlay[highlight Image?, HorizontalBox]] appended to vbox. Returns (hbox pin, tail)."""
     sz, tail = construct("/Script/UMG.SizeBox", f"row box {label}", tail)
     if not header:
-        ho = call(ed, "/Script/UMG.SizeBox:SetHeightOverride", "row height"); connect(sz, selfpin(ho), "sizebox"); PL.set_pin_value(first_param(ho), "44.0"); connect(tail, exec_in(ho), "-> height"); tail = then_out(ho)
+        ho = call(ed, "/Script/UMG.SizeBox:SetHeightOverride", "row height"); connect(sz, selfpin(ho), "sizebox"); PL.set_pin_value(first_param(ho), "40.0"); connect(tail, exec_in(ho), "-> height"); tail = then_out(ho)
     ov, tail = construct("/Script/UMG.Overlay", f"row overlay {label}", tail)
     sc = call(ed, "/Script/UMG.PanelWidget:AddChild", "sizebox <- overlay"); connect(sz, selfpin(sc), "sizebox"); connect(ov, pin(sc, "Content"), "overlay"); connect(tail, exec_in(sc), "-> add"); tail = then_out(sc)
     if highlight:
@@ -104,7 +108,7 @@ def row(vbox_pin, label, tail, highlight, header=False):
         ao = call(ed, "/Script/UMG.Overlay:AddChildToOverlay", "overlay <- highlight"); connect(ov, selfpin(ao), "overlay"); connect(hi, pin(ao, "Content"), "img"); connect(tail, exec_in(ao), "-> add"); tail = then_out(ao)
         for f_, v_ in (("SetHorizontalAlignment", "HAlign_Fill"), ("SetVerticalAlignment", "VAlign_Fill")):
             s = call(ed, f"/Script/UMG.OverlaySlot:{f_}", f_); connect(out(ao, "ReturnValue"), selfpin(s), "slot"); check(PL.set_pin_value(first_param(s), v_), f"{f_} {v_}"); connect(tail, exec_in(s), f"-> {f_}"); tail = then_out(s)
-        p = call(ed, "/Script/UMG.OverlaySlot:SetPadding", "highlight pad"); connect(out(ao, "ReturnValue"), selfpin(p), "slot"); PL.set_pin_value(first_param(p), "(Left=0.000000,Top=5.000000,Right=0.000000,Bottom=5.000000)"); connect(tail, exec_in(p), "-> pad"); tail = then_out(p)
+        p = call(ed, "/Script/UMG.OverlaySlot:SetPadding", "highlight pad"); connect(out(ao, "ReturnValue"), selfpin(p), "slot"); PL.set_pin_value(first_param(p), "(Left=0.000000,Top=3.000000,Right=0.000000,Bottom=3.000000)"); connect(tail, exec_in(p), "-> pad"); tail = then_out(p)
     hb, tail = construct("/Script/UMG.HorizontalBox", f"row hbox {label}", tail)
     ao = call(ed, "/Script/UMG.Overlay:AddChildToOverlay", "overlay <- hbox"); connect(ov, selfpin(ao), "overlay"); connect(hb, pin(ao, "Content"), "hbox"); connect(tail, exec_in(ao), "-> add"); tail = then_out(ao)
     for f_, v_ in (("SetHorizontalAlignment", "HAlign_Fill"), ("SetVerticalAlignment", "VAlign_Fill")):
@@ -169,19 +173,27 @@ for txt, ratio, hal in (("Badge", 0.1, "Center"), ("Rank Name", 0.6, "Left"), ("
     tp, tail = styled_text(ST_HEAD, TINT, f"ranks head {txt}", tail, literal=txt, justify="Center" if hal == "Center" else None)
     tail = hcell(hb, tp, ratio, hal, tail, pad="(Left=12.000000,Top=0.000000,Right=0.000000,Bottom=0.000000)" if txt == "Rank Name" else None)
 nametexts = ed.add_get_member_variable_node("NameTexts"); cellbtns = ed.add_get_member_variable_node("CellButtons"); headtexts = ed.add_get_member_variable_node("HeadTexts")
-cell_pins = {}
-for r in range(4):   # created in rank order so CellButtons[rank] holds the cell
+cell_pins = {}; cell_widgets = {}
+for r in range(4):   # created in rank order so CellButtons[rank] / NameTexts[rank] hold the cell
+    ov, tail = construct("/Script/UMG.Overlay", f"name cell {r}", tail)
+    hb_, tail = construct("/Script/UMG.HorizontalBox", f"name hbox {r}", tail)
+    pen, tail = image(PENCIL, 16, 16, f"pencil {r}", tail); tail = hcell(hb_, pen, 0.0, "Left", tail)
+    nt, tail = styled_text(ST_BODY, TINT, f"name text {r}", tail, text_pin=name_text(r)); tail = hcell(hb_, nt, 1.0, "Left", tail, pad="(Left=8.000000,Top=0.000000,Right=0.000000,Bottom=0.000000)")
+    tail = array_add(out(nametexts), nt, tail)
+    a_ = call(ed, "/Script/UMG.Overlay:AddChildToOverlay", f"cell <- hbox {r}"); connect(ov, selfpin(a_), "overlay"); connect(hb_, pin(a_, "Content"), "hbox"); connect(tail, exec_in(a_), "-> add"); tail = then_out(a_)
+    for f_, v_ in (("SetHorizontalAlignment", "HAlign_Left"), ("SetVerticalAlignment", "VAlign_Center")):
+        s_ = call(ed, f"/Script/UMG.OverlaySlot:{f_}", f_); connect(out(a_, "ReturnValue"), selfpin(s_), "slot"); check(PL.set_pin_value(first_param(s_), v_), v_); connect(tail, exec_in(s_), f"-> {f_}"); tail = then_out(s_)
     bp_, tail = create_widget(CELL_C, f"cell {r}", tail)
-    si = call(ed, "/Script/ConanSandbox.FLXButtonBase:SetIcon", f"pencil {r}"); connect(bp_, selfpin(si), "btn"); check(PL.set_pin_value(first_param(si), PENCIL), "pencil literal"); connect(tail, exec_in(si), "-> icon"); tail = then_out(si)
-    siv = call(ed, "/Script/ConanSandbox.FLXButtonBase:SetIconVisibility", f"pencil vis {r}"); connect(bp_, selfpin(siv), "btn"); PL.set_pin_value(first_param(siv), "Visible"); connect(tail, exec_in(siv), "-> icon vis"); tail = then_out(siv)
-    sl = call(ed, "/Script/ConanSandbox.FLXButtonBase:SetLabel", f"label {r}"); connect(bp_, selfpin(sl), "btn"); connect(name_text(r), pin(sl, "NewLabel"), "name"); connect(tail, exec_in(sl), "-> label"); tail = then_out(sl)
     ud = call(ed, "/Script/ConanSandbox.FLXButtonBase:SetUserDataAsInt", f"userdata {r}"); connect(bp_, selfpin(ud), "btn"); PL.set_pin_value(first_param(ud), str(r)); connect(tail, exec_in(ud), "-> userdata"); tail = then_out(ud)
     en = call(ed, "/Script/UMG.Widget:SetIsEnabled", f"enable cell {r}"); connect(bp_, selfpin(en), "btn"); connect(out(is_gm, "ReturnValue"), pin(en, "bInIsEnabled"), "GM?"); connect(tail, exec_in(en), "-> enable"); tail = then_out(en)
-    tail = array_add(out(cellbtns), bp_, tail); cell_pins[r] = bp_
+    a2_ = call(ed, "/Script/UMG.Overlay:AddChildToOverlay", f"cell <- button {r}"); connect(ov, selfpin(a2_), "overlay"); connect(bp_, pin(a2_, "Content"), "btn"); connect(tail, exec_in(a2_), "-> add"); tail = then_out(a2_)
+    for f_, v_ in (("SetHorizontalAlignment", "HAlign_Fill"), ("SetVerticalAlignment", "VAlign_Fill")):
+        s_ = call(ed, f"/Script/UMG.OverlaySlot:{f_}", f_); connect(out(a2_, "ReturnValue"), selfpin(s_), "slot"); check(PL.set_pin_value(first_param(s_), v_), v_); connect(tail, exec_in(s_), f"-> {f_}"); tail = then_out(s_)
+    tail = array_add(out(cellbtns), bp_, tail); cell_pins[r] = bp_; cell_widgets[r] = ov
 for i, r in enumerate(COLS):
     hb, tail = row(rb, f"rank row {r}", tail, highlight=(i % 2 == 0))
     ip, tail = image(BADGES[r], 16, 23, f"badge {r}", tail); tail = hcell(hb, ip, 0.1, "Center", tail)
-    tail = hcell(hb, cell_pins[r], 0.6, "Left", tail); tail = setup_child(cell_pins[r], tail, f"cell {r}")
+    tail = hcell(hb, cell_widgets[r], 0.6, "Fill", tail); tail = setup_child(cell_pins[r], tail, f"cell {r}")
     tp, tail = styled_text(ST_BODY, TINT, f"ranking {r}", tail, literal=str(r + 1), justify="Center"); tail = hcell(hb, tp, 0.3, "Center", tail)
 # ---- Permissions table (ScrollBox > VerticalBox)
 ps, tail = construct("/Script/UMG.ScrollBox", "PermsScroll", tail); sps = ed.add_set_member_variable_node("PermsScroll"); connect(ps, pin(sps, "PermsScroll"), "-> PermsScroll"); connect(tail, exec_in(sps), "-> Set PermsScroll"); tail = then_out(sps)
@@ -194,16 +206,16 @@ tp, tail = styled_text(ST_HEAD, TINT, "perms head Ability", tail, literal="Abili
 head_cells = {}
 for r in range(4):
     cellbox, tail = construct("/Script/UMG.HorizontalBox", f"perm head {r}", tail)
-    ip, tail = image(BADGES[r], 16, 23, f"head badge {r}", tail); tail = hcell(cellbox, ip, 0.2, "Right", tail)
-    tp, tail = styled_text(ST_HEAD, TINT, f"perm head name {r}", tail, text_pin=name_text(r)); tail = hcell(cellbox, tp, 0.8, "Left", tail, pad="(Left=6.000000,Top=0.000000,Right=0.000000,Bottom=0.000000)")
+    ip, tail = image(BADGES[r], 16, 23, f"head badge {r}", tail); tail = hcell(cellbox, ip, 1.0, "Center", tail)
+    tp, tail = styled_text(ST_HEAD, TINT, f"perm head name {r}", tail, text_pin=name_text(r)); tail = hcell(cellbox, tp, 0.0, "Left", tail); tail = set_vis(tp, "Collapsed", tail, f"perm head name {r}")
     tail = array_add(out(headtexts), tp, tail); head_cells[r] = cellbox
-for r in COLS: tail = hcell(hb, head_cells[r], 0.165, "Fill", tail)
+for r in COLS: tail = hcell(hb, head_cells[r], 0.165, "Center", tail)
 for i, (ability, flags) in enumerate(PERMS):
     hb, tail = row(pb, f"perm row {i}", tail, highlight=(i % 2 == 0))
     tp, tail = styled_text(ST_BODY, TINT, f"perm {ability}", tail, literal=ability); tail = hcell(hb, tp, 0.34, "Left", tail)
     for ci, r in enumerate(COLS):
         if flags[ci]:
-            ip, tail = image(CHECK, 23, 23, f"check {i}/{r}", tail, tint=LIN); tail = hcell(hb, ip, 0.165, "Center", tail)
+            ip, tail = image(CHECK, 16, 16, f"check {i}/{r}", tail, tint=LIN); tail = hcell(hb, ip, 0.165, "Center", tail)
         else:
             dp, tail = styled_text(ST_BODY, TINT, f"dash {i}/{r}", tail, literal="-", justify="Center"); tail = hcell(hb, dp, 0.165, "Center", tail)
 tail = set_vis(ps, "Collapsed", tail, "PermsScroll (start on Ranks)")
@@ -300,7 +312,8 @@ names4 = ed.add_get_member_variable_node("CachedNames", PL_C); connect(out(comp4
 setel = create_by_search(ed, [out(names4)], ("Array", "SetArrayElem"), "Array Set", exact="Utilities|Array|SetArrayElem"); connect(out(names4), pin_exact_in(setel, "TargetArray"), "CachedNames"); connect(out(er2), pin_exact_in(setel, "Index"), "idx"); connect(nm, pin_exact_in(setel, "Item"), "name"); connect(t, exec_in(setel), "-> CachedNames[EditRank]"); t = then_out(setel)
 s2t2 = call(ed, T + "Conv_StringToText", "new name text"); connect(nm, pin(s2t2, "InString"), "name")
 cb2 = ed.add_get_member_variable_node("CellButtons"); ht2 = ed.add_get_member_variable_node("HeadTexts")
-sl = call(ed, "/Script/ConanSandbox.FLXButtonBase:SetLabel", "relabel cell"); connect(array_get(out(cb2), out(er2)), selfpin(sl), "cell"); connect(out(s2t2, "ReturnValue"), pin(sl, "NewLabel"), "text"); connect(t, exec_in(sl), "-> relabel"); t = then_out(sl)
+nt2 = ed.add_get_member_variable_node("NameTexts")
+sl = call(ed, "/Script/UMG.TextBlock:SetText", "rename cell text"); connect(array_get(out(nt2), out(er2)), selfpin(sl), "text"); connect(out(s2t2, "ReturnValue"), pin(sl, "InText"), "text"); connect(t, exec_in(sl), "-> rename"); t = then_out(sl)
 sh = call(ed, "/Script/UMG.TextBlock:SetText", "retitle head"); connect(array_get(out(ht2), out(er2)), selfpin(sh), "head"); connect(out(s2t2, "ReturnValue"), pin(sh, "InText"), "text"); connect(t, exec_in(sh), "-> retitle"); t = then_out(sh)
 mroot2 = ed.add_get_member_variable_node("ModalRoot"); set_vis(out(mroot2), "Collapsed", t, "modal")
 mroot3 = ed.add_get_member_variable_node("ModalRoot"); set_vis(out(mroot3), "Collapsed", then_out(h_no), "modal (cancel)")
