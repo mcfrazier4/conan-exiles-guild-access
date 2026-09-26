@@ -128,6 +128,11 @@ else:
     gop = create_by_search(ed, [], ("GetOwningPlayer",), "GetOwningPlayer", prefer=["|GetOwningPlayer"]); pc = out(gop, "ReturnValue")
     gcb = call(ed, "/Script/Engine.Actor:GetComponentByClass", "GetComponentByClass(Player)"); connect(pc, pin_exact_in(gcb, "self"), "PC -> gcb"); setval(gcb, "ComponentClass", PL_C)
     sc = ed.add_set_member_variable_node("Comp"); connect(out(gcb, "ReturnValue"), pin_exact_in(sc, "Comp"), "-> Comp"); connect(tail, exec_in(sc), "-> Set Comp"); tail = then_out(sc)
+    # the leftover 'Ranks' ButtonData entry (index 2) cannot be removed headlessly (template); collapse it at runtime
+    bb = ed.add_get_member_variable_node("ButtonBar"); hv = call(ed, "/Script/ConanSandbox.ButtonBarWidgetBase:SetButtonVisibilityForIndex", "hide footer Ranks button"); connect(out(bb), selfpin(hv), "bar")
+    print("   SetButtonVisibilityForIndex pins:", pins(hv))
+    ip_ = next((q for q in lib.list_input_pins(hv) if "ndex" in str(PL.get_pin_name(q))), None); vp_ = next((q for q in lib.list_input_pins(hv) if "isib" in str(PL.get_pin_name(q))), None)
+    check(ip_ is not None and PL.set_pin_value(ip_, "2"), "index 2"); check(vp_ is not None and PL.set_pin_value(vp_, "Collapsed"), "Collapsed"); connect(tail, exec_in(hv), "-> hide"); tail = then_out(hv)
     me = create_by_search(ed, [], ("Getareferencetoself",), "self", exact="Variables|Getareferencetoself")
     # heading overlay = roster.GetParent().GetParent().GetChildAt(1); its child 0 is the 'Clan Roster' text
     gl = ed.add_get_member_variable_node("GuildMembersList"); gp1 = call(ed, "/Script/UMG.Widget:GetParent", "GetParent(roster)"); connect(out(gl), selfpin(gp1), "roster")
