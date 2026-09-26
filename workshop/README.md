@@ -4,7 +4,7 @@ Supplied by the project owner 2026-09-23. Thumbnail replaced 2026-09-23 (1408x14
 
 | Field | Value |
 |---|---|
-| Name | **Guild Access Levels** |
+| Name | **Better Guild Control** |
 | Description | `description.bbcode` (Steam BBCode, paste verbatim) |
 | Preview image | `preview.png` (1024x1024, 256 colours, 869 KB) — dev kit limit is **< 1 MB** |
 | Visibility at first upload | Hidden (`steamVisibility: 2` in `modinfo.json`) |
@@ -14,7 +14,7 @@ Supplied by the project owner 2026-09-23. Thumbnail replaced 2026-09-23 (1408x14
 - `modinfo.json` still says `"name": "GuildAccess"` and has an empty
   `description`. The dev kit's Mod info panel writes those fields to Steam.
   Decide whether the in-game mod list should show "GuildAccess" or
-  "Guild Access Levels" before changing `name` — it is also the folder name.
+  "Better Guild Control" before changing `name` — it is also the folder name.
 - The description's promises (doors, guild-master UI) are built and were
   verified live on 2026-09-23 (docs/PHASE-3-5-PROGRESS.md). Building-part
   doors (`BP_BuildDoor`, hinged doors in doorframes) are NOT covered yet; say so in
