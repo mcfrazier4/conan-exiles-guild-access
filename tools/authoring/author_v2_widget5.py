@@ -88,7 +88,8 @@ def image(texture, w_, h_, label, tail, tint=None):
     return bx, tail
 def hcell(hbox_pin, widget_pin, ratio, halign, tail, pad=None):
     a = call(ed, "/Script/UMG.HorizontalBox:AddChildToHorizontalBox", "AddChildToHorizontalBox"); connect(hbox_pin, selfpin(a), "hbox"); connect(widget_pin, pin(a, "Content"), "cell"); connect(tail, exec_in(a), "-> add cell"); tail = then_out(a); sl = out(a, "ReturnValue")
-    s = call(ed, "/Script/UMG.HorizontalBoxSlot:SetSize", "cell size"); connect(sl, selfpin(s), "slot"); check(PL.set_pin_value(first_param(s), f"(Value={ratio:.6f},SizeRule=Fill)"), "cell size literal"); connect(tail, exec_in(s), "-> size"); tail = then_out(s)
+    size_lit = f"(Value={ratio:.6f},SizeRule=Fill)" if ratio > 0 else "(Value=1.000000,SizeRule=Automatic)"   # 0 = size to content
+    s = call(ed, "/Script/UMG.HorizontalBoxSlot:SetSize", "cell size"); connect(sl, selfpin(s), "slot"); check(PL.set_pin_value(first_param(s), size_lit), "cell size literal"); connect(tail, exec_in(s), "-> size"); tail = then_out(s)
     h = call(ed, "/Script/UMG.HorizontalBoxSlot:SetHorizontalAlignment", "cell halign"); connect(sl, selfpin(h), "slot"); setval(h, "InHorizontalAlignment", "HAlign_" + halign); connect(tail, exec_in(h), "-> halign"); tail = then_out(h)
     v = call(ed, "/Script/UMG.HorizontalBoxSlot:SetVerticalAlignment", "cell valign"); connect(sl, selfpin(v), "slot"); setval(v, "InVerticalAlignment", "VAlign_Center"); connect(tail, exec_in(v), "-> valign"); tail = then_out(v)
     if pad:
